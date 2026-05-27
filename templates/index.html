@@ -7,20 +7,24 @@
     <title>Bootstrap demo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+       
 </head>
 
 <body>
-      
+  
     <section name = "navbar-plataform">
         <nav class="navbar bg-body-tertiary">
+          <h1>SkillBloom</h1>
             <div class="container">
               <a class="navbar-brand" href="#">
+               
                 <img src="{{url_for('static', filename='logo.jpg')}}" alt="Bootstrap" width="80px" height="80px">
+              
               </a>
             </div>
           </nav>
     </section>
-    <h1>SkillBloom</h1>
+   
     <footer>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
@@ -32,6 +36,470 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
         integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
         crossorigin="anonymous"></script>
+
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+          <title>Skill Bloom</title>
+        
+          <style>
+            *{
+              margin:0;
+              padding:0;
+              box-sizing:border-box;
+            }
+        
+            body{
+              font-family: Arial, sans-serif;
+              background:#0b1f3a;
+              overflow-x:hidden;
+            }
+        
+            .hero{
+              width:100%;
+              height:100vh;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              text-align:center;
+              background: linear-gradient(
+                180deg,
+                #001b44 0%,
+                #5d6b7d 100%
+              );
+              position:relative;
+              padding:20px;
+            }
+        
+            .content{
+              max-width:900px;
+            }
+        
+            .title{
+              font-size: clamp(3rem, 7vw, 6rem);
+              color:white;
+              font-family: "Georgia", serif;
+              font-weight:400;
+              margin-bottom:20px;
+            }
+        
+            .subtitle{
+              color:white;
+              font-size: clamp(1rem, 1.5vw, 1.2rem);
+              font-weight:600;
+              line-height:1.6;
+              max-width:800px;
+              margin:0 auto 50px;
+            }
+        
+            .btn{
+              display:inline-block;
+              background:white;
+              color:black;
+              text-decoration:none;
+              padding:18px 35px;
+              font-size:1.3rem;
+              font-weight:bold;
+              border-radius:2px;
+              transition:0.3s ease;
+            }
+        
+            .btn:hover{
+              transform:scale(1.05);
+              background:#f0f0f0;
+            }
+        
+            /* detalhe inferior */
+            .bottom-bar{
+              position:absolute;
+              bottom:0;
+              left:0;
+              width:100%;
+              height:18px;
+              background:#00153b;
+            }
+
+            /* ===== NOVA SEÇÃO ===== */
+
+.skills-section{
+  background:#020817;
+  padding:120px 20px;
+}
+
+.skills-title{
+  color:white;
+  font-size:clamp(2rem,4vw,3.5rem);
+  margin-bottom:30px;
+  font-family:"Georgia", serif;
+}
+
+.skills-text{
+  color:#d6d6d6;
+  font-size:1.1rem;
+  line-height:1.9;
+  margin-bottom:20px;
+  max-width:600px;
+}
+
+.puzzle-img{
+  max-width:420px;
+  width:100%;
+}
+
+.skill-card{
+  background:white;
+  padding:30px;
+  border-radius:6px;
+  height:100%;
+  transition:0.3s ease;
+}
+
+.skill-card:hover{
+  transform:translateY(-8px);
+}
+
+.skill-card h3{
+  font-size:1.2rem;
+  margin-bottom:15px;
+  font-weight:bold;
+}
+
+.skill-card p{
+  color:#444;
+  line-height:1.7;
+}
+
+
+/* ===== QUIZ SECTION ===== */
+
+.quiz-section{
+  background: linear-gradient(
+    180deg,
+    #020817 0%,
+    #060033 100%
+  );
+
+  padding:120px 20px 40px;
+  color:white;
+}
+
+.phone-mockup{
+  width:240px;
+  height:480px;
+  border-radius:35px;
+  background:#1a1a1a;
+  padding:10px;
+  margin:auto;
+  box-shadow:0 0 30px rgba(0,0,0,0.4);
+  position:relative;
+}
+
+.phone-mockup::before{
+  content:"";
+  position:absolute;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90px;
+  height:18px;
+  background:black;
+  border-radius:20px;
+  z-index:2;
+}
+
+.phone-screen{
+  width:100%;
+  height:100%;
+  background:#ececec;
+  border-radius:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.phone-screen h2{
+  color:black;
+  font-size:2.5rem;
+  font-weight:bold;
+}
+
+.quiz-text{
+  font-size:1.3rem;
+  line-height:1.9;
+  color:#f1f1f1;
+  max-width:650px;
+  font-weight:600;
+}
+
+.quiz-secondary-text{
+  font-size:1.25rem;
+  line-height:1.8;
+  color:#f1f1f1;
+  margin-bottom:30px;
+}
+
+.quiz-footer{
+  margin-top:120px;
+  display:flex;
+  justify-content:space-between;
+  gap:30px;
+  flex-wrap:wrap;
+  border-top:1px solid rgba(255,255,255,0.1);
+  padding-top:40px;
+}
+
+.quiz-footer p{
+  margin:4px 0;
+  font-size:0.9rem;
+  color:#d8d8d8;
+}
+
+.contact-btn{
+  background:white;
+  color:black;
+  border:none;
+  padding:10px 30px;
+  border-radius:30px;
+  font-weight:bold;
+  margin-bottom:10px;
+  transition:0.3s;
+}
+
+.contact-btn:hover{
+  transform:scale(1.05);
+}
+
+.copyright{
+  text-align:center;
+  margin-top:40px;
+  font-size:0.8rem;
+  color:#a8a8a8;
+}
+
+@media(max-width:991px){
+
+  .quiz-text,
+  .quiz-secondary-text{
+    text-align:center;
+    margin:auto;
+  }
+
+  .quiz-footer{
+    text-align:center;
+    justify-content:center;
+  }
+
+}
+
+        
+          </style>
+        </head>
+        <body>
+        
+          <section class="hero">
+            
+            <div class="content">
+              <h1 class="title">Skill Bloom</h1>
+        
+              <p class="subtitle">
+                Desenvolva habilidades que fazem a diferença dentro e fora do jogo:
+                colaboração, empatia, resiliência e tomada de decisão em desafios
+                que inspiram crescimento.
+              </p>
+        
+              <a href="#" class="btn">Cadastrar-se</a>
+            </div>
+        
+            <div class="bottom-bar"></div>
+        
+          </section>
+        
+<!-- CONTINUAÇÃO DA LANDING PAGE -->
+<section class="skills-section">
+
+  <div class="container">
+
+    <div class="row align-items-center gy-5">
+
+      <!-- TEXTO -->
+      <div class="col-lg-6">
+
+        <h2 class="skills-title">
+          🚀 Desenvolva suas habilidades enquanto joga
+        </h2>
+
+        <p class="skills-text">
+          Aprender sobre emoções, empatia e trabalho em equipe nunca foi tão divertido.
+          Nossa plataforma transforma o desenvolvimento socioemocional em experiências
+          interativas, onde cada desafio ajuda você a crescer dentro e fora do jogo.
+        </p>
+
+        <p class="skills-text">
+          Com jogos envolventes e situações do dia a dia, você aprende a lidar com sentimentos,
+          tomar decisões mais conscientes e se comunicar melhor — tudo de forma leve e dinâmica.
+        </p>
+
+      </div>
+
+      <!-- IMAGEM -->
+      <div class="col-lg-6 text-center">
+
+        <img
+          src="{{url_for('static', filename='puzzle.png')}}"
+          class="img-fluid puzzle-img"
+          alt="Puzzle"
+        >
+
+      </div>
+
+    </div>
+
+    <!-- CARDS -->
+    <div class="row mt-5 g-4">
+
+      <!-- CARD 1 -->
+      <div class="col-md-4">
+        <div class="skill-card">
+
+          <h3>🧠 Autoconhecimento</h3>
+
+          <p>
+            Entenda melhor quem você é, como reage às situações e quais são
+            seus pontos fortes e oportunidades de melhoria.
+          </p>
+
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="col-md-4">
+        <div class="skill-card">
+
+          <h3>🎮 Controle Emocional</h3>
+
+          <p>
+            Aprenda a lidar com emoções como ansiedade, frustração e pressão
+            através de experiências interativas.
+          </p>
+
+        </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="col-md-4">
+        <div class="skill-card">
+
+          <h3>💬 Comunicação</h3>
+
+          <p>
+            Desenvolva uma comunicação mais clara, saudável e eficiente em
+            diferentes situações do cotidiano.
+          </p>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+<!-- NOVA SEÇÃO QUIZ -->
+<section class="quiz-section">
+
+  <div class="container">
+
+    <!-- PRIMEIRA PARTE -->
+    <div class="row align-items-center gy-5">
+
+      <!-- CELULAR -->
+      <div class="col-lg-5 text-center">
+
+        <div class="phone-mockup">
+
+          <div class="phone-screen">
+            <h2>Quiz</h2>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- TEXTO -->
+      <div class="col-lg-7">
+
+        <p class="quiz-text">
+          Por meio de desafios interativos e situações reais do ambiente profissional,
+          o jogo permite que você desenvolva competências socioemocionais de forma prática
+          e envolvente.
+        </p>
+
+        <p class="quiz-text">
+          Cada etapa estimula habilidades como comunicação, resolução de problemas,
+          trabalho em equipe e inteligência emocional, transformando aprendizado em
+          experiência aplicada ao mercado de trabalho.
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- SEGUNDA PARTE -->
+    <div class="row mt-5">
+
+      <div class="col-lg-5">
+
+        <p class="quiz-secondary-text">
+          Ao desenvolver competências socioemocionais valorizadas pelas empresas,
+          como comunicação, adaptabilidade, liderança e trabalho em equipe,
+          você se destaca em processos seletivos e no ambiente profissional.
+        </p>
+
+        <p class="quiz-secondary-text">
+          O jogo ajuda a preparar você para novas oportunidades, aumentando suas
+          chances de conquistar um emprego e crescer na carreira de forma consistente.
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- RODAPÉ -->
+    <div class="quiz-footer">
+
+      <div>
+        <p>Rede social</p>
+        <p>Instagram: @skillbloom</p>
+        <p>Facebook: /skillbloom</p>
+      </div>
+
+      <div class="quiz-contact">
+        <button class="contact-btn">Contato</button>
+        <p>Email: contato@skillbloom.com</p>
+      </div>
+
+      <div class="text-end">
+        <p>Política de privacidade</p>
+        <p>Termos de uso</p>
+      </div>
+
+    </div>
+
+    <div class="copyright">
+      © 2025 Cube ML. Todos os direitos reservados.
+    </div>
+
+  </div>
+
+</section>
+          
+        </body>
+        </html>
+
+
+
 
 </body>
 

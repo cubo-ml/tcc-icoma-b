@@ -1,53 +1,208 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-</head>
-
 <body>
-    <main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
-    <footer>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-            crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
-            integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
-            crossorigin="anonymous"></script>
 
-    </footer>
-</main>
-<form>
-    <fieldset disabled>
-      <legend>Disabled fieldset example</legend>
-      <div class="mb-3">
-        <label for="disabledTextInput" class="form-label">Disabled input</label>
-        <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+  <style>
+  
+  *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+  }
+  
+  body{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background: linear-gradient(
+          135deg,
+          #6A11CB 0%,
+          #4A148C 50%,
+          #1A237E 100%
+      );
+      overflow:hidden;
+  }
+  
+  body::before{
+      content:'';
+      position:absolute;
+      width:500px;
+      height:500px;
+      background:#9C4DFF;
+      border-radius:50%;
+      filter:blur(180px);
+      top:-150px;
+      left:-150px;
+  }
+  
+  body::after{
+      content:'';
+      position:absolute;
+      width:500px;
+      height:500px;
+      background:#00D4FF;
+      border-radius:50%;
+      filter:blur(180px);
+      bottom:-150px;
+      right:-150px;
+  }
+  
+  .container-login{
+      position:relative;
+      z-index:2;
+      width:1100px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+  }
+  
+  .card-login{
+      width:420px;
+      padding:45px;
+      border-radius:30px;
+      background:rgba(255,255,255,0.08);
+      backdrop-filter:blur(25px);
+      border:1px solid rgba(255,255,255,0.2);
+      box-shadow:
+      0 8px 32px rgba(0,0,0,.3),
+      inset 0 0 10px rgba(255,255,255,.1);
+  }
+  
+  .card-login h1{
+      text-align:center;
+      color:white;
+      margin-bottom:35px;
+      font-weight:700;
+  }
+  
+  .input-group{
+      margin-bottom:25px;
+  }
+  
+  .input-group input{
+      width:100%;
+      background:transparent;
+      border:none;
+      border-bottom:2px solid rgba(255,255,255,.4);
+      padding:10px;
+      color:white;
+      outline:none;
+      font-size:16px;
+  }
+  
+  .input-group input::placeholder{
+      color:rgba(255,255,255,.7);
+  }
+  
+  .btn-login{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:30px;
+      background:white;
+      color:#6A11CB;
+      font-weight:bold;
+      font-size:16px;
+      transition:.3s;
+  }
+  
+  .btn-login:hover{
+      transform:translateY(-2px);
+      box-shadow:0 5px 20px rgba(255,255,255,.3);
+  }
+  
+  .google{
+      text-align:center;
+      margin-top:20px;
+      color:white;
+      font-size:28px;
+  }
+  
+  .logo-area{
+      text-align:center;
+      color:white;
+  }
+  
+  .logo-area img{
+      width:220px;
+      margin-bottom:20px;
+      filter:drop-shadow(0 0 15px rgba(0,212,255,.6));
+  }
+  
+  .logo-area h1{
+      font-size:60px;
+      font-weight:700;
+  }
+  
+  .logo-area span{
+      color:#00D4FF;
+  }
+  
+  @media(max-width:900px){
+  
+      .container-login{
+          flex-direction:column;
+          gap:50px;
+      }
+  
+      .logo-area h1{
+          font-size:40px;
+      }
+  
+      .card-login{
+          width:90%;
+      }
+  
+  }
+  
+  </style>
+  
+  <div class="container-login">
+  
+      <div class="card-login">
+  
+          <h1>Sign Up</h1>
+  
+          <form method="POST">
+  
+              <div class="input-group">
+                  <input
+                      type="text"
+                      name="nome"
+                      placeholder="Nome">
+              </div>
+  
+              <div class="input-group">
+                  <input
+                      type="password"
+                      name="senha"
+                      placeholder="Senha">
+              </div>
+  
+              <button
+                  type="submit"
+                  class="btn-login">
+                  Entrar
+              </button>
+  
+              <div class="google">
+                🌐
+              </div>
+  
+          </form>
+  
       </div>
-      <div class="mb-3">
-        <label for="disabledSelect" class="form-label">Disabled select menu</label>
-        <select id="disabledSelect" class="form-select">
-          <option>Disabled select</option>
-        </select>
+  
+      <div class="logo-area">
+  
+          <img src="{{ url_for('static', filename='logo.jpg') }}">
+  
+          <h1>
+              Skill <span>Bloom</span>
+          </h1>
+  
       </div>
-      <div class="mb-3">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="disabledFieldsetCheck" disabled>
-          <label class="form-check-label" for="disabledFieldsetCheck">
-            Cant check this
-          </label>
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </fieldset>
-  </form>
-
-</body>
-
+  
+  </div>
+  
+  </body>

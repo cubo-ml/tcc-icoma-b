@@ -48,16 +48,6 @@ Criar um jogo interativo que:
 
 
 ## Exemplos de Paleta de Cores e Comunicação Visual
-<img width="1469" height="227" alt="Documento de Rafael~2" src="https://github.com/user-attachments/assets/a6c4eee9-c529-459f-b26b-56c6f541247e"
-  />
-
-<img width="1500" height="225" alt="Documento de Rafael~3" src="https://github.com/user-attachments/assets/4e4932bd-e79f-4c53-933b-a20fd5b90fa2" 
-  />
-
-<img width="1502" height="228" alt="Documento de Rafael~4" src="https://github.com/user-attachments/assets/96f27e37-61e6-4581-9eb9-3345345ac6f8"
-  />
-  
-<img width="1352" height="238" alt="image" src="https://github.com/user-attachments/assets/8119b577-1af7-4104-86a4-b69261df30d9" />
 
 
 
@@ -67,33 +57,49 @@ Criar um jogo interativo que:
 ---
 
 
-<img width="1254" height="1254" alt="WhatsApp Image 2026-04-29 at 08 35 55" src="https://github.com/user-attachments/assets/ed12a471-6834-47e4-b815-6f253a96496f"
-  />
+<img width="1254" height="1254" alt="WhatsApp Image 2026-07-28 at 22 40 19" src="https://github.com/user-attachments/assets/88f63761-4077-4347-b0f0-47818664f32e" />
 
 
 
-<img width="1254" height="1254" alt="WhatsApp Image 2026-04-29 at 08 35 56" src="https://github.com/user-attachments/assets/5f392c4f-6096-43f3-80d3-feaa32d37925"
-  />
+
+<img width="1254" height="1254" alt="WhatsApp Image 2026-07-28 at 23 08 54" src="https://github.com/user-attachments/assets/e6d18e41-db66-42c2-b8f7-dd31fc706c6f" />
 
 
 
-<img width="1254" height="1254" alt="WhatsApp Image 2026-04-29 at 08 35 56 (1)" src="https://github.com/user-attachments/assets/b186e523-7c4c-46ec-bc88-30f634ec27c8" 
-  />
 
 
-<img width="1254" height="1254" alt="WhatsApp Image 2026-04-29 at 08 35 56 (2)" src="https://github.com/user-attachments/assets/4b493c20-2646-4244-99ec-fe7c5bebeb6a" 
-  />
+<img width="1254" height="1254" alt="WhatsApp Image 2026-07-28 at 22 40 19 (1)" src="https://github.com/user-attachments/assets/e6ae2a17-26a7-4429-8edb-c72ff7185ee9" />
 
 
-<img width="1254" height="1254" alt="WhatsApp Image 2026-04-29 at 08 35 56 (3)" src="https://github.com/user-attachments/assets/cc865371-08b6-415b-96ea-229d7103bba7" 
-  />
 
 
-<img width="1254" height="1254" alt="WhatsApp Image 2026-04-29 at 08 35 56 (4)" src="https://github.com/user-attachments/assets/c248c15e-bbf7-4c5b-9df6-e5bb30937220" 
-  />
+<img width="1254" height="1254" alt="WhatsApp Image 2026-07-28 at 22 58 52" src="https://github.com/user-attachments/assets/ed5d0095-d1c8-49c9-b392-db9c248f9bd3" />
 
 
-<img width="1254" height="1254" alt="WhatsApp Image 2026-04-29 at 08 35 57" src="https://github.com/user-attachments/assets/fb5775b0-63c1-4ebc-bf46-9e3bdab50ebb" />
+
+
+<img width="1254" height="1254" alt="WhatsApp Image 2026-07-28 at 22 55 30" src="https://github.com/user-attachments/assets/14f750f5-feac-4cba-930e-47136e8a1fbe" />
+
+
+
+
+<img width="1254" height="1254" alt="WhatsApp Image 2026-07-28 at 23 08 09" src="https://github.com/user-attachments/assets/c2a05e15-08e9-4884-a3c0-32a55604340c" />
+
+
+
+
+<img width="1254" height="1254" alt="WhatsApp Image 2026-07-28 at 22 46 34" src="https://github.com/user-attachments/assets/1274be4e-47d0-4083-b20a-395daae9cdc8" />
+
+
+
+
+
+<img width="1254" height="1254" alt="WhatsApp Image 2026-07-29 at 09 43 57" src="https://github.com/user-attachments/assets/6ce1b65d-5f5d-4fe8-a307-b0c506592a51" />
+
+
+
+<img width="1254" height="1254" alt="WhatsApp Image 2026-07-28 at 23 23 04" src="https://github.com/user-attachments/assets/8dc8eed6-c3f6-4493-a9fb-23a947af4ad1" />
+
 
 ---
 

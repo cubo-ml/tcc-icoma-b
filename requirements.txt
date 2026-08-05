@@ -1,0 +1,10 @@
+# Dev environment
+pip
+autopep8
+
+# App
+flask
+firebase-admin
+pyserial
+pandas
+google-generativeai

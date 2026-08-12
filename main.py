@@ -54,8 +54,7 @@ def teste():
 
 
 def main():
-    app.run(port=int(os.environ.get('PORT', 80)))
-
+    app.run(host="0.0.0.0", port = int(os.environ.get("PORT", 10000)))
     
 
 

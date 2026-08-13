@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#071d3b">
+
+    <title>SkillBloom — Dashboard</title>
+
+    <style>
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+            background: #071b38;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
+            color: #ffffff;
+            background:
+                radial-gradient(
+                    circle at 75% 15%,
+                    rgba(49, 92, 255, 0.18),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 90% 80%,
+                    rgba(181, 20, 255, 0.32),
+                    transparent 38%
+                ),
+                linear-gradient(
+                    120deg,
+                    #061b37 0%,
+                    #10265c 48%,
+                    #4c0b70 100%
+                );
+
+            overflow-x: hidden;
+        }
+
+        button,
+        a {
+            font-family: inherit;
+        }
+
+        button {
+            border: 0;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        /* =========================================================
+           APP
+        ========================================================= */
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+        ========================================================= */
+
+        .sidebar {
+            width: 174px;
+            min-width: 174px;
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(3, 25, 52, 0.98),
+                    rgba(3, 28, 58, 0.96)
+                );
+
+            border-right: 1px solid rgba(255,255,255,0.045);
+
+            display: flex;
+            flex-direction: column;
+            padding: 22px 15px;
+
+            position: sticky;
+            top: 0;
+            left: 0;
+            z-index: 20;
+        }
+
+
+        /* LOGO */
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0,170,255,.25),
+                    rgba(0,100,255,.05)
+                );
+
+            color: #00b7ff;
+
+            font-size: 25px;
+
+            border: 1px solid rgba(0,174,255,.18);
+
+            box-shadow:
+                0 0 22px rgba(0,166,255,.12);
+        }
+
+        .logo-name {
+            margin-top: 5px;
+
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: -.4px;
+        }
+
+        .logo-name span {
+            color: #11aaff;
+        }
+
+
+        /* NAV */
+
+        .navigation {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            width: 100%;
+            min-height: 38px;
+
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            padding: 9px 10px;
+
+            border-radius: 9px;
+
+            color: rgba(255,255,255,.83);
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition:
+                background .2s ease,
+                transform .2s ease,
+                color .2s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,.055);
+            transform: translateX(2px);
+        }
+
+        .nav-item.active {
+            background:
+                linear-gradient(
+                    90deg,
+                    #056cff,
+                    #154ce8
+                );
+
+            box-shadow:
+                0 7px 18px rgba(0,80,255,.2);
+
+            color: white;
+        }
+
+        .nav-icon {
+            width: 18px;
+            height: 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+
+        /* SIDEBAR BOTTOM */
+
+        .sidebar-bottom {
+            margin-top: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+
+            padding-top: 18px;
+        }
+
+        .bottom-button {
+            width: 28px;
+            height: 28px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: rgba(255,255,255,.75);
+
+            cursor: pointer;
+
+            transition:
+                background .2s ease,
+                color .2s ease;
+        }
+
+        .bottom-button:hover {
+            background: rgba(255,255,255,.08);
+            color: white;
+        }
+
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .main {
+            flex: 1;
+            min-width: 0;
+
+            padding: 24px 26px 28px;
+
+            position: relative;
+        }
+
+        .main::before {
+            content: "";
+
+            position: fixed;
+
+            width: 500px;
+            height: 500px;
+
+            right: -230px;
+            bottom: -220px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(171,0,255,.24),
+                    transparent 65%
+                );
+
+            pointer-events: none;
+        }
+
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+        }
+
+        .welcome h1 {
+            font-size: clamp(24px, 2.4vw, 32px);
+            line-height: 1.05;
+            letter-spacing: -.9px;
+        }
+
+        .welcome p {
+            margin-top: 5px;
+
+            font-size: 13px;
+            color: rgba(255,255,255,.66);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-pill {
+            min-width: 105px;
+
+            padding: 10px 14px;
+
+            border: 1px solid rgba(92,131,255,.25);
+            border-radius: 12px;
+
+            background: rgba(4,26,65,.48);
+
+            text-align: center;
+        }
+
+        .header-pill small {
+            display: block;
+
+            color: rgba(255,255,255,.57);
+
+            font-size: 10px;
+        }
+
+        .header-pill strong {
+            display: block;
+
+            margin-top: 3px;
+
+            font-size: 16px;
+        }
+
+        .notification {
+            width: 43px;
+            height: 43px;
+
+            border-radius: 12px;
+
+            border: 1px solid rgba(104,105,255,.35);
+
+            background: rgba(4,26,65,.52);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 18px;
+
+            position: relative;
+        }
+
+        .notification::after {
+            content: "";
+
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #ff416d;
+
+            position: absolute;
+            right: 8px;
+            top: 7px;
+        }
+
+
+        /* =========================================================
+           TOP GRID
+        ========================================================= */
+
+        .top-grid {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                165px;
+
+            gap: 15px;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* =========================================================
+           PLAY CARD
+        ========================================================= */
+
+        .play-card {
+            min-height: 150px;
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(0,151,255,.16);
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(3,31,69,.96) 0%,
+                    rgba(4,30,63,.97) 46%,
+                    rgba(3,20,44,.4) 46%
+                );
+
+            display: grid;
+            grid-template-columns: 44% 56%;
+
+            position: relative;
+
+            box-shadow:
+                0 12px 35px rgba(0,0,0,.13);
+        }
+
+        .play-content {
+            padding: 25px 20px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .play-content .green {
+            color: #39ef79;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            margin-bottom: 7px;
+        }
+
+        .play-content h2 {
+            font-size: 16px;
+            line-height: 1.25;
+
+            max-width: 210px;
+        }
+
+        .play-button {
+            margin-top: 18px;
+
+            width: fit-content;
+
+            padding: 9px 14px;
+
+            border-radius: 6px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #3fe46e,
+                    #55ee82
+                );
+
+            color: #04243c;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            box-shadow:
+                0 7px 18px rgba(44,237,112,.17);
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .play-button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 25px rgba(44,237,112,.25);
+        }
+
+        .play-button:active {
+            transform: translateY(0);
+        }
+
+        .play-image {
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 70% 20%,
+                    rgba(129,49,255,.18),
+                    transparent 35%
+                ),
+                linear-gradient(
+                    135deg,
+                    #08172d,
+                    #020913
+                );
+        }
+
+        /* cenário estilizado */
+
+        .desk-light {
+            position: absolute;
+
+            width: 45px;
+            height: 45px;
+
+            right: 15%;
+            top: 9%;
+
+            border-radius: 50%;
+
+            background: rgba(255,239,189,.8);
+
+            filter: blur(10px);
+
+            opacity: .65;
+        }
+
+        .monitor {
+            position: absolute;
+
+            width: 42%;
+            height: 52%;
+
+            left: 24%;
+            top: 16%;
+
+            border: 4px solid #05070b;
+            border-radius: 2px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0,136,255,.18),
+                    rgba(0,15,35,.9)
+                );
+
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,.04);
+        }
+
+        .monitor::after {
+            content: "✦";
+            position: absolute;
+
+            left: 50%;
+            top: 45%;
+
+            transform: translate(-50%, -50%);
+
+            color: #00b8ff;
+
+            font-size: 21px;
+        }
+
+        .monitor-stand {
+            position: absolute;
+
+            width: 12%;
+            height: 18%;
+
+            left: 39%;
+            top: 68%;
+
+            border-bottom: 3px solid #020508;
+        }
+
+        .desk {
+            position: absolute;
+
+            width: 100%;
+            height: 20%;
+
+            bottom: 0;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #09152a,
+                    #03070c
+                );
+        }
+
+        .lamp {
+            position: absolute;
+
+            width: 34px;
+            height: 70px;
+
+            right: 8%;
+            top: 5%;
+
+            border-left: 2px solid #111;
+
+            transform: rotate(10deg);
+        }
+
+        .lamp::before {
+            content: "";
+
+            position: absolute;
+
+            width: 22px;
+            height: 12px;
+
+            background: #111;
+
+            top: 4px;
+            left: -7px;
+
+            border-radius: 50%;
+        }
+
+
+        /* =========================================================
+           COMPETENCY
+        ========================================================= */
+
+        .competency {
+            min-height: 150px;
+
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(4,34,73,.98),
+                    rgba(5,29,61,.98)
+                );
+
+            border: 1px solid rgba(87,139,255,.16);
+
+            padding: 15px 13px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            position: relative;
+        }
+
+        .competency h3 {
+            font-size: 13px;
+            align-self: flex-start;
+
+            margin-bottom: 8px;
+        }
+
+        .circle {
+            width: 76px;
+            height: 76px;
+
+            border-radius: 50%;
+
+            background:
+                conic-gradient(
+                    #2df054 0deg 281deg,
+                    rgba(15,54,77,.9) 281deg 360deg
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            position: relative;
+
+            margin: 1px auto 8px;
+        }
+
+        .circle::before {
+            content: "";
+
+            position: absolute;
+
+            width: 63px;
+            height: 63px;
+
+            border-radius: 50%;
+
+            background: #061f42;
+        }
+
+        .circle-content {
+            position: relative;
+            z-index: 2;
+
+            text-align: center;
+        }
+
+        .circle-content strong {
+            display: block;
+
+            font-size: 21px;
+            line-height: 1;
+        }
+
+        .circle-content span {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #38ed65;
+
+            font-size: 8px;
+        }
+
+        .competency p {
+            color: rgba(255,255,255,.55);
+
+            font-size: 9px;
+            line-height: 1.2;
+
+            align-self: flex-start;
+
+            margin-left: 9px;
+        }
+
+        .details {
+            width: 100%;
+
+            margin-top: 6px;
+
+            padding: 7px 9px;
+
+            border-radius: 5px;
+
+            background: rgba(0,10,26,.38);
+
+            color: white;
+
+            font-size: 9px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            cursor: pointer;
+        }
+
+
+        /* =========================================================
+           STAT CARDS
+        ========================================================= */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 13px;
+        }
+
+        .stat-card {
+            min-height: 94px;
+
+            border-radius: 14px;
+
+            padding: 14px;
+
+            background:
+                rgba(4,32,68,.93);
+
+            border: 1px solid rgba(79,132,255,.11);
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: "";
+
+            position: absolute;
+
+            width: 90px;
+            height: 90px;
+
+            right: -40px;
+            bottom: -50px;
+
+            border-radius: 50%;
+
+            background: rgba(0,146,255,.08);
+
+            filter: blur(5px);
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+
+            border: 1px solid currentColor;
+        }
+
+        .stat-icon.green {
+            color: #24ef6d;
+            background: rgba(30,232,103,.08);
+        }
+
+        .stat-icon.red {
+            color: #ff4563;
+            background: rgba(255,48,82,.08);
+        }
+
+        .stat-icon.blue {
+            color: #00aaff;
+            background: rgba(0,153,255,.08);
+        }
+
+        .stat-info strong {
+            display: block;
+
+            font-size: 19px;
+
+            line-height: 1;
+        }
+
+        .stat-info span {
+            display: block;
+
+            margin-top: 3px;
+
+            color: rgba(255,255,255,.72);
+
+            font-size: 10px;
+        }
+
+        .stat-info small {
+            display: block;
+
+            margin-top: 7px;
+
+            color: rgba(255,255,255,.58);
+
+            font-size: 8px;
+            line-height: 1.15;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1050px) {
+
+            .sidebar {
+                width: 145px;
+                min-width: 145px;
+            }
+
+            .main {
+                padding: 20px;
+            }
+
+            .top-grid {
+                grid-template-columns: 1fr 145px;
+            }
+
+            .header-pill {
+                display: none;
+            }
+
+        }
+
+
+        @media (max-width: 760px) {
+
+            .app {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                min-height: auto;
+
+                height: 62px;
+
+                padding: 8px 12px;
+
+                flex-direction: row;
+                align-items: center;
+
+                position: sticky;
+                top: 0;
+            }
+
+            .logo {
+                flex-direction: row;
+                margin: 0 14px 0 0;
+                gap: 6px;
+            }
+
+            .logo-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .logo-name {
+                display: block;
+                font-size: 13px;
+            }
+
+            .navigation {
+                flex: 1;
+
+                flex-direction: row;
+                justify-content: flex-end;
+
+                overflow-x: auto;
+
+                gap: 4px;
+            }
+
+            .nav-item {
+                width: auto;
+                min-width: 42px;
+                padding: 8px;
+
+                justify-content: center;
+            }
+
+            .nav-item span:last-child {
+                display: none;
+            }
+
+            .nav-item.active {
+                background: rgba(0,106,255,.85);
+            }
+
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .main {
+                padding: 18px 14px 25px;
+            }
+
+            .header {
+                margin-bottom: 16px;
+            }
+
+            .welcome h1 {
+                font-size: 23px;
+            }
+
+            .welcome p {
+                font-size: 11px;
+            }
+
+            .notification {
+                width: 38px;
+                height: 38px;
+            }
+
+            .top-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .competency {
+                min-height: 135px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                min-height: 80px;
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            .logo-name {
+                display: none;
+            }
+
+            .navigation {
+                justify-content: space-between;
+            }
+
+            .nav-item {
+                min-width: 39px;
+            }
+
+            .play-card {
+                grid-template-columns: 1fr;
+
+                min-height: 260px;
+            }
+
+            .play-content {
+                min-height: 145px;
+            }
+
+            .play-image {
+                min-height: 115px;
+            }
+
+            .welcome h1 {
+                font-size: 21px;
+            }
+
+        }
+
+
+        /* =========================================================
+           ACCESSIBILITY
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition: none !important;
+                animation: none !important;
+            }
+
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- =========================================================
+         SIDEBAR
+    ========================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🧠
+            </div>
+
+            <div class="logo-name">
+                Skill<span>Bloom</span>
+            </div>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a href="#" class="nav-item active">
+
+                <span class="nav-icon">🎮</span>
+                <span>Jogar</span>
+
+            </a>
+
+
+            <a href="#" class="nav-item">
+
+                <span class="nav-icon">📊</span>
+                <span>Estatísticas</span>
+
+            </a>
+
+
+            <a href="#" class="nav-item">
+
+                <span class="nav-icon">◷</span>
+                <span>Desempenho</span>
+
+            </a>
+
+
+            <a href="#" class="nav-item">
+
+                <span class="nav-icon">▣</span>
+                <span>O que aprendi</span>
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button class="bottom-button" title="Tema">
+                ☼
+            </button>
+
+            <button class="bottom-button" title="Ajuda">
+                ?
+            </button>
+
+            <button class="bottom-button" title="Sair">
+                ⇥
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
+
+    <main class="main">
+
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div class="welcome">
+
+                <h1>
+                    Olá, Carlos! 👋
+                </h1>
+
+                <p>
+                    Pronto para evoluir suas habilidades?
+                </p>
+
+            </div>
+
+
+            <div class="header-right">
+
+                <div class="header-pill">
+
+                    <small>🔥 Sequência</small>
+
+                    <strong id="streak">
+                        7 dias
+                    </strong>
+
+                </div>
+
+
+                <div class="header-pill">
+
+                    <small>🏆 Ranking</small>
+
+                    <strong id="ranking">
+                        Top 12%
+                    </strong>
+
+                </div>
+
+
+                <button class="notification" aria-label="Notificações">
+                    ♧
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- TOP -->
+
+        <section class="top-grid">
+
+
+            <!-- PLAY -->
+
+            <article class="play-card">
+
+                <div class="play-content">
+
+                    <div class="green">
+                        Continue evoluindo!
+                    </div>
+
+                    <h2>
+                        Escolha uma missão<br>
+                        e comece a jogar.
+                    </h2>
+
+                    <button
+                        class="play-button"
+                        id="playButton"
+                    >
+                        <span>▶</span>
+                        JOGAR AGORA
+                    </button>
+
+                </div>
+
+
+                <div class="play-image">
+
+                    <div class="desk-light"></div>
+
+                    <div class="lamp"></div>
+
+                    <div class="monitor"></div>
+
+                    <div class="monitor-stand"></div>
+
+                    <div class="desk"></div>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- COMPETENCY -->
+
+            <article class="competency">
+
+                <h3>
+                    Índice de Competência
+                </h3>
+
+
+                <div class="circle">
+
+                    <div class="circle-content">
+
+                        <strong id="competency">
+                            78%
+                        </strong>
+
+                        <span>
+                            Competente
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <p>
+                    Continue assim e<br>
+                    siga evoluindo!
+                </p>
+
+
+                <button class="details">
+
+                    <span>
+                        Ver Detalhes
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- STATISTICS -->
+
+        <section class="stats-grid">
+
+
+            <!-- ACERTOS -->
+
+            <article class="stat-card">
+
+                <div class="stat-icon green">
+                    ✓
+                </div>
+
+                <div class="stat-info">
+
+                    <strong id="correct">
+                        128
+                    </strong>
+
+                    <span>
+                        Acertos
+                    </span>
+
+                    <small>
+                        Missões concluídas<br>
+                        com sucesso
+                    </small>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- ERROS -->
+
+            <article class="stat-card">
+
+                <div class="stat-icon red">
+                    ×
+                </div>
+
+                <div class="stat-info">
+
+                    <strong id="errors">
+                        32
+                    </strong>
+
+                    <span>
+                        Erros
+                    </span>
+
+                    <small>
+                        Aprenda com os erros<br>
+                        e melhore sempre
+                    </small>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- SUCESSO -->
+
+            <article class="stat-card">
+
+                <div class="stat-icon blue">
+                    ◎
+                </div>
+
+                <div class="stat-info">
+
+                    <strong id="success">
+                        85%
+                    </strong>
+
+                    <span>
+                        Taxa de sucesso
+                    </span>
+
+                    <small>
+                        Média de acertos<br>
+                        por missões
+                    </small>
+
+                </div>
+
+            </article>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+    /* ============================================================
+       DADOS DO DASHBOARD
+       ------------------------------------------------------------
+       Você pode alterar esses valores futuramente.
+    ============================================================ */
+
+    const dashboardData = {
+
+        streak: 7,
+
+        ranking: "Top 12%",
+
+        competency: 78,
+
+        correct: 128,
+
+        errors: 32,
+
+        success: 85
+
+    };
+
+
+    /* ============================================================
+       ATUALIZAÇÃO DOS DADOS
+    ============================================================ */
+
+    function updateDashboard(data) {
+
+        document.getElementById("streak").textContent =
+            data.streak + " dias";
+
+        document.getElementById("ranking").textContent =
+            data.ranking;
+
+        document.getElementById("competency").textContent =
+            data.competency + "%";
+
+        document.getElementById("correct").textContent =
+            data.correct;
+
+        document.getElementById("errors").textContent =
+            data.errors;
+
+        document.getElementById("success").textContent =
+            data.success + "%";
+
+    }
+
+
+    updateDashboard(dashboardData);
+
+
+
+    /* ============================================================
+       BOTÃO JOGAR
+    ============================================================ */
+
+    const playButton =
+        document.getElementById("playButton");
+
+
+    playButton.addEventListener("click", function () {
+
+        /*
+            Coloque aqui a página para onde
+            o jogador deve ir.
+
+            Exemplo:
+
+            window.location.href = "/jogo";
+
+        */
+
+        window.location.href = "/jogo";
+
+    });
+
+
+
+    /* ============================================================
+       NAVEGAÇÃO
+    ============================================================ */
+
+    document
+        .querySelectorAll(".nav-item")
+        .forEach(function(item) {
+
+            item.addEventListener("click", function() {
+
+                document
+                    .querySelectorAll(".nav-item")
+                    .forEach(function(nav) {
+
+                        nav.classList.remove("active");
+
+                    });
+
+                this.classList.add("active");
+
+            });
+
+        });
+
+
+</script>
+
+</body>
+</html>

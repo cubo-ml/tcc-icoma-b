@@ -13,6 +13,10 @@ def index():
 def login():
     return render_template('login/login.html')
 
+@app.route("/dash")
+def dash():
+    return render_template('pages/landpage.html')
+
 def main():
     app.run(host="0.0.0.0", port = int(os.environ.get("PORT", 10000)))
 

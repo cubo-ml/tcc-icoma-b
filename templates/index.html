@@ -1,507 +1,2155 @@
-<!doctype html>
-<html lang="en">
-
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-       
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#0878F9">
+    <meta name="description" content="SkillBloom - Desenvolva suas competências socioemocionais através de simulações de ambiente de trabalho.">
+
+    <title>SkillBloom — Prepare-se hoje, destaque-se amanhã.</title>
+    <style>
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
+            color: #102033;
+            background: #ffffff;
+            overflow-x: hidden;
+        }
+
+        button,
+        a {
+            font-family: inherit;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* =========================================================
+           VARIÁVEIS
+        ========================================================= */
+
+        :root {
+            --blue: #0878f9;
+            --blue-dark: #075fc5;
+            --blue-light: #eaf4ff;
+
+            --text: #102033;
+            --text-light: #526175;
+            --border: #e7edf5;
+
+            --green: #19b897;
+            --purple: #7458f5;
+            --orange: #f5a623;
+            --pink: #ed6d88;
+
+            --container: 1180px;
+            --radius: 20px;
+        }
+
+        /* =========================================================
+           UTILITÁRIOS
+        ========================================================= */
+
+        .container {
+            width: min(var(--container), calc(100% - 48px));
+            margin: 0 auto;
+        }
+
+        .gradient-text {
+            background: linear-gradient(
+                90deg,
+                #0878f9,
+                #168efb
+            );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .section {
+            padding: 90px 0;
+        }
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .navbar {
+            height: 90px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(
+                145deg,
+                #0878f9,
+                #0758bd
+            );
+
+            color: white;
+
+            font-size: 23px;
+
+            box-shadow:
+                0 8px 20px rgba(8, 120, 249, 0.22);
+        }
+
+        .logo span {
+            color: var(--blue);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 42px;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            font-size: 14px;
+            font-weight: 500;
+            color: #182538;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--blue);
+        }
+
+        .nav-links a.active {
+            color: var(--blue);
+        }
+
+        .nav-links a.active::after {
+            content: "";
+
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+
+            width: 31px;
+            height: 2px;
+
+            background: var(--blue);
+            border-radius: 10px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            border: none;
+            cursor: pointer;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            min-height: 44px;
+            padding: 0 20px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                background .2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            color: white;
+            background: var(--blue);
+
+            box-shadow:
+                0 8px 20px rgba(8, 120, 249, .18);
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-dark);
+
+            box-shadow:
+                0 12px 26px rgba(8, 120, 249, .25);
+        }
+
+        .btn-outline {
+            color: #17304d;
+            background: white;
+            border: 1px solid #bdd9f8;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        .menu-button {
+            display: none;
+
+            border: none;
+            background: transparent;
+            font-size: 27px;
+            cursor: pointer;
+        }
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+
+        .hero {
+            min-height: 650px;
+
+            padding-top: 90px;
+
+            position: relative;
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 80% 45%,
+                    rgba(105, 169, 255, .17),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 70%,
+                    rgba(115, 90, 255, .09),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    180deg,
+                    #ffffff 0%,
+                    #f8fbff 100%
+                );
+        }
+
+        .hero::before {
+            content: "";
+
+            position: absolute;
+
+            width: 480px;
+            height: 480px;
+
+            right: -220px;
+            top: 100px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(8, 120, 249, .09);
+        }
+
+        .hero-content {
+            min-height: 560px;
+
+            display: grid;
+            grid-template-columns: 46% 54%;
+
+            align-items: center;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 2;
+            padding-bottom: 20px;
+        }
+
+        .hero-text h1 {
+            max-width: 590px;
+
+            font-size: clamp(
+                42px,
+                5vw,
+                62px
+            );
+
+            line-height: 1.05;
+
+            letter-spacing: -2.5px;
+
+            margin-bottom: 25px;
+        }
+
+        .hero-text p {
+            max-width: 520px;
+
+            color: var(--text-light);
+
+            font-size: 17px;
+            line-height: 1.7;
+
+            margin-bottom: 30px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .hero-actions .btn {
+            min-height: 46px;
+            padding: 0 22px;
+        }
+
+        .play-icon {
+            width: 0;
+            height: 0;
+
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            border-left: 10px solid var(--blue);
+        }
+
+        .hero-users {
+            margin-top: 42px;
+
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .avatars {
+            display: flex;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            border: 2px solid white;
+
+            margin-left: -8px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #d9eaff,
+                    #6eaaf1
+                );
+
+            font-size: 18px;
+        }
+
+        .avatar:first-child {
+            margin-left: 0;
+        }
+
+        .hero-users span {
+            max-width: 190px;
+
+            color: #526175;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* =========================================================
+           NOTEBOOK MOCKUP
+        ========================================================= */
+
+        .hero-visual {
+            position: relative;
+
+            min-height: 500px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glow {
+            position: absolute;
+
+            width: 430px;
+            height: 300px;
+
+            background:
+                radial-gradient(
+                    ellipse,
+                    rgba(8, 120, 249, .18),
+                    transparent 68%
+                );
+
+            filter: blur(15px);
+        }
+
+        .laptop {
+            width: min(650px, 100%);
+
+            position: relative;
+            transform:
+                perspective(1000px)
+                rotateY(-5deg)
+                rotateX(2deg)
+                rotateZ(-2deg);
+
+            filter:
+                drop-shadow(
+                    0 25px 30px rgba(31, 56, 87, .18)
+                );
+
+            z-index: 2;
+        }
+
+        .laptop-screen {
+            background: #111;
+
+            border-radius: 12px 12px 5px 5px;
+
+            padding: 9px;
+
+            aspect-ratio: 16 / 10;
+        }
+
+        .screen-inner {
+            height: 100%;
+
+            border-radius: 5px;
+
+            background: #f9fbff;
+
+            overflow: hidden;
+
+            padding: 30px 28px;
+        }
+
+        .screen-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .screen-subtitle {
+            text-align: center;
+            color: #69778b;
+            font-size: 9px;
+            margin-bottom: 20px;
+        }
+
+        .simulation-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 9px;
+        }
+
+        .simulation-card {
+            min-height: 115px;
+
+            background: white;
+
+            border-radius: 9px;
+
+            padding: 13px 8px;
+
+            text-align: center;
+
+            box-shadow:
+                0 3px 15px rgba(30, 55, 80, .07);
+        }
+
+        .sim-icon {
+            width: 35px;
+            height: 35px;
+
+            margin: 0 auto 9px;
+
+            border-radius: 8px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 18px;
+        }
+
+        .sim-orange {
+            background: #fff0dc;
+        }
+
+        .sim-green {
+            background: #ddf6f0;
+        }
+
+        .sim-purple {
+            background: #eee9ff;
+        }
+
+        .simulation-card strong {
+            display: block;
+            font-size: 9px;
+            margin-bottom: 6px;
+        }
+
+        .simulation-card small {
+            display: block;
+            color: #6a7585;
+            font-size: 7px;
+            line-height: 1.4;
+        }
+
+        .laptop-base {
+            position: relative;
+
+            width: 112%;
+
+            margin-left: -6%;
+
+            height: 25px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #d8dde2,
+                    #9fa8b0
+                );
+
+            border-radius:
+                3px 3px 25px 25px;
+
+            transform:
+                perspective(300px)
+                rotateX(15deg);
+
+            box-shadow:
+                0 7px 15px rgba(0, 0, 0, .16);
+        }
+
+        .laptop-base::after {
+            content: "";
+
+            position: absolute;
+
+            width: 23%;
+            height: 5px;
+
+            left: 38.5%;
+            top: 7px;
+
+            background: #89929a;
+
+            border-radius: 20px;
+        }
+
+        /* =========================================================
+           COMPETÊNCIAS
+        ========================================================= */
+
+        .skills-section {
+            background: white;
+            padding: 75px 0 90px;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .eyebrow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            margin-bottom: 10px;
+        }
+
+        .eyebrow-icon {
+            color: var(--blue);
+        }
+
+        .section-heading h2 {
+            font-size: clamp(28px, 4vw, 37px);
+            letter-spacing: -1.2px;
+        }
+
+        .skills-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(6, 1fr);
+
+            gap: 14px;
+        }
+
+        .skill-card {
+            min-height: 215px;
+
+            padding: 24px 16px;
+
+            border: 1px solid #e8edf3;
+
+            border-radius: 18px;
+
+            text-align: center;
+
+            background: white;
+
+            transition:
+                transform .25s ease,
+                box-shadow .25s ease,
+                border-color .25s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-6px);
+
+            border-color: #d4e6fb;
+
+            box-shadow:
+                0 15px 35px rgba(32, 76, 124, .09);
+        }
+
+        .skill-icon {
+            width: 58px;
+            height: 58px;
+
+            border-radius: 13px;
+
+            margin: 0 auto 16px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 25px;
+        }
+
+        .skill-card h3 {
+            font-size: 14px;
+            line-height: 1.3;
+            margin-bottom: 11px;
+        }
+
+        .skill-card p {
+            color: #657184;
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .icon-blue {
+            color: #0878f9;
+            background: #e8f3ff;
+        }
+
+        .icon-green {
+            color: #10ae8c;
+            background: #e0f7f1;
+        }
+
+        .icon-orange {
+            color: #ee9d00;
+            background: #fff2d9;
+        }
+
+        .icon-purple {
+            color: #7658ee;
+            background: #eeeaff;
+        }
+
+        .icon-pink {
+            color: #ed6b86;
+            background: #ffe8ed;
+        }
+
+        /* =========================================================
+           EVOLUÇÃO
+        ========================================================= */
+
+        .growth-section {
+            padding: 70px 0 90px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #ffffff,
+                    #f8fbff
+                );
+        }
+
+        .growth-content {
+            display: grid;
+
+            grid-template-columns: 42% 58%;
+
+            align-items: center;
+
+            gap: 30px;
+        }
+
+        .growth-text h2 {
+            font-size: clamp(34px, 4vw, 46px);
+
+            line-height: 1.08;
+
+            letter-spacing: -1.7px;
+
+            margin-bottom: 20px;
+        }
+
+        .growth-text p {
+            color: #5b687a;
+
+            font-size: 15px;
+
+            line-height: 1.75;
+
+            max-width: 440px;
+
+            margin-bottom: 25px;
+        }
+
+        .growth-image {
+            position: relative;
+
+            min-height: 370px;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #dfeeff,
+                    #f7f9fb
+                );
+
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        /*
+           Pessoa estilizada para não depender de uma biblioteca.
+        */
+
+        .person {
+            width: 310px;
+            height: 340px;
+
+            position: relative;
+
+            margin-bottom: -45px;
+        }
+
+        .person-head {
+            position: absolute;
+
+            width: 100px;
+            height: 115px;
+
+            border-radius: 48%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #d89469,
+                    #f2bd91
+                );
+
+            left: 103px;
+            top: 20px;
+
+            z-index: 3;
+        }
+
+        .person-hair {
+            position: absolute;
+
+            width: 110px;
+            height: 75px;
+
+            left: 98px;
+            top: 10px;
+
+            background: #392d29;
+
+            border-radius:
+                55% 55% 25% 25%;
+
+            z-index: 4;
+        }
+
+        .person-body {
+            position: absolute;
+
+            width: 230px;
+            height: 240px;
+
+            left: 40px;
+            top: 125px;
+
+            border-radius:
+                45px 45px 0 0;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #26394c,
+                    #496278
+                );
+        }
+
+        .laptop-small {
+            position: absolute;
+
+            z-index: 6;
+
+            width: 250px;
+            height: 145px;
+
+            left: 30px;
+            bottom: 45px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #cbd2d9,
+                    #f1f3f5
+                );
+
+            border-radius: 7px;
+
+            transform:
+                perspective(600px)
+                rotateX(2deg);
+
+            box-shadow:
+                0 10px 20px rgba(0,0,0,.15);
+        }
+
+        .laptop-small::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 7px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #30465a,
+                    #7892a9
+                );
+
+            border-radius: 3px;
+        }
+
+        .floating-stat {
+            position: absolute;
+
+            z-index: 10;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 15px 20px;
+
+            background: rgba(255,255,255,.96);
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 12px 30px rgba(30, 60, 90, .12);
+
+            font-size: 12px;
+        }
+
+        .floating-stat strong {
+            display: block;
+            font-size: 17px;
+            margin-top: 3px;
+        }
+
+        .stat-one {
+            top: 60px;
+            left: 20px;
+        }
+
+        .stat-two {
+            right: 20px;
+            bottom: 55px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: #e8f3ff;
+
+            color: var(--blue);
+
+            font-size: 18px;
+        }
+
+        /* =========================================================
+           CTA
+        ========================================================= */
+
+        .cta {
+            padding: 0 0 50px;
+        }
+
+        .cta-box {
+            min-height: 125px;
+
+            border-radius: 20px;
+
+            padding: 25px 60px;
+
+            display: grid;
+
+            grid-template-columns: 1fr 1.2fr auto;
+
+            align-items: center;
+
+            gap: 35px;
+
+            background:
+                linear-gradient(
+                    100deg,
+                    #e9f4ff,
+                    #f1f6ff
+                );
+        }
+
+        .cta-brand {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .cta-icon {
+            width: 60px;
+            height: 60px;
+
+            border-radius: 14px;
+
+            background: var(--blue);
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 29px;
+
+            box-shadow:
+                0 10px 25px rgba(8, 120, 249, .2);
+        }
+
+        .cta-brand h2 {
+            font-size: 23px;
+            line-height: 1.2;
+            letter-spacing: -.7px;
+        }
+
+        .cta-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #4c5a6d;
+        }
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        footer {
+            border-top: 1px solid #edf0f4;
+
+            padding: 25px 0;
+
+            background: white;
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 25px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .footer-logo-icon {
+            width: 29px;
+            height: 29px;
+
+            border-radius: 7px;
+
+            background: var(--blue);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+            font-size: 16px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 35px;
+
+            color: #536074;
+
+            font-size: 11px;
+        }
+
+        .footer-links a:hover {
+            color: var(--blue);
+        }
+
+        .socials {
+            display: flex;
+            gap: 9px;
+        }
+
+        .social {
+            width: 32px;
+            height: 32px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background: #f3f5f8;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            color: #1b2b3e;
+        }
+
+        .social:hover {
+            color: var(--blue);
+            background: #eaf4ff;
+        }
+
+        /* =========================================================
+           ANIMAÇÕES
+        ========================================================= */
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating-stat {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .stat-two {
+            animation-delay: 1.2s;
+        }
+
+        /* =========================================================
+           TABLET
+        ========================================================= */
+
+        @media (max-width: 1050px) {
+
+            .nav-links {
+                gap: 22px;
+            }
+
+            .skills-grid {
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .hero-text h1 {
+                font-size: 47px;
+            }
+
+            .cta-box {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .cta-box .btn {
+                justify-self: end;
+            }
+        }
+
+        /* =========================================================
+           MOBILE MENU
+        ========================================================= */
+
+        @media (max-width: 780px) {
+
+            .container {
+                width: min(
+                    var(--container),
+                    calc(100% - 32px)
+                );
+            }
+
+            .navbar {
+                height: 75px;
+            }
+
+            .nav-links,
+            .nav-buttons {
+                display: none;
+            }
+
+            .menu-button {
+                display: block;
+            }
+
+            .hero {
+                padding-top: 75px;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+
+                text-align: center;
+
+                padding-top: 50px;
+                padding-bottom: 50px;
+            }
+
+            .hero-text h1 {
+                font-size: clamp(
+                    38px,
+                    10vw,
+                    50px
+                );
+
+                letter-spacing: -1.8px;
+            }
+
+            .hero-text p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+
+            .hero-users {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                min-height: 360px;
+            }
+
+            .laptop {
+                width: 95%;
+            }
+
+            .growth-content {
+                grid-template-columns: 1fr;
+            }
+
+            .growth-text {
+                text-align: center;
+            }
+
+            .growth-text p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .growth-text .btn {
+                margin: auto;
+            }
+
+            .cta-box {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 35px 25px;
+            }
+
+            .cta-brand {
+                justify-content: center;
+            }
+
+            .cta-box .btn {
+                justify-self: center;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        /* =========================================================
+           CELULARES
+        ========================================================= */
+
+        @media (max-width: 550px) {
+
+            .section {
+                padding: 65px 0;
+            }
+
+            .hero-text h1 {
+                font-size: 37px;
+            }
+
+            .hero-text p {
+                font-size: 15px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .hero-actions .btn {
+                width: 100%;
+            }
+
+            .hero-users {
+                margin-top: 30px;
+            }
+
+            .hero-visual {
+                min-height: 275px;
+            }
+
+            .laptop {
+                transform:
+                    perspective(800px)
+                    rotateY(-3deg)
+                    rotateZ(-1deg);
+            }
+
+            .screen-inner {
+                padding: 14px;
+            }
+
+            .screen-title {
+                font-size: 11px;
+            }
+
+            .screen-subtitle {
+                font-size: 6px;
+                margin-bottom: 10px;
+            }
+
+            .simulation-cards {
+                gap: 4px;
+            }
+
+            .simulation-card {
+                min-height: 75px;
+                padding: 7px 3px;
+            }
+
+            .sim-icon {
+                width: 24px;
+                height: 24px;
+                font-size: 12px;
+                margin-bottom: 4px;
+            }
+
+            .simulation-card strong {
+                font-size: 6px;
+            }
+
+            .simulation-card small {
+                font-size: 5px;
+            }
+
+            .skills-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 10px;
+            }
+
+            .skill-card {
+                min-height: 200px;
+                padding: 20px 12px;
+            }
+
+            .skill-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 21px;
+            }
+
+            .growth-image {
+                min-height: 300px;
+            }
+
+            .person {
+                transform: scale(.8);
+            }
+
+            .floating-stat {
+                padding: 10px 12px;
+                font-size: 9px;
+            }
+
+            .floating-stat strong {
+                font-size: 14px;
+            }
+
+            .stat-one {
+                left: 5px;
+                top: 35px;
+            }
+
+            .stat-two {
+                right: 5px;
+                bottom: 35px;
+            }
+
+            .stat-icon {
+                width: 32px;
+                height: 32px;
+            }
+
+            .footer-links {
+                gap: 18px;
+            }
+        }
+
+        /* =========================================================
+           TELAS MUITO PEQUENAS
+        ========================================================= */
+
+        @media (max-width: 370px) {
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skill-card {
+                min-height: auto;
+            }
+
+            .hero-text h1 {
+                font-size: 33px;
+            }
+        }
+
+        /* =========================================================
+           ACESSIBILIDADE
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  
-    <section name = "navbar-plataform">
-        <nav class="navbar bg-body-tertiary">
-          <h1>SkillBloom</h1>
-            <div class="container">
-              <a class="navbar-brand" href="#">
-               
-                <img src="{{url_for('static', filename='logo.jpg')}}" alt="Bootstrap" width="80px" height="80px">
-              
-              </a>
-            </div>
-          </nav>
-    </section>
-   
-    <footer>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-            crossorigin="anonymous"></script>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
-        integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
-        crossorigin="anonymous"></script>
 
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-          <title>Skill Bloom</title>
-        
-          <style>
-            *{
-              margin:0;
-              padding:0;
-              box-sizing:border-box;
-            }
-        
-            body{
-              font-family: Arial, sans-serif;
-              background:#0b1f3a;
-              overflow-x:hidden;
-            }
-        
-            .hero{
-              width:100%;
-              height:100vh;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              text-align:center;
-              background: linear-gradient(
-                180deg,
-                #001b44 0%,
-                #5d6b7d 100%
-              );
-              position:relative;
-              padding:20px;
-            }
-        
-            .content{
-              max-width:900px;
-            }
-        
-            .title{
-              font-size: clamp(3rem, 7vw, 6rem);
-              color:white;
-              font-family: "Georgia", serif;
-              font-weight:400;
-              margin-bottom:20px;
-            }
-        
-            .subtitle{
-              color:white;
-              font-size: clamp(1rem, 1.5vw, 1.2rem);
-              font-weight:600;
-              line-height:1.6;
-              max-width:800px;
-              margin:0 auto 50px;
-            }
-        
-            .btn{
-              display:inline-block;
-              background:white;
-              color:black;
-              text-decoration:none;
-              padding:18px 35px;
-              font-size:1.3rem;
-              font-weight:bold;
-              border-radius:2px;
-              transition:0.3s ease;
-            }
-        
-            .btn:hover{
-              transform:scale(1.05);
-              background:#f0f0f0;
-            }
-        
-            /* detalhe inferior */
-            .bottom-bar{
-              position:absolute;
-              bottom:0;
-              left:0;
-              width:100%;
-              height:18px;
-              background:#00153b;
-            }
+    <!-- =========================================================
+         HEADER
+    ========================================================== -->
 
-            /* ===== NOVA SEÇÃO ===== */
+    <header>
+        <div class="container navbar">
 
-.skills-section{
-  background:#020817;
-  padding:120px 20px;
-}
+            <a href="#" class="logo">
+                <div class="logo-icon">🧠</div>
 
-.skills-title{
-  color:white;
-  font-size:clamp(2rem,4vw,3.5rem);
-  margin-bottom:30px;
-  font-family:"Georgia", serif;
-}
-
-.skills-text{
-  color:#d6d6d6;
-  font-size:1.1rem;
-  line-height:1.9;
-  margin-bottom:20px;
-  max-width:600px;
-}
-
-.puzzle-img{
-  max-width:420px;
-  width:100%;
-}
-
-.skill-card{
-  background:white;
-  padding:30px;
-  border-radius:6px;
-  height:100%;
-  transition:0.3s ease;
-}
-
-.skill-card:hover{
-  transform:translateY(-8px);
-}
-
-.skill-card h3{
-  font-size:1.2rem;
-  margin-bottom:15px;
-  font-weight:bold;
-}
-
-.skill-card p{
-  color:#444;
-  line-height:1.7;
-}
-
-
-/* ===== QUIZ SECTION ===== */
-
-.quiz-section{
-  background: linear-gradient(
-    180deg,
-    #020817 0%,
-    #060033 100%
-  );
-
-  padding:120px 20px 40px;
-  color:white;
-}
-
-.phone-mockup{
-  width:240px;
-  height:480px;
-  border-radius:35px;
-  background:#1a1a1a;
-  padding:10px;
-  margin:auto;
-  box-shadow:0 0 30px rgba(0,0,0,0.4);
-  position:relative;
-}
-
-.phone-mockup::before{
-  content:"";
-  position:absolute;
-  top:12px;
-  left:50%;
-  transform:translateX(-50%);
-  width:90px;
-  height:18px;
-  background:black;
-  border-radius:20px;
-  z-index:2;
-}
-
-.phone-screen{
-  width:100%;
-  height:100%;
-  background:#ececec;
-  border-radius:28px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.phone-screen h2{
-  color:black;
-  font-size:2.5rem;
-  font-weight:bold;
-}
-
-.quiz-text{
-  font-size:1.3rem;
-  line-height:1.9;
-  color:#f1f1f1;
-  max-width:650px;
-  font-weight:600;
-}
-
-.quiz-secondary-text{
-  font-size:1.25rem;
-  line-height:1.8;
-  color:#f1f1f1;
-  margin-bottom:30px;
-}
-
-.quiz-footer{
-  margin-top:120px;
-  display:flex;
-  justify-content:space-between;
-  gap:30px;
-  flex-wrap:wrap;
-  border-top:1px solid rgba(255,255,255,0.1);
-  padding-top:40px;
-}
-
-.quiz-footer p{
-  margin:4px 0;
-  font-size:0.9rem;
-  color:#d8d8d8;
-}
-
-.contact-btn{
-  background:white;
-  color:black;
-  border:none;
-  padding:10px 30px;
-  border-radius:30px;
-  font-weight:bold;
-  margin-bottom:10px;
-  transition:0.3s;
-}
-
-.contact-btn:hover{
-  transform:scale(1.05);
-}
-
-.copyright{
-  text-align:center;
-  margin-top:40px;
-  font-size:0.8rem;
-  color:#a8a8a8;
-}
-
-@media(max-width:991px){
-
-  .quiz-text,
-  .quiz-secondary-text{
-    text-align:center;
-    margin:auto;
-  }
-
-  .quiz-footer{
-    text-align:center;
-    justify-content:center;
-  }
-
-}
-
-        
-          </style>
-        </head>
-        <body>
-        
-          <section class="hero">
-            
-            <div class="content">
-              <h1 class="title">Skill Bloom</h1>
-        
-              <p class="subtitle">
-                Desenvolva habilidades que fazem a diferença dentro e fora do jogo:
-                colaboração, empatia, resiliência e tomada de decisão em desafios
-                que inspiram crescimento.
-              </p>
-        
-              <a href="{{ url_for('login') }}" class="btn btn-primary" id="cadastroCD">
-                Cadastrar
+                Skill<span>Bloom</span>
             </a>
-        
-            <div class="bottom-bar"></div>
-        
-          </section>
-        
-<!-- CONTINUAÇÃO DA LANDING PAGE -->
-<section class="skills-section">
 
-  <div class="container">
+            <nav class="nav-links">
 
-    <div class="row align-items-center gy-5">
+                <a href="#inicio" class="active">
+                    Início
+                </a>
 
-      <!-- TEXTO -->
-      <div class="col-lg-6">
+                <a href="#como-funciona">
+                    Como funciona
+                </a>
 
-        <h2 class="skills-title">
-          🚀 Desenvolva suas habilidades enquanto joga
-        </h2>
+                <a href="#empresas">
+                    Para empresas
+                </a>
 
-        <p class="skills-text">
-          Aprender sobre emoções, empatia e trabalho em equipe nunca foi tão divertido.
-          Nossa plataforma transforma o desenvolvimento socioemocional em experiências
-          interativas, onde cada desafio ajuda você a crescer dentro e fora do jogo.
-        </p>
+                <a href="#sobre">
+                    Sobre nós
+                </a>
 
-        <p class="skills-text">
-          Com jogos envolventes e situações do dia a dia, você aprende a lidar com sentimentos,
-          tomar decisões mais conscientes e se comunicar melhor — tudo de forma leve e dinâmica.
-        </p>
+            </nav>
 
-      </div>
+            <div class="nav-buttons">
 
-      <!-- IMAGEM -->
-      <div class="col-lg-6 text-center">
+                <a href="/login" class="btn btn-outline">
+                    Entrar
+                </a>
 
-        <img
-          src="{{url_for('static', filename='puzzle.png')}}"
-          class="img-fluid puzzle-img"
-          alt="Puzzle"
+                <a href="/dash" class="btn btn-primary">
+                    Começar agora
+                </a>
+
+            </div>
+
+            <button
+                class="menu-button"
+                aria-label="Abrir menu"
+                onclick="toggleMenu()"
+            >
+                ☰
+            </button>
+
+        </div>
+    </header>
+
+
+    <!-- =========================================================
+         HERO
+    ========================================================== -->
+
+    <main>
+
+        <section
+            class="hero"
+            id="inicio"
         >
 
-      </div>
+            <div class="container hero-content">
 
-    </div>
+                <div class="hero-text">
 
-    <!-- CARDS -->
-    <div class="row mt-5 g-4">
+                    <h1>
+                        Prepare-se hoje,
+                        <br>
 
-      <!-- CARD 1 -->
-      <div class="col-md-4">
-        <div class="skill-card">
+                        <span class="gradient-text">
+                            destaque-se
+                        </span>
 
-          <h3>🧠 Autoconhecimento</h3>
+                        amanhã.
+                    </h1>
 
-          <p>
-            Entenda melhor quem você é, como reage às situações e quais são
-            seus pontos fortes e oportunidades de melhoria.
-          </p>
+                    <p>
+                        SkillBloom é um simulador de ambiente de trabalho
+                        que desenvolve suas competências socioemocionais
+                        na prática, para você conquistar as melhores
+                        oportunidades.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <a
+                            href="#como-funciona"
+                            class="btn btn-primary"
+                        >
+                            Começar agora
+                            <span>→</span>
+                        </a>
+
+                        <a
+                            href="#como-funciona"
+                            class="btn btn-outline"
+                        >
+                            <span class="play-icon"></span>
+                            Ver como funciona
+                        </a>
+
+                    </div>
+
+                    <div class="hero-users">
+
+                        <div class="avatars">
+
+                            <div class="avatar">👨🏻</div>
+                            <div class="avatar">👩🏻</div>
+                            <div class="avatar">👨🏽</div>
+                            <div class="avatar">👩🏼</div>
+
+                        </div>
+
+                        <span>
+                            Junte-se a milhares de jovens
+                            e evolua suas habilidades.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- NOTEBOOK -->
+
+                <div class="hero-visual">
+
+                    <div class="glow"></div>
+
+                    <div class="laptop">
+
+                        <div class="laptop-screen">
+
+                            <div class="screen-inner">
+
+                                <div class="screen-title">
+                                    Boa sorte na sua simulação!
+                                </div>
+
+                                <div class="screen-subtitle">
+                                    Escolha um cenário para começar
+                                </div>
+
+                                <div class="simulation-cards">
+
+                                    <div class="simulation-card">
+
+                                        <div class="sim-icon sim-orange">
+                                            👤
+                                        </div>
+
+                                        <strong>
+                                            Atendimento
+                                        </strong>
+
+                                        <small>
+                                            Lide com diferentes
+                                            perfis de clientes.
+                                        </small>
+
+                                    </div>
+
+                                    <div class="simulation-card">
+
+                                        <div class="sim-icon sim-green">
+                                            👥
+                                        </div>
+
+                                        <strong>
+                                            Trabalho em equipe
+                                        </strong>
+
+                                        <small>
+                                            Colabore e tome decisões
+                                            em conjunto.
+                                        </small>
+
+                                    </div>
+
+                                    <div class="simulation-card">
+
+                                        <div class="sim-icon sim-purple">
+                                            💡
+                                        </div>
+
+                                        <strong>
+                                            Resolução de problemas
+                                        </strong>
+
+                                        <small>
+                                            Encontre soluções
+                                            criativas e eficazes.
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="laptop-base"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             COMPETÊNCIAS
+        ====================================================== -->
+
+        <section
+            class="skills-section"
+            id="como-funciona"
+        >
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <div class="eyebrow">
+                        <span class="eyebrow-icon">♧</span>
+                        Competências que você desenvolve
+                    </div>
+
+                    <h2>
+                        Habilidades para
+                        <span style="color:#168c86">
+                            a vida
+                        </span>
+
+                        e para
+                        <span style="color:#7257ef">
+                            o trabalho.
+                        </span>
+                    </h2>
+
+                </div>
+
+
+                <div class="skills-grid">
+
+                    <article class="skill-card">
+
+                        <div class="skill-icon icon-blue">
+                            ♙
+                        </div>
+
+                        <h3>
+                            Comunicação
+                        </h3>
+
+                        <p>
+                            Expresse suas ideias com clareza
+                            e escute com empatia.
+                        </p>
+
+                    </article>
+
+
+                    <article class="skill-card">
+
+                        <div class="skill-icon icon-green">
+                            ♧
+                        </div>
+
+                        <h3>
+                            Trabalho em equipe
+                        </h3>
+
+                        <p>
+                            Colabore, respeite diferenças
+                            e alcance objetivos juntos.
+                        </p>
+
+                    </article>
+
+
+                    <article class="skill-card">
+
+                        <div class="skill-icon icon-orange">
+                            💡
+                        </div>
+
+                        <h3>
+                            Resolução de problemas
+                        </h3>
+
+                        <p>
+                            Analise situações e encontre
+                            soluções criativas.
+                        </p>
+
+                    </article>
+
+
+                    <article class="skill-card">
+
+                        <div class="skill-icon icon-purple">
+                            🎯
+                        </div>
+
+                        <h3>
+                            Proatividade
+                        </h3>
+
+                        <p>
+                            Antecipe desafios e faça a
+                            diferença onde estiver.
+                        </p>
+
+                    </article>
+
+
+                    <article class="skill-card">
+
+                        <div class="skill-icon icon-pink">
+                            ♡
+                        </div>
+
+                        <h3>
+                            Inteligência emocional
+                        </h3>
+
+                        <p>
+                            Gerencie emoções e construa
+                            relações saudáveis.
+                        </p>
+
+                    </article>
+
+
+                    <article class="skill-card">
+
+                        <div class="skill-icon icon-blue">
+                            ↗
+                        </div>
+
+                        <h3>
+                            Responsabilidade
+                        </h3>
+
+                        <p>
+                            Assuma compromissos e entregue
+                            resultados com consistência.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             EVOLUÇÃO
+        ====================================================== -->
+
+        <section
+            class="growth-section"
+            id="sobre"
+        >
+
+            <div class="container growth-content">
+
+                <div class="growth-text">
+
+                    <h2>
+                        Aprenda fazendo.
+                        <br>
+
+                        <span class="gradient-text">
+                            Evolua
+                        </span>
+
+                        sempre.
+                    </h2>
+
+                    <p>
+                        Simulações realistas, feedbacks inteligentes
+                        e acompanhamento do seu progresso para você
+                        crescer a cada desafio.
+                    </p>
+
+                    <a
+                        href="#"
+                        class="btn btn-primary"
+                    >
+                        Começar agora
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+
+                <div class="growth-image">
+
+                    <div class="floating-stat stat-one">
+
+                        <div class="stat-icon">
+                            ↗
+                        </div>
+
+                        <div>
+                            Seu progresso
+                            <strong>75%</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="person">
+
+                        <div class="person-hair"></div>
+
+                        <div class="person-head"></div>
+
+                        <div class="person-body"></div>
+
+                        <div class="laptop-small"></div>
+
+                    </div>
+
+
+                    <div class="floating-stat stat-two">
+
+                        <div
+                            class="stat-icon"
+                            style="
+                                background:#fff3df;
+                                color:#ee9d00;
+                            "
+                        >
+                            🏆
+                        </div>
+
+                        <div>
+                            Desafios concluídos
+                            <strong>12</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             CTA
+        ====================================================== -->
+
+        <section class="cta">
+
+            <div class="container">
+
+                <div class="cta-box">
+
+                    <div class="cta-brand">
+
+                        <div class="cta-icon">
+                            🧠
+                        </div>
+
+                        <h2>
+                            Seu futuro começa
+                            <br>
+                            com uma
+                            <span class="gradient-text">
+                                escolha.
+                            </span>
+                        </h2>
+
+                    </div>
+
+                    <p class="cta-text">
+                        Dê o primeiro passo para se tornar
+                        o profissional que o mercado procura.
+                    </p>
+
+                    <a
+                        href="#"
+                        class="btn btn-primary"
+                    >
+                        Começar agora
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer>
+
+        <div class="container footer-content">
+
+            <div class="footer-logo">
+
+                <div class="footer-logo-icon">
+                    🧠
+                </div>
+
+                SkillBloom
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <a href="#sobre">
+                    Sobre nós
+                </a>
+
+                <a href="#">
+                    Contato
+                </a>
+
+                <a href="#">
+                    Termos de uso
+                </a>
+
+                <a href="#">
+                    Política de privacidade
+                </a>
+
+            </div>
+
+
+            <div class="socials">
+
+                <a
+                    href="#"
+                    class="social"
+                    aria-label="Instagram"
+                >
+                    ◎
+                </a>
+
+                <a
+                    href="#"
+                    class="social"
+                    aria-label="LinkedIn"
+                >
+                    in
+                </a>
+
+                <a
+                    href="#"
+                    class="social"
+                    aria-label="YouTube"
+                >
+                    ▶
+                </a>
+
+            </div>
 
         </div>
-      </div>
 
-      <!-- CARD 2 -->
-      <div class="col-md-4">
-        <div class="skill-card">
-
-          <h3>🎮 Controle Emocional</h3>
-
-          <p>
-            Aprenda a lidar com emoções como ansiedade, frustração e pressão
-            através de experiências interativas.
-          </p>
-
-        </div>
-      </div>
-
-      <!-- CARD 3 -->
-      <div class="col-md-4">
-        <div class="skill-card">
-
-          <h3>💬 Comunicação</h3>
-
-          <p>
-            Desenvolva uma comunicação mais clara, saudável e eficiente em
-            diferentes situações do cotidiano.
-          </p>
-
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-<!-- NOVA SEÇÃO QUIZ -->
-<section class="quiz-section">
-
-  <div class="container">
-
-    <!-- PRIMEIRA PARTE -->
-    <div class="row align-items-center gy-5">
-
-      <!-- CELULAR -->
-      <div class="col-lg-5 text-center">
-
-        <div class="phone-mockup">
-
-          <div class="phone-screen">
-            <h2>Quiz</h2>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- TEXTO -->
-      <div class="col-lg-7">
-
-        <p class="quiz-text">
-          Por meio de desafios interativos e situações reais do ambiente profissional,
-          o jogo permite que você desenvolva competências socioemocionais de forma prática
-          e envolvente.
-        </p>
-
-        <p class="quiz-text">
-          Cada etapa estimula habilidades como comunicação, resolução de problemas,
-          trabalho em equipe e inteligência emocional, transformando aprendizado em
-          experiência aplicada ao mercado de trabalho.
-        </p>
-
-      </div>
-
-    </div>
-
-    <!-- SEGUNDA PARTE -->
-    <div class="row mt-5">
-
-      <div class="col-lg-5">
-
-        <p class="quiz-secondary-text">
-          Ao desenvolver competências socioemocionais valorizadas pelas empresas,
-          como comunicação, adaptabilidade, liderança e trabalho em equipe,
-          você se destaca em processos seletivos e no ambiente profissional.
-        </p>
-
-        <p class="quiz-secondary-text">
-          O jogo ajuda a preparar você para novas oportunidades, aumentando suas
-          chances de conquistar um emprego e crescer na carreira de forma consistente.
-        </p>
-
-      </div>
-
-    </div>
-
-    <!-- RODAPÉ -->
-    <div class="quiz-footer">
-
-      <div>
-        <p>Rede social</p>
-        <p>Instagram: @skillbloom</p>
-        <p>Facebook: /skillbloom</p>
-      </div>
-
-      <div class="quiz-contact">
-        <button class="contact-btn">Contato</button>
-        <p>Email: contato@skillbloom.com</p>
-      </div>
-
-      <div class="text-end">
-        <p>Política de privacidade</p>
-        <p>Termos de uso</p>
-      </div>
-
-    </div>
-
-    <div class="copyright">
-      © 2025 Cube ML. Todos os direitos reservados.
-    </div>
-
-  </div>
-
-</section>
-          
-        </body>
-        </html>
+    </footer>
 
 
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
 
+    <script>
+
+        function toggleMenu() {
+
+            const nav = document.querySelector(".nav-links");
+            const buttons = document.querySelector(".nav-buttons");
+
+            const isOpen =
+                nav.style.display === "flex";
+
+            if (isOpen) {
+
+                nav.style.display = "";
+                buttons.style.display = "";
+
+            } else {
+
+                nav.style.display = "flex";
+                buttons.style.display = "flex";
+
+                nav.style.position = "absolute";
+                nav.style.top = "75px";
+                nav.style.left = "16px";
+                nav.style.right = "16px";
+
+                nav.style.padding = "20px";
+
+                nav.style.flexDirection = "column";
+
+                nav.style.background = "white";
+
+                nav.style.borderRadius = "16px";
+
+                nav.style.boxShadow =
+                    "0 15px 40px rgba(20,50,80,.12)";
+
+                buttons.style.position = "absolute";
+                buttons.style.top = "310px";
+                buttons.style.left = "16px";
+                buttons.style.right = "16px";
+
+                buttons.style.padding = "15px";
+
+                buttons.style.background = "white";
+
+                buttons.style.borderRadius = "16px";
+
+                buttons.style.boxShadow =
+                    "0 15px 40px rgba(20,50,80,.12)";
+            }
+        }
+
+
+        /*
+         * Pequeno efeito para indicar a seção atual
+         * enquanto o usuário navega.
+         */
+
+        const sections = document.querySelectorAll("section");
+        const links = document.querySelectorAll(".nav-links a");
+
+        window.addEventListener("scroll", () => {
+
+            let current = "";
+
+            sections.forEach(section => {
+
+                const top =
+                    section.offsetTop - 180;
+
+                if (
+                    window.scrollY >= top
+                ) {
+                    current =
+                        section.getAttribute("id");
+                }
+
+            });
+
+            links.forEach(link => {
+
+                link.classList.remove("active");
+
+                if (
+                    link.getAttribute("href") ===
+                    "#" + current
+                ) {
+                    link.classList.add("active");
+                }
+
+            });
+
+        });
+
+    </script>
 
 </body>
-
 </html>

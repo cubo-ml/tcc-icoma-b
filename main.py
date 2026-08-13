@@ -13,6 +13,10 @@ def index():
 def login():
     return render_template('login/login.html')
 
+@app.route("/cadastro")
+def cadastro():
+    return render_template('login/cadastro.html')
+
 @app.route("/dash")
 def dash():
     return render_template('pages/landpage.html')

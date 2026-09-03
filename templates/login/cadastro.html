@@ -1,11 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ffffff">
 
-    <title>SkillBloom — Criar conta</title>
+    <title>Skill Bloom — Criar conta</title>
 
     <style>
 
@@ -100,7 +103,6 @@
 
             display: flex;
             flex-direction: column;
-
             justify-content: center;
 
             position: relative;
@@ -165,6 +167,7 @@
         .brand {
             display: flex;
             align-items: center;
+
             gap: 13px;
 
             position: relative;
@@ -183,10 +186,6 @@
             align-items: center;
             justify-content: center;
 
-            color: #1598ff;
-
-            font-size: 28px;
-
             background:
                 linear-gradient(
                     145deg,
@@ -198,6 +197,15 @@
                 0 8px 25px rgba(0, 85, 170, .15);
 
             position: relative;
+
+            overflow: hidden;
+        }
+
+        .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 13px;
         }
 
         .brand-icon::before {
@@ -212,10 +220,13 @@
             border: 2px solid #168cff;
 
             opacity: .8;
+
+            pointer-events: none;
         }
 
         .brand-name {
             font-size: 30px;
+
             font-weight: 800;
 
             letter-spacing: -1.3px;
@@ -338,6 +349,15 @@
             color: #087fff;
 
             font-size: 19px;
+
+            overflow: hidden;
+        }
+
+        .benefit-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 11px;
         }
 
         .benefit strong {
@@ -546,7 +566,6 @@
 
         select.input {
             appearance: none;
-
             -webkit-appearance: none;
 
             padding-right: 38px;
@@ -621,6 +640,7 @@
 
         .strength-fill {
             width: 0;
+
             height: 100%;
 
             background: #20cf67;
@@ -741,7 +761,6 @@
             grid-column: 1 / -1;
 
             display: flex;
-
             align-items: center;
 
             gap: 12px;
@@ -1106,12 +1125,13 @@
             *,
             *::before,
             *::after {
+
                 transition: none !important;
             }
-
         }
 
     </style>
+
 </head>
 
 
@@ -1128,15 +1148,20 @@
 
 
         <!-- LOGO -->
-
+      
+        
         <div class="brand">
 
             <div class="brand-icon">
-                🧠
+<a href="/#inicio" class="static/logo.jpg" aria-label="SkillBloom - início">
+                <img src="static/logo.jpg" alt="Skill Bloom">
+        
             </div>
 
             <div class="brand-name">
-                Skill<span>Bloom</span>
+
+                Skill <span>Bloom</span>
+</a>
             </div>
 
         </div>
@@ -1147,14 +1172,21 @@
         <div class="hero">
 
             <h1>
+
                 Comece hoje a construir
+
                 <span>seu futuro.</span>
+
             </h1>
 
             <p>
+
                 Crie sua conta gratuitamente e comece a
+
                 desenvolver as competências que vão preparar
+
                 você para os desafios do mundo do trabalho.
+
             </p>
 
         </div>
@@ -1167,10 +1199,13 @@
             <div class="benefit">
 
                 <div class="benefit-icon">
+
                     🎯
+
                 </div>
 
                 <div>
+
                     <strong>
                         Pratique
                     </strong>
@@ -1178,6 +1213,7 @@
                     <span>
                         Simulações realistas
                     </span>
+
                 </div>
 
             </div>
@@ -1186,10 +1222,13 @@
             <div class="benefit">
 
                 <div class="benefit-icon">
+
                     📈
+
                 </div>
 
                 <div>
+
                     <strong>
                         Evolua
                     </strong>
@@ -1197,6 +1236,7 @@
                     <span>
                         Acompanhe seu progresso
                     </span>
+
                 </div>
 
             </div>
@@ -1205,10 +1245,13 @@
             <div class="benefit">
 
                 <div class="benefit-icon">
-                    🧠
+
+                    <img src="static/logo.jpg" alt="Skill Bloom">
+
                 </div>
 
                 <div>
+
                     <strong>
                         Desenvolva
                     </strong>
@@ -1216,6 +1259,7 @@
                     <span>
                         Novas competências
                     </span>
+
                 </div>
 
             </div>
@@ -1224,10 +1268,13 @@
             <div class="benefit">
 
                 <div class="benefit-icon">
+
                     🚀
+
                 </div>
 
                 <div>
+
                     <strong>
                         Prepare-se
                     </strong>
@@ -1235,6 +1282,7 @@
                     <span>
                         Para o mercado de trabalho
                     </span>
+
                 </div>
 
             </div>
@@ -1242,7 +1290,6 @@
         </div>
 
     </section>
-
 
 
     <!-- =========================================================
@@ -1273,10 +1320,15 @@
                 class="success-message"
                 id="successMessage"
             >
+
                 <strong>Conta criada com sucesso! 🎉</strong>
+
                 <br>
+
                 Seus dados foram validados. Agora você já pode
+
                 acessar sua conta.
+
             </div>
 
 
@@ -1285,19 +1337,19 @@
                 novalidate
             >
 
-
                 <div class="form-grid">
 
 
-                    <!-- =================================================
-                         NOME
-                    ================================================== -->
+                    <!-- NOME -->
 
                     <div class="field full">
 
                         <label for="name">
+
                             Nome completo
+
                             <span class="required">*</span>
+
                         </label>
 
                         <div class="input-wrapper">
@@ -1322,22 +1374,24 @@
                             class="error-message"
                             id="nameError"
                         >
+
                             Informe seu nome completo.
+
                         </div>
 
                     </div>
 
 
-
-                    <!-- =================================================
-                         DATA DE NASCIMENTO
-                    ================================================== -->
+                    <!-- DATA DE NASCIMENTO -->
 
                     <div class="field">
 
                         <label for="birthdate">
+
                             Data de nascimento
+
                             <span class="required">*</span>
+
                         </label>
 
                         <div class="input-wrapper">
@@ -1360,10 +1414,7 @@
                     </div>
 
 
-
-                    <!-- =================================================
-                         GÊNERO
-                    ================================================== -->
+                    <!-- GÊNERO -->
 
                     <div class="field">
 
@@ -1414,16 +1465,16 @@
                     </div>
 
 
-
-                    <!-- =================================================
-                         EMAIL
-                    ================================================== -->
+                    <!-- EMAIL -->
 
                     <div class="field full">
 
                         <label for="email">
+
                             E-mail
+
                             <span class="required">*</span>
+
                         </label>
 
                         <div class="input-wrapper">
@@ -1448,22 +1499,24 @@
                             class="error-message"
                             id="emailError"
                         >
+
                             Digite um e-mail válido.
+
                         </div>
 
                     </div>
 
 
-
-                    <!-- =================================================
-                         TELEFONE
-                    ================================================== -->
+                    <!-- TELEFONE -->
 
                     <div class="field full">
 
                         <label for="phone">
+
                             Telefone
+
                             <span class="required">*</span>
+
                         </label>
 
                         <div class="input-wrapper">
@@ -1488,16 +1541,16 @@
                     </div>
 
 
-
-                    <!-- =================================================
-                         SENHA
-                    ================================================== -->
+                    <!-- SENHA -->
 
                     <div class="field">
 
                         <label for="password">
+
                             Senha
+
                             <span class="required">*</span>
+
                         </label>
 
                         <div class="input-wrapper">
@@ -1531,10 +1584,12 @@
                         <div class="password-strength">
 
                             <div class="strength-bar">
+
                                 <div
                                     class="strength-fill"
                                     id="strengthFill"
                                 ></div>
+
                             </div>
 
                             <span
@@ -1549,16 +1604,16 @@
                     </div>
 
 
-
-                    <!-- =================================================
-                         CONFIRMAR SENHA
-                    ================================================== -->
+                    <!-- CONFIRMAR SENHA -->
 
                     <div class="field">
 
                         <label for="confirmPassword">
+
                             Confirmar senha
+
                             <span class="required">*</span>
+
                         </label>
 
                         <div class="input-wrapper">
@@ -1592,16 +1647,15 @@
                             class="error-message"
                             id="passwordError"
                         >
+
                             As senhas não são iguais.
+
                         </div>
 
                     </div>
 
 
-
-                    <!-- =================================================
-                         TERMOS
-                    ================================================== -->
+                    <!-- TERMOS -->
 
                     <label class="terms">
 
@@ -1612,51 +1666,52 @@
                         >
 
                         <span>
+
                             Li e concordo com os
+
                             <a href="/termos" target="_blank">
                                 Termos de Uso
                             </a>
+
                             e a
+
                             <a
                                 href="/privacidade"
                                 target="_blank"
                             >
                                 Política de Privacidade
                             </a>
-                            da SkillBloom.
+
+                            da Skill Bloom.
+
                         </span>
 
                     </label>
 
 
-
-                    <!-- =================================================
-                         BOTÃO
-                    ================================================== -->
+                    <!-- BOTÃO -->
 
                     <button
                         type="submit"
                         class="submit-button"
                         id="submitButton"
                     >
+
                         Criar minha conta
+
                     </button>
 
 
-
-                    <!-- =================================================
-                         DIVISOR
-                    ================================================== -->
+                    <!-- DIVISOR -->
 
                     <div class="divider">
+
                         ou continue com
+
                     </div>
 
 
-
-                    <!-- =================================================
-                         SOCIAL
-                    ================================================== -->
+                    <!-- SOCIAL -->
 
                     <div class="social-grid">
 
@@ -1696,10 +1751,7 @@
             </form>
 
 
-
-            <!-- =================================================
-                 LOGIN
-            ================================================== -->
+            <!-- LOGIN -->
 
             <div class="login-link">
 
@@ -1715,6 +1767,7 @@
             <div class="form-footer">
 
                 Ao criar uma conta, você poderá acessar
+
                 suas missões e acompanhar sua evolução.
 
             </div>
@@ -1725,7 +1778,6 @@
     </section>
 
 </div>
-
 
 
 <script>
@@ -2062,9 +2114,7 @@
             /* RESULTADO */
 
             if (!valid) {
-
                 return;
-
             }
 
 
@@ -2161,4 +2211,5 @@
 </script>
 
 </body>
+
 </html>

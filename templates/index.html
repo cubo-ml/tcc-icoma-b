@@ -4,7 +4,7 @@
 
 <head>
 
-```
+
 <meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1278,14 +1278,125 @@
         }
     }
 
+/* =========================================================
+   AJUSTE EXCLUSIVO PARA MOBILE
+   ========================================================= */
+
+   @media (max-width: 768px) {
+
+.navbar {
+    height: 76px;
+    gap: 8px;
+    padding: 0 4px;
+}
+
+/* Logo um pouco menor para caber junto dos botões */
+.logo {
+    gap: 7px;
+    font-size: 20px;
+    letter-spacing: -0.8px;
+    flex-shrink: 1;
+}
+
+.logo-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    flex-shrink: 0;
+}
+
+/* Esconde os links normais no mobile */
+.nav-links {
+    display: none;
+}
+
+/*
+   BOTÕES SEMPRE VISÍVEIS NO TOPO
+   Não ficam mais escondidos dentro do menu.
+*/
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.nav-buttons .btn {
+    min-height: 38px;
+    padding: 0 10px;
+    border-radius: 9px;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+/* Botão Começar agora */
+.nav-buttons .btn-primary {
+    padding-left: 11px;
+    padding-right: 11px;
+}
+
+/* Botão do menu */
+.menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 38px;
+    padding: 0;
+    margin-left: 2px;
+    font-size: 25px;
+    flex-shrink: 0;
+}
+}
+
+
+/* Celulares menores */
+@media (max-width: 380px) {
+
+.navbar {
+    gap: 5px;
+}
+
+.logo {
+    font-size: 18px;
+    gap: 6px;
+}
+
+.logo-icon {
+    width: 35px;
+    height: 35px;
+}
+
+.nav-buttons {
+    gap: 4px;
+}
+
+.nav-buttons .btn {
+    min-height: 35px;
+    padding: 0 8px;
+    font-size: 10px;
+}
+
+.menu-button {
+    width: 28px;
+    font-size: 23px;
+}
+}
+
+
+
+
+
+
 </style>
-```
+
 
 </head>
 
 <body>
 
-```
+
 <!-- =========================================================
      HEADER
 ========================================================== -->

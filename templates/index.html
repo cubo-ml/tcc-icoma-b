@@ -1022,13 +1022,41 @@
             height: 75px;
         }
 
-        .nav-links,
-        .nav-buttons {
+        .nav-links {
             display: none;
         }
 
+        /*
+           NO MOBILE: Entrar e Começar agora ficam
+           sempre visíveis ao lado da logo.
+           Eles NÃO fazem parte do menu das 3 barras.
+        */
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .nav-buttons .btn {
+            min-height: 38px;
+            padding: 0 10px;
+            border-radius: 9px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
         .menu-button {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 38px;
+            padding: 0;
+            margin-left: 2px;
+            font-size: 25px;
+            flex-shrink: 0;
         }
 
         .hero {
@@ -1124,6 +1152,40 @@
 
         .hero-text h1 {
             font-size: 37px;
+        }
+
+        .navbar {
+            gap: 5px;
+        }
+
+        .logo {
+            gap: 6px;
+            font-size: 18px;
+            letter-spacing: -.8px;
+            flex-shrink: 1;
+            min-width: 0;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            flex-shrink: 0;
+        }
+
+        .nav-buttons {
+            gap: 4px;
+        }
+
+        .nav-buttons .btn {
+            min-height: 35px;
+            padding: 0 8px;
+            font-size: 10px;
+        }
+
+        .menu-button {
+            width: 28px;
+            height: 35px;
+            font-size: 23px;
         }
 
         .hero-text p {
@@ -1250,6 +1312,36 @@
     ========================================================= */
     @media (max-width: 370px) {
 
+        .navbar {
+            gap: 3px;
+        }
+
+        .logo {
+            font-size: 16px;
+            gap: 5px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-buttons {
+            gap: 3px;
+        }
+
+        .nav-buttons .btn {
+            min-height: 33px;
+            padding: 0 6px;
+            font-size: 9px;
+        }
+
+        .menu-button {
+            width: 26px;
+            height: 33px;
+            font-size: 21px;
+        }
+
         .skills-grid {
             grid-template-columns: 1fr;
         }
@@ -1277,117 +1369,6 @@
             transition-duration: .01ms !important;
         }
     }
-
-/* =========================================================
-   AJUSTE EXCLUSIVO PARA MOBILE
-   ========================================================= */
-
-   @media (max-width: 768px) {
-
-.navbar {
-    height: 76px;
-    gap: 8px;
-    padding: 0 4px;
-}
-
-/* Logo um pouco menor para caber junto dos botões */
-.logo {
-    gap: 7px;
-    font-size: 20px;
-    letter-spacing: -0.8px;
-    flex-shrink: 1;
-}
-
-.logo-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 9px;
-    flex-shrink: 0;
-}
-
-/* Esconde os links normais no mobile */
-.nav-links {
-    display: none;
-}
-
-/*
-   BOTÕES SEMPRE VISÍVEIS NO TOPO
-   Não ficam mais escondidos dentro do menu.
-*/
-.nav-buttons {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-left: auto;
-    flex-shrink: 0;
-}
-
-.nav-buttons .btn {
-    min-height: 38px;
-    padding: 0 10px;
-    border-radius: 9px;
-    font-size: 11px;
-    white-space: nowrap;
-}
-
-/* Botão Começar agora */
-.nav-buttons .btn-primary {
-    padding-left: 11px;
-    padding-right: 11px;
-}
-
-/* Botão do menu */
-.menu-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 38px;
-    padding: 0;
-    margin-left: 2px;
-    font-size: 25px;
-    flex-shrink: 0;
-}
-}
-
-
-/* Celulares menores */
-@media (max-width: 380px) {
-
-.navbar {
-    gap: 5px;
-}
-
-.logo {
-    font-size: 18px;
-    gap: 6px;
-}
-
-.logo-icon {
-    width: 35px;
-    height: 35px;
-}
-
-.nav-buttons {
-    gap: 4px;
-}
-
-.nav-buttons .btn {
-    min-height: 35px;
-    padding: 0 8px;
-    font-size: 10px;
-}
-
-.menu-button {
-    width: 28px;
-    font-size: 23px;
-}
-}
-
-
-
-
-
 
 </style>
 
@@ -2059,42 +2040,38 @@
     function toggleMenu() {
 
         const nav = document.querySelector(".nav-links");
-        const buttons = document.querySelector(".nav-buttons");
+        const menuButton = document.querySelector(".menu-button");
 
         const isOpen =
-            nav.style.display === "flex";
+            nav.classList.contains("mobile-open");
 
         if (isOpen) {
-
+            nav.classList.remove("mobile-open");
             nav.style.display = "";
-            buttons.style.display = "";
-
-        } else {
-
-            nav.style.display = "flex";
-            buttons.style.display = "flex";
-
-            nav.style.position = "absolute";
-            nav.style.top = "75px";
-            nav.style.left = "16px";
-            nav.style.right = "16px";
-            nav.style.padding = "20px";
-            nav.style.flexDirection = "column";
-            nav.style.background = "white";
-            nav.style.borderRadius = "16px";
-            nav.style.boxShadow =
-                "0 15px 40px rgba(20,50,80,.12)";
-
-            buttons.style.position = "absolute";
-            buttons.style.top = "310px";
-            buttons.style.left = "16px";
-            buttons.style.right = "16px";
-            buttons.style.padding = "15px";
-            buttons.style.background = "white";
-            buttons.style.borderRadius = "16px";
-            buttons.style.boxShadow =
-                "0 15px 40px rgba(20,50,80,.12)";
+            menuButton.setAttribute("aria-label", "Abrir menu");
+            return;
         }
+
+        nav.classList.add("mobile-open");
+        nav.style.display = "flex";
+        nav.style.position = "absolute";
+        nav.style.top = "75px";
+        nav.style.left = "16px";
+        nav.style.right = "16px";
+        nav.style.padding = "20px";
+        nav.style.flexDirection = "column";
+        nav.style.background = "white";
+        nav.style.borderRadius = "16px";
+        nav.style.boxShadow =
+            "0 15px 40px rgba(20,50,80,.12)";
+
+        /*
+           IMPORTANTE:
+           .nav-buttons NÃO é alterado aqui.
+           Entrar e Começar agora permanecem
+           ao lado da logo, fora do menu.
+        */
+        menuButton.setAttribute("aria-label", "Fechar menu");
     }
 
 
@@ -2106,6 +2083,19 @@
 
     const sections = document.querySelectorAll("section");
     const links = document.querySelectorAll(".nav-links a");
+
+    links.forEach(link => {
+        link.addEventListener("click", () => {
+            const nav = document.querySelector(".nav-links");
+            const menuButton = document.querySelector(".menu-button");
+
+            if (window.innerWidth <= 780) {
+                nav.classList.remove("mobile-open");
+                nav.style.display = "";
+                menuButton.setAttribute("aria-label", "Abrir menu");
+            }
+        });
+    });
 
     window.addEventListener("scroll", () => {
 

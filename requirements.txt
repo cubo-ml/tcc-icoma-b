@@ -1,7 +1,35 @@
+# Versoes travadas com "pip freeze" do .venv deste projeto.
+# Travar a versao evita que o servidor de producao instale uma
+# versao diferente da que foi testada aqui.
+
 # Dev environment
 pip
 autopep8
 
 # App
-flask
+Flask==3.1.3
+# firebase-admin ainda nao esta instalado no .venv; quando for
+# usado de verdade, trave a versao aqui do mesmo jeito.
 firebase-admin
+
+# Login social (OAuth do Google e do LinkedIn)
+Authlib==1.8.0
+requests==2.34.2
+python-dotenv==1.2.3
+
+# Dependencias indiretas das de cima, travadas para o deploy
+# reproduzir exatamente o .venv.
+blinker==1.9.0
+certifi==2026.7.22
+cffi==2.1.1
+charset-normalizer==3.5.1
+click==8.5.0
+cryptography==50.0.1
+idna==3.20
+itsdangerous==2.2.0
+Jinja2==3.1.6
+joserfc==1.7.5
+MarkupSafe==3.0.3
+pycparser==3.0
+urllib3==2.8.0
+Werkzeug==3.1.8

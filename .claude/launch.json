@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "skillbloom",
+      "runtimeExecutable": ".venv/Scripts/python.exe",
+      "runtimeArgs": ["-m", "flask", "--app", "main", "run", "-p", "5000", "--debug"],
+      "port": 5000
+    }
+  ]
+}

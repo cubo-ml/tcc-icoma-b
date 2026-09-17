@@ -3,11 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#071d3b">
+    <!-- Os dois valores são o fundo real da página: #071b38 no
+         escuro e #f2f6ff no claro. -->
+    <meta name="theme-color" content="#071b38">
+
+    <script>
+        /* O SkillBloom abre no escuro. Só o claro precisa ser
+           restaurado antes da primeira pintura. */
+        (function () {
+            try {
+                if (localStorage.getItem("skillbloom-tema") === "light") {
+                    document.documentElement.setAttribute("data-theme", "light");
+
+                    /* A barra do navegador acompanha o tema restaurado. */
+                    var barra =
+                        document.querySelector('meta[name="theme-color"]');
+
+                    if (barra) {
+                        barra.setAttribute("content", "#f2f6ff");
+                    }
+                }
+            } catch (e) {}
+        })();
+    </script>
 
     <title>SkillBloom — Dashboard</title>
 
     <style>
+        /* =========================================================
+           TOKENS DE TEMA
+           Escuro é o padrão do SkillBloom.
+           O claro entra apenas quando a pessoa escolhe no botão,
+           via data-theme="light" no <html>.
+        ========================================================= */
+
+        /* Tema claro — escolha explícita da pessoa */
+        :root[data-theme="light"] {
+            color-scheme: light;
+
+            /* superfícies */
+            --bg:              #ffffff;
+            --bg-soft:         #f8fbff;
+            --surface:         #ffffff;
+            --surface-2:       #f3f6fb;
+            --surface-3:       #eaf1fa;
+
+            /* texto */
+            --text:            #102033;
+            --text-muted:      #526175;
+            --text-soft:       #69778b;
+
+            /* traços */
+            --border:          #e7edf5;
+            --border-strong:   #d4e0ee;
+
+            /* marca */
+            --blue:            #0878f9;
+            --blue-dark:       #075fc5;
+            --blue-light:      #eaf4ff;
+            --on-blue:         #ffffff;
+
+            /* apoio */
+            --green:           #19b897;
+            --purple:          #7458f5;
+            --orange:          #f5a623;
+            --pink:            #ed6d88;
+
+            /* sombra (componentes em rgb(var(--shadow) / alfa)) */
+            --shadow:          31 56 87;
+            --shadow-weak:     0 6px 18px rgb(var(--shadow) / .07);
+            --shadow-soft:     0 14px 34px rgb(var(--shadow) / .10);
+            --shadow-strong:   0 22px 55px rgb(var(--shadow) / .14);
+            --ring:            0 0 0 4px rgb(8 120 249 / .14);
+        }
+
+        /* Base do SkillBloom — azul profundo */
+        :root {
+            color-scheme: dark;
+
+            --bg:              #061a36;
+            --bg-soft:         #04142b;
+            --surface:         #0a2447;
+            --surface-2:       #0d2b53;
+            --surface-3:       #123163;
+
+            --text:            #eaf2ff;
+            --text-muted:      #a3b8d8;
+            --text-soft:       #8ca3c5;
+
+            --border:          rgb(126 171 255 / .15);
+            --border-strong:   rgb(126 171 255 / .28);
+
+            --blue:            #3d9bff;
+            --blue-dark:       #1f86f5;
+            --blue-light:      rgb(61 155 255 / .14);
+            --on-blue:         #04142b;
+
+            --green:           #2fd6ae;
+            --purple:          #9d8bff;
+            --orange:          #ffbc4d;
+            --pink:            #ff8ca3;
+
+            --shadow:          0 6 18;
+            --shadow-weak:     0 6px 18px rgb(var(--shadow) / .34);
+            --shadow-soft:     0 14px 34px rgb(var(--shadow) / .44);
+            --shadow-strong:   0 22px 55px rgb(var(--shadow) / .56);
+            --ring:            0 0 0 4px rgb(61 155 255 / .26);
+
+            /* movimento — inalterado */
+            --ease:            cubic-bezier(.22, .61, .36, 1);
+            --ease-soft:       cubic-bezier(.4, .14, .3, 1);
+            --ease-spring:     cubic-bezier(.34, 1.4, .64, 1);
+            --dur-fast:        .18s;
+            --dur:             .34s;
+            --dur-slow:        .62s;
+        }
+
+
+        /* =========================================================
+           TOKENS DO DASHBOARD
+           O azul profundo de hoje virou a referência do tema
+           ESCURO — os valores abaixo são os mesmos de antes.
+           O tema CLARO é o mesmo desenho com a luminosidade
+           invertida, mantendo a identidade azul + roxo.
+        ========================================================= */
+
+        :root[data-theme="light"] {
+            /* fundo da página */
+            --dash-bg-base:            #f2f6ff;
+            --dash-glow-azul:          rgba(49, 92, 255, 0.12);
+            --dash-glow-roxo:          rgba(181, 20, 255, 0.10);
+            --dash-grad-1:             #f7faff;
+            --dash-grad-2:             #e9f0ff;
+            --dash-grad-3:             #f5ecff;
+            --dash-aura-roxa:          rgba(171,0,255,.10);
+
+            /* texto */
+            --dash-texto:              #102033;
+            --dash-texto-nav:          rgba(16,32,51,.82);
+            --dash-texto-icone:        rgba(16,32,51,.68);
+            --dash-texto-medio:        rgba(16,32,51,.70);
+            --dash-texto-fraco:        rgba(16,32,51,.64);
+            /*
+                Os três tons mais fracos carregam os textos de 8px
+                a 10px. Sobre fundo claro a mesma opacidade do
+                escuro rende bem menos contraste, então eles sobem
+                até encostar no --dash-texto-fraco.
+            */
+            --dash-texto-tenue:        rgba(16,32,51,.64);
+            --dash-texto-sutil:        rgba(16,32,51,.63);
+            --dash-texto-leve:         rgba(16,32,51,.62);
+
+            /* sidebar */
+            --dash-sidebar-1:          rgba(255,255,255,0.98);
+            --dash-sidebar-2:          rgba(244,248,255,0.96);
+            --dash-borda-fraca:        rgba(16,32,51,0.09);
+            --dash-hover:              rgba(16,32,51,.05);
+            --dash-hover-forte:        rgba(16,32,51,.075);
+
+            /* marca na sidebar */
+            --dash-logo-1:             rgba(0,170,255,.16);
+            --dash-logo-2:             rgba(0,100,255,.04);
+            --dash-logo-borda:         rgba(0,174,255,.3);
+            --dash-logo-brilho:        0 0 22px rgba(0,166,255,.14);
+            /* Ciano rebaixado: no claro ele vive sobre branco. */
+            --dash-ciano:              #0078b0;
+            --dash-ciano-forte:        #0a70b0;
+
+            /* item ativo da navegação */
+            --dash-ativo-1:            #056cff;
+            --dash-ativo-2:            #154ce8;
+            --dash-ativo-sombra:       0 7px 18px rgba(0,80,255,.2);
+            --dash-ativo-texto:        #ffffff;
+            --dash-ativo-simples:      rgba(0,106,255,.85);
+
+            /* cápsulas do topo */
+            --dash-pill-bg:            rgba(255,255,255,.72);
+            --dash-pill-borda:         rgba(92,131,255,.3);
+            --dash-notif-bg:           rgba(255,255,255,.76);
+            --dash-notif-borda:        rgba(104,105,255,.3);
+            --dash-alerta:             #f0315c;
+
+            /* cartão de jogar */
+            --dash-card-1:             rgba(255,255,255,.96);
+            --dash-card-2:             rgba(250,252,255,.97);
+            --dash-card-3:             rgba(240,246,255,.4);
+            --dash-card-borda:         rgba(0,151,255,.22);
+            --dash-card-sombra:        0 12px 35px rgba(31,56,87,.10);
+
+            /* verdes */
+            /* Verdes de TEXTO escurecem; os de fundo continuam. */
+            --dash-verde:              #0c8143;
+            --dash-verde-1:            #3fe46e;
+            --dash-verde-2:            #55ee82;
+            --dash-sobre-verde:        #04243c;
+            --dash-verde-sombra:       0 7px 18px rgba(44,237,112,.22);
+            --dash-verde-sombra-alta:  0 10px 25px rgba(44,237,112,.3);
+            --dash-verde-claro:        #0d8243;
+
+            /* cenário do cartão de jogar */
+            --dash-cena-brilho:        rgba(129,49,255,.1);
+            --dash-cena-1:             #e8eff9;
+            --dash-cena-2:             #dae4f2;
+            --dash-cena-luz:           rgba(255,214,120,.75);
+            --dash-cena-tela-1:        rgba(0,136,255,.16);
+            --dash-cena-tela-2:        rgba(214,229,247,.95);
+            --dash-cena-monitor:       #b6c4d8;
+            --dash-cena-contorno:      rgba(16,32,51,.06);
+            --dash-cena-icone:         #0878f9;
+            --dash-cena-suporte:       #aab8cd;
+            --dash-cena-mesa-1:        #d9e2ee;
+            --dash-cena-mesa-2:        #c4cfe0;
+            --dash-cena-lampada:       #94a3b8;
+
+            /* índice de competência */
+            --dash-comp-1:             rgba(255,255,255,.98);
+            --dash-comp-2:             rgba(247,250,255,.98);
+            --dash-comp-borda:         rgba(87,139,255,.22);
+            --dash-anel:               #16c258;
+            --dash-anel-trilho:        rgba(16,32,51,.1);
+            --dash-anel-miolo:         #ffffff;
+            --dash-detalhe-bg:         rgba(16,32,51,.06);
+
+            /* cartões de estatística */
+            --dash-stat-bg:            rgba(255,255,255,.95);
+            --dash-stat-borda:         rgba(79,132,255,.2);
+            --dash-stat-aura:          rgba(0,146,255,.1);
+            --dash-icone-verde:        #11a856;
+            --dash-icone-verde-bg:     rgba(30,232,103,.12);
+            --dash-icone-vermelho:     #e0344f;
+            --dash-icone-vermelho-bg:  rgba(255,48,82,.1);
+            --dash-icone-azul:         #0878f9;
+            --dash-icone-azul-bg:      rgba(0,153,255,.1);
+        }
+
+        /* Base escura — os valores originais da página */
+        :root {
+            --dash-bg-base:            #071b38;
+            --dash-glow-azul:          rgba(49, 92, 255, 0.18);
+            --dash-glow-roxo:          rgba(181, 20, 255, 0.32);
+            --dash-grad-1:             #061b37;
+            --dash-grad-2:             #10265c;
+            --dash-grad-3:             #4c0b70;
+            --dash-aura-roxa:          rgba(171,0,255,.24);
+
+            --dash-texto:              #ffffff;
+            --dash-texto-nav:          rgba(255,255,255,.83);
+            --dash-texto-icone:        rgba(255,255,255,.75);
+            --dash-texto-medio:        rgba(255,255,255,.72);
+            --dash-texto-fraco:        rgba(255,255,255,.66);
+            --dash-texto-tenue:        rgba(255,255,255,.58);
+            --dash-texto-sutil:        rgba(255,255,255,.57);
+            --dash-texto-leve:         rgba(255,255,255,.55);
+
+            --dash-sidebar-1:          rgba(3, 25, 52, 0.98);
+            --dash-sidebar-2:          rgba(3, 28, 58, 0.96);
+            --dash-borda-fraca:        rgba(255,255,255,0.045);
+            --dash-hover:              rgba(255,255,255,.055);
+            --dash-hover-forte:        rgba(255,255,255,.08);
+
+            --dash-logo-1:             rgba(0,170,255,.25);
+            --dash-logo-2:             rgba(0,100,255,.05);
+            --dash-logo-borda:         rgba(0,174,255,.18);
+            --dash-logo-brilho:        0 0 22px rgba(0,166,255,.12);
+            --dash-ciano:              #00b7ff;
+            --dash-ciano-forte:        #11aaff;
+
+            --dash-ativo-1:            #056cff;
+            --dash-ativo-2:            #154ce8;
+            --dash-ativo-sombra:       0 7px 18px rgba(0,80,255,.2);
+            --dash-ativo-texto:        #ffffff;
+            --dash-ativo-simples:      rgba(0,106,255,.85);
+
+            --dash-pill-bg:            rgba(4,26,65,.48);
+            --dash-pill-borda:         rgba(92,131,255,.25);
+            --dash-notif-bg:           rgba(4,26,65,.52);
+            --dash-notif-borda:        rgba(104,105,255,.35);
+            --dash-alerta:             #ff416d;
+
+            --dash-card-1:             rgba(3,31,69,.96);
+            --dash-card-2:             rgba(4,30,63,.97);
+            --dash-card-3:             rgba(3,20,44,.4);
+            --dash-card-borda:         rgba(0,151,255,.16);
+            --dash-card-sombra:        0 12px 35px rgba(0,0,0,.13);
+
+            --dash-verde:              #39ef79;
+            --dash-verde-1:            #3fe46e;
+            --dash-verde-2:            #55ee82;
+            --dash-sobre-verde:        #04243c;
+            --dash-verde-sombra:       0 7px 18px rgba(44,237,112,.17);
+            --dash-verde-sombra-alta:  0 10px 25px rgba(44,237,112,.25);
+            --dash-verde-claro:        #38ed65;
+
+            --dash-cena-brilho:        rgba(129,49,255,.18);
+            --dash-cena-1:             #08172d;
+            --dash-cena-2:             #020913;
+            --dash-cena-luz:           rgba(255,239,189,.8);
+            --dash-cena-tela-1:        rgba(0,136,255,.18);
+            --dash-cena-tela-2:        rgba(0,15,35,.9);
+            --dash-cena-monitor:       #05070b;
+            --dash-cena-contorno:      rgba(255,255,255,.04);
+            --dash-cena-icone:         #00b8ff;
+            --dash-cena-suporte:       #020508;
+            --dash-cena-mesa-1:        #09152a;
+            --dash-cena-mesa-2:        #03070c;
+            --dash-cena-lampada:       #111111;
+
+            --dash-comp-1:             rgba(4,34,73,.98);
+            --dash-comp-2:             rgba(5,29,61,.98);
+            --dash-comp-borda:         rgba(87,139,255,.16);
+            --dash-anel:               #2df054;
+            --dash-anel-trilho:        rgba(15,54,77,.9);
+            --dash-anel-miolo:         #061f42;
+            --dash-detalhe-bg:         rgba(0,10,26,.38);
+
+            --dash-stat-bg:            rgba(4,32,68,.93);
+            --dash-stat-borda:         rgba(79,132,255,.11);
+            --dash-stat-aura:          rgba(0,146,255,.08);
+            --dash-icone-verde:        #24ef6d;
+            --dash-icone-verde-bg:     rgba(30,232,103,.08);
+            --dash-icone-vermelho:     #ff4563;
+            --dash-icone-vermelho-bg:  rgba(255,48,82,.08);
+            --dash-icone-azul:         #00aaff;
+            --dash-icone-azul-bg:      rgba(0,153,255,.08);
+        }
+
+
+        /* =========================================================
+           MOVIMENTO
+           Entrada dos blocos, troca suave de tema e o anel
+           de competência que cresce de zero até o percentual.
+        ========================================================= */
+
+        @keyframes sobe {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        .enter {
+            opacity: 0;
+            animation: sobe var(--dur-slow) var(--ease) forwards;
+            animation-delay: var(--enter-delay, 0ms);
+            will-change: transform, opacity;
+        }
+
+        /* Ângulo animável do anel — sem @property ele apenas salta. */
+        @property --dash-anel-grau {
+            syntax: "<angle>";
+            inherits: false;
+            initial-value: 0deg;
+        }
+
+        @keyframes anelCresce {
+            from { --dash-anel-grau: 0deg; }
+            to   { --dash-anel-grau: var(--dash-anel-alvo); }
+        }
+
+        .theme-switching,
+        .theme-switching *,
+        .theme-switching *::before,
+        .theme-switching *::after {
+            transition:
+                background-color var(--dur) var(--ease-soft),
+                border-color var(--dur) var(--ease-soft),
+                color var(--dur) var(--ease-soft),
+                fill var(--dur) var(--ease-soft),
+                stroke var(--dur) var(--ease-soft) !important;
+        }
+
+
         /* =========================================================
            RESET
         ========================================================= */
@@ -20,7 +384,7 @@
 
         html {
             min-height: 100%;
-            background: #071b38;
+            background: var(--dash-bg-base);
         }
 
         body {
@@ -35,23 +399,23 @@
                 Arial,
                 sans-serif;
 
-            color: #ffffff;
+            color: var(--dash-texto);
             background:
                 radial-gradient(
                     circle at 75% 15%,
-                    rgba(49, 92, 255, 0.18),
+                    var(--dash-glow-azul),
                     transparent 32%
                 ),
                 radial-gradient(
                     circle at 90% 80%,
-                    rgba(181, 20, 255, 0.32),
+                    var(--dash-glow-roxo),
                     transparent 38%
                 ),
                 linear-gradient(
                     120deg,
-                    #061b37 0%,
-                    #10265c 48%,
-                    #4c0b70 100%
+                    var(--dash-grad-1) 0%,
+                    var(--dash-grad-2) 48%,
+                    var(--dash-grad-3) 100%
                 );
 
             overflow-x: hidden;
@@ -95,11 +459,11 @@
             background:
                 linear-gradient(
                     180deg,
-                    rgba(3, 25, 52, 0.98),
-                    rgba(3, 28, 58, 0.96)
+                    var(--dash-sidebar-1),
+                    var(--dash-sidebar-2)
                 );
 
-            border-right: 1px solid rgba(255,255,255,0.045);
+            border-right: 1px solid var(--dash-borda-fraca);
 
             display: flex;
             flex-direction: column;
@@ -136,18 +500,17 @@
             background:
                 radial-gradient(
                     circle,
-                    rgba(0,170,255,.25),
-                    rgba(0,100,255,.05)
+                    var(--dash-logo-1),
+                    var(--dash-logo-2)
                 );
 
-            color: #00b7ff;
+            color: var(--dash-ciano);
 
             font-size: 25px;
 
-            border: 1px solid rgba(0,174,255,.18);
+            border: 1px solid var(--dash-logo-borda);
 
-            box-shadow:
-                0 0 22px rgba(0,166,255,.12);
+            box-shadow: var(--dash-logo-brilho);
         }
 
         .logo-name {
@@ -159,7 +522,7 @@
         }
 
         .logo-name span {
-            color: #11aaff;
+            color: var(--dash-ciano-forte);
         }
 
 
@@ -183,19 +546,19 @@
 
             border-radius: 9px;
 
-            color: rgba(255,255,255,.83);
+            color: var(--dash-texto-nav);
 
             font-size: 13px;
             font-weight: 600;
 
             transition:
-                background .2s ease,
-                transform .2s ease,
-                color .2s ease;
+                background-color var(--dur-fast) var(--ease),
+                transform var(--dur-fast) var(--ease),
+                color var(--dur-fast) var(--ease);
         }
 
         .nav-item:hover {
-            background: rgba(255,255,255,.055);
+            background-color: var(--dash-hover);
             transform: translateX(2px);
         }
 
@@ -203,14 +566,13 @@
             background:
                 linear-gradient(
                     90deg,
-                    #056cff,
-                    #154ce8
+                    var(--dash-ativo-1),
+                    var(--dash-ativo-2)
                 );
 
-            box-shadow:
-                0 7px 18px rgba(0,80,255,.2);
+            box-shadow: var(--dash-ativo-sombra);
 
-            color: white;
+            color: var(--dash-ativo-texto);
         }
 
         .nav-icon {
@@ -248,19 +610,68 @@
             align-items: center;
             justify-content: center;
 
-            color: rgba(255,255,255,.75);
+            /*
+                O fundo precisa ser declarado: com color-scheme
+                ativo o padrão do navegador pintaria o botão.
+            */
+            background: transparent;
+
+            color: var(--dash-texto-icone);
 
             cursor: pointer;
 
             transition:
-                background .2s ease,
-                color .2s ease;
+                background-color var(--dur-fast) var(--ease),
+                color var(--dur-fast) var(--ease);
         }
 
         .bottom-button:hover {
-            background: rgba(255,255,255,.08);
-            color: white;
+            background-color: var(--dash-hover-forte);
+            color: var(--dash-texto);
         }
+
+
+        /* ALTERNADOR DE TEMA (usa os 28px do .bottom-button) */
+
+        .theme-toggle {
+            position: relative;
+
+            flex-shrink: 0;
+
+            overflow: hidden;
+
+            padding: 0;
+
+            transition:
+                background-color var(--dur) var(--ease),
+                color var(--dur) var(--ease),
+                transform var(--dur-fast) var(--ease-spring);
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle:active {
+            transform: translateY(0) scale(.94);
+        }
+
+        .theme-icon {
+            position: absolute;
+
+            width: 15px;
+            height: 15px;
+
+            transition:
+                opacity var(--dur) var(--ease),
+                transform var(--dur-slow) var(--ease-spring);
+        }
+
+        .theme-icon.moon { opacity: 1; transform: rotate(0) scale(1); }
+        .theme-icon.sun  { opacity: 0; transform: rotate(70deg) scale(.4); }
+
+        :root[data-theme="light"] .theme-icon.moon { opacity: 0; transform: rotate(-70deg) scale(.4); }
+        :root[data-theme="light"] .theme-icon.sun  { opacity: 1; transform: rotate(0) scale(1); }
 
 
         /* =========================================================
@@ -290,7 +701,7 @@
             background:
                 radial-gradient(
                     circle,
-                    rgba(171,0,255,.24),
+                    var(--dash-aura-roxa),
                     transparent 65%
                 );
 
@@ -320,7 +731,7 @@
             margin-top: 5px;
 
             font-size: 13px;
-            color: rgba(255,255,255,.66);
+            color: var(--dash-texto-fraco);
         }
 
         .header-right {
@@ -334,10 +745,10 @@
 
             padding: 10px 14px;
 
-            border: 1px solid rgba(92,131,255,.25);
+            border: 1px solid var(--dash-pill-borda);
             border-radius: 12px;
 
-            background: rgba(4,26,65,.48);
+            background: var(--dash-pill-bg);
 
             text-align: center;
         }
@@ -345,7 +756,7 @@
         .header-pill small {
             display: block;
 
-            color: rgba(255,255,255,.57);
+            color: var(--dash-texto-sutil);
 
             font-size: 10px;
         }
@@ -364,9 +775,11 @@
 
             border-radius: 12px;
 
-            border: 1px solid rgba(104,105,255,.35);
+            border: 1px solid var(--dash-notif-borda);
 
-            background: rgba(4,26,65,.52);
+            background: var(--dash-notif-bg);
+
+            color: var(--dash-texto);
 
             display: flex;
             align-items: center;
@@ -385,7 +798,7 @@
 
             border-radius: 50%;
 
-            background: #ff416d;
+            background: var(--dash-alerta);
 
             position: absolute;
             right: 8px;
@@ -421,14 +834,14 @@
 
             overflow: hidden;
 
-            border: 1px solid rgba(0,151,255,.16);
+            border: 1px solid var(--dash-card-borda);
 
             background:
                 linear-gradient(
                     90deg,
-                    rgba(3,31,69,.96) 0%,
-                    rgba(4,30,63,.97) 46%,
-                    rgba(3,20,44,.4) 46%
+                    var(--dash-card-1) 0%,
+                    var(--dash-card-2) 46%,
+                    var(--dash-card-3) 46%
                 );
 
             display: grid;
@@ -436,8 +849,7 @@
 
             position: relative;
 
-            box-shadow:
-                0 12px 35px rgba(0,0,0,.13);
+            box-shadow: var(--dash-card-sombra);
         }
 
         .play-content {
@@ -452,7 +864,7 @@
         }
 
         .play-content .green {
-            color: #39ef79;
+            color: var(--dash-verde);
 
             font-size: 13px;
             font-weight: 700;
@@ -479,11 +891,11 @@
             background:
                 linear-gradient(
                     90deg,
-                    #3fe46e,
-                    #55ee82
+                    var(--dash-verde-1),
+                    var(--dash-verde-2)
                 );
 
-            color: #04243c;
+            color: var(--dash-sobre-verde);
 
             font-size: 12px;
             font-weight: 800;
@@ -494,23 +906,21 @@
             align-items: center;
             gap: 7px;
 
-            box-shadow:
-                0 7px 18px rgba(44,237,112,.17);
+            box-shadow: var(--dash-verde-sombra);
 
             transition:
-                transform .2s ease,
-                box-shadow .2s ease;
+                transform var(--dur-fast) var(--ease),
+                box-shadow var(--dur) var(--ease);
         }
 
         .play-button:hover {
             transform: translateY(-2px);
 
-            box-shadow:
-                0 10px 25px rgba(44,237,112,.25);
+            box-shadow: var(--dash-verde-sombra-alta);
         }
 
         .play-button:active {
-            transform: translateY(0);
+            transform: translateY(0) scale(.97);
         }
 
         .play-image {
@@ -521,13 +931,13 @@
             background:
                 radial-gradient(
                     circle at 70% 20%,
-                    rgba(129,49,255,.18),
+                    var(--dash-cena-brilho),
                     transparent 35%
                 ),
                 linear-gradient(
                     135deg,
-                    #08172d,
-                    #020913
+                    var(--dash-cena-1),
+                    var(--dash-cena-2)
                 );
         }
 
@@ -544,7 +954,7 @@
 
             border-radius: 50%;
 
-            background: rgba(255,239,189,.8);
+            background: var(--dash-cena-luz);
 
             filter: blur(10px);
 
@@ -560,18 +970,18 @@
             left: 24%;
             top: 16%;
 
-            border: 4px solid #05070b;
+            border: 4px solid var(--dash-cena-monitor);
             border-radius: 2px;
 
             background:
                 radial-gradient(
                     circle,
-                    rgba(0,136,255,.18),
-                    rgba(0,15,35,.9)
+                    var(--dash-cena-tela-1),
+                    var(--dash-cena-tela-2)
                 );
 
             box-shadow:
-                0 0 0 1px rgba(255,255,255,.04);
+                0 0 0 1px var(--dash-cena-contorno);
         }
 
         .monitor::after {
@@ -583,7 +993,7 @@
 
             transform: translate(-50%, -50%);
 
-            color: #00b8ff;
+            color: var(--dash-cena-icone);
 
             font-size: 21px;
         }
@@ -597,7 +1007,7 @@
             left: 39%;
             top: 68%;
 
-            border-bottom: 3px solid #020508;
+            border-bottom: 3px solid var(--dash-cena-suporte);
         }
 
         .desk {
@@ -611,8 +1021,8 @@
             background:
                 linear-gradient(
                     180deg,
-                    #09152a,
-                    #03070c
+                    var(--dash-cena-mesa-1),
+                    var(--dash-cena-mesa-2)
                 );
         }
 
@@ -625,7 +1035,7 @@
             right: 8%;
             top: 5%;
 
-            border-left: 2px solid #111;
+            border-left: 2px solid var(--dash-cena-lampada);
 
             transform: rotate(10deg);
         }
@@ -638,7 +1048,7 @@
             width: 22px;
             height: 12px;
 
-            background: #111;
+            background: var(--dash-cena-lampada);
 
             top: 4px;
             left: -7px;
@@ -659,11 +1069,11 @@
             background:
                 linear-gradient(
                     145deg,
-                    rgba(4,34,73,.98),
-                    rgba(5,29,61,.98)
+                    var(--dash-comp-1),
+                    var(--dash-comp-2)
                 );
 
-            border: 1px solid rgba(87,139,255,.16);
+            border: 1px solid var(--dash-comp-borda);
 
             padding: 15px 13px;
 
@@ -682,6 +1092,14 @@
         }
 
         .circle {
+            /*
+                O ângulo preenchido vem de --dash-anel-alvo, que o
+                JS calcula a partir do índice. 281deg ≈ 78%, o mesmo
+                valor de antes, e serve de reserva se o JS falhar.
+            */
+            --dash-anel-alvo: 281deg;
+            --dash-anel-grau: var(--dash-anel-alvo);
+
             width: 76px;
             height: 76px;
 
@@ -689,8 +1107,8 @@
 
             background:
                 conic-gradient(
-                    #2df054 0deg 281deg,
-                    rgba(15,54,77,.9) 281deg 360deg
+                    var(--dash-anel) 0deg var(--dash-anel-grau),
+                    var(--dash-anel-trilho) var(--dash-anel-grau) 360deg
                 );
 
             display: flex;
@@ -700,6 +1118,10 @@
             position: relative;
 
             margin: 1px auto 8px;
+        }
+
+        .circle.anel-animado {
+            animation: anelCresce var(--dur-slow) var(--ease) forwards;
         }
 
         .circle::before {
@@ -712,7 +1134,7 @@
 
             border-radius: 50%;
 
-            background: #061f42;
+            background: var(--dash-anel-miolo);
         }
 
         .circle-content {
@@ -734,13 +1156,13 @@
 
             margin-top: 3px;
 
-            color: #38ed65;
+            color: var(--dash-verde-claro);
 
             font-size: 8px;
         }
 
         .competency p {
-            color: rgba(255,255,255,.55);
+            color: var(--dash-texto-leve);
 
             font-size: 9px;
             line-height: 1.2;
@@ -759,9 +1181,9 @@
 
             border-radius: 5px;
 
-            background: rgba(0,10,26,.38);
+            background: var(--dash-detalhe-bg);
 
-            color: white;
+            color: var(--dash-texto);
 
             font-size: 9px;
 
@@ -793,10 +1215,9 @@
 
             padding: 14px;
 
-            background:
-                rgba(4,32,68,.93);
+            background: var(--dash-stat-bg);
 
-            border: 1px solid rgba(79,132,255,.11);
+            border: 1px solid var(--dash-stat-borda);
 
             display: flex;
             align-items: center;
@@ -820,7 +1241,7 @@
 
             border-radius: 50%;
 
-            background: rgba(0,146,255,.08);
+            background: var(--dash-stat-aura);
 
             filter: blur(5px);
         }
@@ -843,18 +1264,18 @@
         }
 
         .stat-icon.green {
-            color: #24ef6d;
-            background: rgba(30,232,103,.08);
+            color: var(--dash-icone-verde);
+            background: var(--dash-icone-verde-bg);
         }
 
         .stat-icon.red {
-            color: #ff4563;
-            background: rgba(255,48,82,.08);
+            color: var(--dash-icone-vermelho);
+            background: var(--dash-icone-vermelho-bg);
         }
 
         .stat-icon.blue {
-            color: #00aaff;
-            background: rgba(0,153,255,.08);
+            color: var(--dash-icone-azul);
+            background: var(--dash-icone-azul-bg);
         }
 
         .stat-info strong {
@@ -870,7 +1291,7 @@
 
             margin-top: 3px;
 
-            color: rgba(255,255,255,.72);
+            color: var(--dash-texto-medio);
 
             font-size: 10px;
         }
@@ -880,7 +1301,7 @@
 
             margin-top: 7px;
 
-            color: rgba(255,255,255,.58);
+            color: var(--dash-texto-tenue);
 
             font-size: 8px;
             line-height: 1.15;
@@ -975,10 +1396,22 @@
             }
 
             .nav-item.active {
-                background: rgba(0,106,255,.85);
+                background: var(--dash-ativo-simples);
             }
 
+            /*
+                No celular a barra inferior deixa de existir como
+                bloco, mas o alternador de tema continua à mão no
+                canto direito da faixa.
+            */
             .sidebar-bottom {
+                margin-top: 0;
+                margin-left: 8px;
+
+                padding-top: 0;
+            }
+
+            .sidebar-bottom .bottom-button:not(.theme-toggle) {
                 display: none;
             }
 
@@ -1067,7 +1500,18 @@
             *::before,
             *::after {
                 scroll-behavior: auto !important;
-                transition: none !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+
+            .enter {
+                opacity: 1 !important;
+                animation: none !important;
+            }
+
+            /* O anel já nasce no valor final, sem crescer. */
+            .circle.anel-animado {
                 animation: none !important;
             }
 
@@ -1102,7 +1546,7 @@
 
         <nav class="navigation">
 
-            <a href="#" class="nav-item active">
+            <a href="#" class="nav-item active enter" style="--enter-delay:60ms">
 
                 <span class="nav-icon">🎮</span>
                 <span>Jogar</span>
@@ -1110,7 +1554,7 @@
             </a>
 
 
-            <a href="#" class="nav-item">
+            <a href="#" class="nav-item enter" style="--enter-delay:120ms">
 
                 <span class="nav-icon">📊</span>
                 <span>Estatísticas</span>
@@ -1118,7 +1562,7 @@
             </a>
 
 
-            <a href="#" class="nav-item">
+            <a href="#" class="nav-item enter" style="--enter-delay:180ms">
 
                 <span class="nav-icon">◷</span>
                 <span>Desempenho</span>
@@ -1126,7 +1570,7 @@
             </a>
 
 
-            <a href="#" class="nav-item">
+            <a href="#" class="nav-item enter" style="--enter-delay:240ms">
 
                 <span class="nav-icon">▣</span>
                 <span>O que aprendi</span>
@@ -1138,8 +1582,23 @@
 
         <div class="sidebar-bottom">
 
-            <button class="bottom-button" title="Tema">
-                ☼
+            <button
+                class="bottom-button theme-toggle"
+                id="themeToggle"
+                type="button"
+                aria-label="Alternar tema claro e escuro"
+                title="Alternar tema"
+            >
+                <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.9"/>
+                    <path d="M12 2.6V5M12 19V21.4M21.4 12H19M5 12H2.6M18.6 5.4L17 7M7 17L5.4 18.6M18.6 18.6L17 17M7 7L5.4 5.4"
+                          stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                </svg>
+
+                <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a6.8 6.8 0 0 0 10.8 10.8Z"
+                          stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+                </svg>
             </button>
 
             <button class="bottom-button" title="Ajuda">
@@ -1165,7 +1624,7 @@
 
         <!-- HEADER -->
 
-        <header class="header">
+        <header class="header enter" style="--enter-delay:80ms">
 
             <div class="welcome">
 
@@ -1221,7 +1680,7 @@
 
             <!-- PLAY -->
 
-            <article class="play-card">
+            <article class="play-card enter" style="--enter-delay:160ms">
 
                 <div class="play-content">
 
@@ -1265,7 +1724,7 @@
 
             <!-- COMPETENCY -->
 
-            <article class="competency">
+            <article class="competency enter" style="--enter-delay:240ms">
 
                 <h3>
                     Índice de Competência
@@ -1320,7 +1779,7 @@
 
             <!-- ACERTOS -->
 
-            <article class="stat-card">
+            <article class="stat-card enter" style="--enter-delay:320ms">
 
                 <div class="stat-icon green">
                     ✓
@@ -1349,7 +1808,7 @@
 
             <!-- ERROS -->
 
-            <article class="stat-card">
+            <article class="stat-card enter" style="--enter-delay:400ms">
 
                 <div class="stat-icon red">
                     ×
@@ -1378,7 +1837,7 @@
 
             <!-- SUCESSO -->
 
-            <article class="stat-card">
+            <article class="stat-card enter" style="--enter-delay:480ms">
 
                 <div class="stat-icon blue">
                     ◎
@@ -1439,6 +1898,56 @@
 
 
     /* ============================================================
+       MOVIMENTO
+       ------------------------------------------------------------
+       Quem pede menos movimento recebe os valores prontos.
+    ============================================================ */
+
+    const prefereMenosMovimento =
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+
+    /*
+        Conta de zero até o valor final desacelerando no fim
+        (easeOutCubic), no mesmo tempo do anel de competência.
+    */
+    function animarNumero(elemento, valor, sufixo) {
+
+        if (!elemento) return;
+
+        if (prefereMenosMovimento) {
+
+            elemento.textContent = valor + sufixo;
+            return;
+
+        }
+
+        const duracao = 620;
+        const inicio = performance.now();
+
+        function passo(agora) {
+
+            const avanco =
+                Math.min((agora - inicio) / duracao, 1);
+
+            const suave =
+                1 - Math.pow(1 - avanco, 3);
+
+            elemento.textContent =
+                Math.round(valor * suave) + sufixo;
+
+            if (avanco < 1) {
+                requestAnimationFrame(passo);
+            }
+
+        }
+
+        requestAnimationFrame(passo);
+
+    }
+
+
+    /* ============================================================
        ATUALIZAÇÃO DOS DADOS
     ============================================================ */
 
@@ -1450,17 +1959,45 @@
         document.getElementById("ranking").textContent =
             data.ranking;
 
-        document.getElementById("competency").textContent =
-            data.competency + "%";
+        animarNumero(
+            document.getElementById("competency"),
+            data.competency,
+            "%"
+        );
 
-        document.getElementById("correct").textContent =
-            data.correct;
+        animarNumero(
+            document.getElementById("correct"),
+            data.correct,
+            ""
+        );
 
-        document.getElementById("errors").textContent =
-            data.errors;
+        animarNumero(
+            document.getElementById("errors"),
+            data.errors,
+            ""
+        );
 
-        document.getElementById("success").textContent =
-            data.success + "%";
+        animarNumero(
+            document.getElementById("success"),
+            data.success,
+            "%"
+        );
+
+        /* O anel do índice cresce de 0 até o percentual. */
+        const anel = document.querySelector(".circle");
+
+        if (anel) {
+
+            anel.style.setProperty(
+                "--dash-anel-alvo",
+                (data.competency * 3.6).toFixed(1) + "deg"
+            );
+
+            if (!prefereMenosMovimento) {
+                anel.classList.add("anel-animado");
+            }
+
+        }
 
     }
 
@@ -1480,13 +2017,13 @@
     playButton.addEventListener("click", function () {
 
         /*
-            Coloque aqui a página para onde
-            o jogador deve ir.
+            ATENÇÃO: a rota /jogo ainda não existe no Flask.
+            O main.py hoje serve apenas /, /login, /cadastro
+            e /dash, então este clique cai em 404 até que a
+            rota do jogo seja criada no back-end.
 
-            Exemplo:
-
-            window.location.href = "/jogo";
-
+            O destino fica mantido de propósito: quando a
+            rota nascer, nada muda aqui.
         */
 
         window.location.href = "/jogo";
@@ -1518,6 +2055,62 @@
             });
 
         });
+
+
+
+    /* =========================================================
+       TEMA
+       O SkillBloom é escuro por padrão. O botão leva ao claro
+       e a escolha fica salva no navegador.
+    ========================================================= */
+
+    (function () {
+
+        var raiz = document.documentElement;
+        var botao = document.getElementById("themeToggle");
+        if (!botao) return;
+
+        function temaAtual() {
+            return raiz.getAttribute("data-theme") === "light"
+                ? "light"
+                : "dark";
+        }
+
+        function pintarBarra(tema) {
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) {
+                meta.setAttribute(
+                    "content",
+                    tema === "light" ? "#ffffff" : "#061a36"
+                );
+            }
+        }
+
+        botao.addEventListener("click", function () {
+
+            var proximo = temaAtual() === "light" ? "dark" : "light";
+
+            /* Suaviza a troca sem animar durante o carregamento. */
+            raiz.classList.add("theme-switching");
+
+            if (proximo === "light") {
+                raiz.setAttribute("data-theme", "light");
+            } else {
+                raiz.removeAttribute("data-theme");
+            }
+
+            pintarBarra(proximo);
+
+            try {
+                localStorage.setItem("skillbloom-tema", proximo);
+            } catch (e) {}
+
+            window.setTimeout(function () {
+                raiz.classList.remove("theme-switching");
+            }, 420);
+        });
+
+    })();
 
 
 </script>

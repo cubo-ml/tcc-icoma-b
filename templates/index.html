@@ -9,13 +9,201 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="theme-color" content="#0878F9">
+<meta name="theme-color" content="#061a36">
 
 <meta name="description" content="Skill Bloom - Desenvolva suas competências socioemocionais através de simulações de ambiente de trabalho.">
 
 <title>Skill Bloom — Prepare-se hoje, destaque-se amanhã.</title>
 
+<script>
+    /* O SkillBloom abre no escuro. Só o claro precisa ser
+       restaurado antes da primeira pintura. */
+    (function () {
+        try {
+            if (localStorage.getItem("skillbloom-tema") === "light") {
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+        } catch (e) {}
+    })();
+</script>
+
 <style>
+
+    /* =========================================================
+       TOKENS DE TEMA
+       Escuro é o padrão do SkillBloom.
+       O claro entra apenas quando a pessoa escolhe no botão,
+       via data-theme="light" no <html>.
+    ========================================================= */
+
+    /* Tema claro — escolha explícita da pessoa */
+    :root[data-theme="light"] {
+        color-scheme: light;
+
+        /* superfícies */
+        --bg:              #ffffff;
+        --bg-soft:         #f8fbff;
+        --surface:         #ffffff;
+        --surface-2:       #f3f6fb;
+        --surface-3:       #eaf1fa;
+
+        /* texto */
+        --text:            #102033;
+        --text-muted:      #526175;
+        --text-soft:       #69778b;
+
+        /* traços */
+        --border:          #e7edf5;
+        --border-strong:   #d4e0ee;
+
+        /* marca */
+        --blue:            #0878f9;
+        --blue-dark:       #075fc5;
+        --blue-light:      #eaf4ff;
+        --on-blue:         #ffffff;
+
+        /* apoio */
+        --green:           #19b897;
+        --purple:          #7458f5;
+        --orange:          #f5a623;
+        --pink:            #ed6d88;
+
+        /* sombra (componentes em rgb(var(--shadow) / alfa)) */
+        --shadow:          31 56 87;
+        --shadow-weak:     0 6px 18px rgb(var(--shadow) / .07);
+        --shadow-soft:     0 14px 34px rgb(var(--shadow) / .10);
+        --shadow-strong:   0 22px 55px rgb(var(--shadow) / .14);
+        --ring:            0 0 0 4px rgb(8 120 249 / .14);
+
+        /* movimento */
+        --ease:            cubic-bezier(.22, .61, .36, 1);
+        --ease-soft:       cubic-bezier(.4, .14, .3, 1);
+        --ease-spring:     cubic-bezier(.34, 1.4, .64, 1);
+        --dur-fast:        .18s;
+        --dur:             .34s;
+        --dur-slow:        .62s;
+
+        /* marca SVG */
+        --mark-case:   #102b4c;
+        --mark-brain:  #0a2745;
+        --mark-accent: #7cc5ff;
+
+        /* arte decorativa (hero, notebook, ilustração, CTA) */
+        --art-hero-glow-a:   rgb(105 169 255 / .17);
+        --art-hero-glow-b:   rgb(115 90 255 / .09);
+        --art-hero-ring:     rgb(8 120 249 / .09);
+        --art-glow:          rgb(8 120 249 / .18);
+        --art-avatar-a:      #d9eaff;
+        --art-avatar-b:      #6eaaf1;
+        --art-screen-frame:  #111111;
+        --art-screen-bg:     #f9fbff;
+        --art-base-a:        #d8dde2;
+        --art-base-b:        #9fa8b0;
+        --art-base-notch:    #89929a;
+        --art-tint-green:    #e0f7f1;
+        --art-tint-orange:   #fff2d9;
+        --art-tint-purple:   #eeeaff;
+        --art-tint-pink:     #ffe8ed;
+        --art-growth-a:      #dfeeff;
+        --art-growth-b:      #f7f9fb;
+        --art-hair:          #392d29;
+        --art-body-a:        #26394c;
+        --art-body-b:        #496278;
+        --art-note-a:        #cbd2d9;
+        --art-note-b:        #f1f3f5;
+        --art-note-screen-a: #30465a;
+        --art-note-screen-b: #7892a9;
+        --art-cta-a:         #e9f4ff;
+        --art-cta-b:         #f1f6ff;
+    }
+
+    /* Tema escuro — a base do SkillBloom */
+    :root {
+        color-scheme: dark;
+
+        --bg:              #061a36;
+        --bg-soft:         #04142b;
+        --surface:         #0a2447;
+        --surface-2:       #0d2b53;
+        --surface-3:       #123163;
+
+        --text:            #eaf2ff;
+        --text-muted:      #a3b8d8;
+        --text-soft:       #8ca3c5;
+
+        --border:          rgb(126 171 255 / .15);
+        --border-strong:   rgb(126 171 255 / .28);
+
+        --blue:            #3d9bff;
+        --blue-dark:       #1f86f5;
+        --blue-light:      rgb(61 155 255 / .14);
+        --on-blue:         #04142b;
+
+        --green:           #2fd6ae;
+        --purple:          #9d8bff;
+        --orange:          #ffbc4d;
+        --pink:            #ff8ca3;
+
+        --shadow:          0 6 18;
+        --shadow-weak:     0 6px 18px rgb(var(--shadow) / .34);
+        --shadow-soft:     0 14px 34px rgb(var(--shadow) / .44);
+        --shadow-strong:   0 22px 55px rgb(var(--shadow) / .56);
+        --ring:            0 0 0 4px rgb(61 155 255 / .26);
+
+        /* movimento — inalterado */
+        --ease:            cubic-bezier(.22, .61, .36, 1);
+        --ease-soft:       cubic-bezier(.4, .14, .3, 1);
+        --ease-spring:     cubic-bezier(.34, 1.4, .64, 1);
+        --dur-fast:        .18s;
+        --dur:             .34s;
+        --dur-slow:        .62s;
+
+        /* marca SVG */
+        --mark-case:   #0d2b53;
+        --mark-brain:  #061a36;
+        --mark-accent: #7cc5ff;
+
+        /* arte decorativa (hero, notebook, ilustração, CTA) */
+        --art-hero-glow-a:   rgb(61 155 255 / .16);
+        --art-hero-glow-b:   rgb(157 139 255 / .12);
+        --art-hero-ring:     rgb(126 171 255 / .14);
+        --art-glow:          rgb(61 155 255 / .2);
+        --art-avatar-a:      #123163;
+        --art-avatar-b:      #1f86f5;
+        --art-screen-frame:  #020b19;
+        --art-screen-bg:     #061a36;
+        --art-base-a:        #123163;
+        --art-base-b:        #0a2447;
+        --art-base-notch:    rgb(126 171 255 / .3);
+        --art-tint-green:    rgb(47 214 174 / .16);
+        --art-tint-orange:   rgb(255 188 77 / .16);
+        --art-tint-purple:   rgb(157 139 255 / .18);
+        --art-tint-pink:     rgb(255 140 163 / .16);
+        --art-growth-a:      #0d2b53;
+        --art-growth-b:      #061a36;
+        --art-hair:          #1b1512;
+        --art-body-a:        #0d2b53;
+        --art-body-b:        #1a3f75;
+        --art-note-a:        #123163;
+        --art-note-b:        #24548f;
+        --art-note-screen-a: #04142b;
+        --art-note-screen-b: #1a3f75;
+        --art-cta-a:         #0d2b53;
+        --art-cta-b:         #0a2447;
+    }
+
+    /* Suaviza a troca de tema sem animar durante o carregamento */
+    .theme-switching,
+    .theme-switching *,
+    .theme-switching *::before,
+    .theme-switching *::after {
+        transition:
+            background-color var(--dur) var(--ease-soft),
+            border-color var(--dur) var(--ease-soft),
+            color var(--dur) var(--ease-soft),
+            fill var(--dur) var(--ease-soft),
+            stroke var(--dur) var(--ease-soft) !important;
+    }
 
     /* =========================================================
        RESET
@@ -42,8 +230,8 @@
             Helvetica,
             Arial,
             sans-serif;
-        color: #102033;
-        background: #ffffff;
+        color: var(--text);
+        background: var(--bg);
         overflow-x: hidden;
     }
 
@@ -58,19 +246,10 @@
     }
 
     /* =========================================================
-       VARIÁVEIS
+       VARIÁVEIS DE LAYOUT
+       As cores agora vivem no bloco de tokens de tema.
     ========================================================= */
     :root {
-        --blue: #0878f9;
-        --blue-dark: #075fc5;
-        --blue-light: #eaf4ff;
-        --text: #102033;
-        --text-light: #526175;
-        --border: #e7edf5;
-        --green: #19b897;
-        --purple: #7458f5;
-        --orange: #f5a623;
-        --pink: #ed6d88;
         --container: 1180px;
         --radius: 20px;
     }
@@ -86,8 +265,8 @@
     .gradient-text {
         background: linear-gradient(
             90deg,
-            #0878f9,
-            #168efb
+            var(--blue),
+            var(--blue-dark)
         );
         -webkit-background-clip: text;
         background-clip: text;
@@ -134,20 +313,22 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        background: linear-gradient(
-            145deg,
-            #0878f9,
-            #0758bd
-        );
-        box-shadow:
-            0 8px 20px rgba(8, 120, 249, 0.22);
+        background: var(--surface-2);
+        box-shadow: var(--shadow-weak);
     }
 
-    .logo-icon img {
+    /* Marca em SVG: acompanha o tema, sem fundo sólido */
+    .brand-mark {
         width: 100%;
         height: 100%;
-        object-fit: cover;
         display: block;
+        transition: transform var(--dur-slow) var(--ease-spring);
+    }
+
+    a:hover > .brand-mark,
+    .logo:hover .brand-mark,
+    .brand:hover .brand-mark {
+        transform: scale(1.07) rotate(-3deg);
     }
 
     .logo span {
@@ -164,9 +345,10 @@
     .nav-links a {
         font-size: 14px;
         font-weight: 500;
-        color: #182538;
+        color: var(--text);
         position: relative;
         padding: 10px 0;
+        transition: color var(--dur-fast) var(--ease);
     }
 
     .nav-links a:hover {
@@ -207,32 +389,36 @@
         font-size: 14px;
         font-weight: 600;
         transition:
-            transform .2s ease,
-            box-shadow .2s ease,
-            background .2s ease;
+            transform var(--dur-fast) var(--ease),
+            box-shadow var(--dur) var(--ease),
+            border-color var(--dur) var(--ease),
+            color var(--dur) var(--ease),
+            background-color var(--dur) var(--ease);
     }
 
     .btn:hover {
         transform: translateY(-2px);
     }
 
+    .btn:active {
+        transform: translateY(0) scale(.97);
+    }
+
     .btn-primary {
-        color: white;
+        color: var(--on-blue);
         background: var(--blue);
-        box-shadow:
-            0 8px 20px rgba(8, 120, 249, .18);
+        box-shadow: var(--shadow-weak);
     }
 
     .btn-primary:hover {
         background: var(--blue-dark);
-        box-shadow:
-            0 12px 26px rgba(8, 120, 249, .25);
+        box-shadow: var(--shadow-soft);
     }
 
     .btn-outline {
-        color: #17304d;
-        background: white;
-        border: 1px solid #bdd9f8;
+        color: var(--text);
+        background: var(--surface);
+        border: 1px solid var(--border-strong);
     }
 
     .btn-outline:hover {
@@ -244,8 +430,242 @@
         display: none;
         border: none;
         background: transparent;
+        color: var(--text);
         font-size: 27px;
         cursor: pointer;
+    }
+
+    /* =========================================================
+       BOTÃO DE TEMA
+    ========================================================= */
+    .theme-toggle {
+        position: relative;
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: var(--surface);
+        color: var(--text-muted);
+        cursor: pointer;
+        overflow: hidden;
+        transition:
+            background var(--dur) var(--ease),
+            border-color var(--dur) var(--ease),
+            color var(--dur) var(--ease),
+            transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .theme-toggle:hover {
+        color: var(--blue);
+        border-color: var(--border-strong);
+        transform: translateY(-2px);
+    }
+
+    .theme-toggle:active { transform: translateY(0) scale(.94); }
+
+    .theme-icon {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        transition:
+            opacity var(--dur) var(--ease),
+            transform var(--dur-slow) var(--ease-spring);
+    }
+
+    .theme-icon.moon { opacity: 1; transform: rotate(0) scale(1); }
+    .theme-icon.sun  { opacity: 0; transform: rotate(70deg) scale(.4); }
+
+    :root[data-theme="light"] .theme-icon.moon { opacity: 0; transform: rotate(-70deg) scale(.4); }
+    :root[data-theme="light"] .theme-icon.sun  { opacity: 1; transform: rotate(0) scale(1); }
+
+    /* =========================================================
+       CONTA — ícone e painel
+    ========================================================= */
+
+    .conta {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .conta-botao {
+        position: relative;
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        background: var(--surface-2);
+        cursor: pointer;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+            border-color var(--dur) var(--ease),
+            transform var(--dur-fast) var(--ease-spring),
+            box-shadow var(--dur) var(--ease);
+    }
+
+    .conta-botao:hover {
+        border-color: var(--blue);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-weak);
+    }
+
+    .conta-botao:active { transform: translateY(0) scale(.95); }
+
+    .conta-botao[aria-expanded="true"] {
+        border-color: var(--blue);
+        box-shadow: var(--ring);
+    }
+
+    /* Foto por cima, iniciais por baixo. Some a foto, aparecem as iniciais. */
+    .conta-foto {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .conta-iniciais {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: .3px;
+        color: var(--blue);
+        user-select: none;
+    }
+
+    /* ---------- painel ---------- */
+
+    .conta-painel {
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        z-index: 200;
+        width: 270px;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        box-shadow: var(--shadow-strong);
+        transform-origin: top right;
+    }
+
+    .conta-painel[hidden] { display: none; }
+
+    .conta-painel.is-abrindo {
+        animation: contaEntra var(--dur) var(--ease-spring);
+    }
+
+    .conta-painel.is-fechando {
+        animation: contaSai var(--dur-fast) var(--ease) forwards;
+    }
+
+    @keyframes contaEntra {
+        from { opacity: 0; transform: translateY(-8px) scale(.94); }
+        to   { opacity: 1; transform: none; }
+    }
+
+    @keyframes contaSai {
+        from { opacity: 1; transform: none; }
+        to   { opacity: 0; transform: translateY(-6px) scale(.96); }
+    }
+
+    .conta-cabecalho {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .conta-avatar {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: var(--surface-2);
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .conta-avatar .conta-iniciais { font-size: 17px; }
+
+    .conta-dados {
+        min-width: 0;
+    }
+
+    .conta-nome {
+        display: block;
+        font-size: 14px;
+        line-height: 1.25;
+        color: var(--text);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .conta-email {
+        display: block;
+        margin-top: 3px;
+        font-size: 12px;
+        color: var(--text-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .conta-provedor {
+        display: inline-block;
+        margin-top: 7px;
+        padding: 3px 8px;
+        border-radius: 20px;
+        background: var(--blue-light);
+        color: var(--blue);
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .conta-acoes {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-top: 13px;
+    }
+
+    .conta-acao {
+        padding: 8px 12px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--blue);
+        transition:
+            background var(--dur) var(--ease),
+            color var(--dur) var(--ease);
+    }
+
+    .conta-acao:hover { background: var(--blue-light); }
+
+    .conta-sair { color: var(--text-muted); }
+
+    .conta-sair:hover {
+        background: rgb(226 75 94 / .10);
+        color: var(--pink);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .conta-painel.is-abrindo,
+        .conta-painel.is-fechando { animation: none !important; }
     }
 
     /* =========================================================
@@ -259,18 +679,18 @@
         background:
             radial-gradient(
                 circle at 80% 45%,
-                rgba(105, 169, 255, .17),
+                var(--art-hero-glow-a),
                 transparent 30%
             ),
             radial-gradient(
                 circle at 90% 70%,
-                rgba(115, 90, 255, .09),
+                var(--art-hero-glow-b),
                 transparent 30%
             ),
             linear-gradient(
                 180deg,
-                #ffffff 0%,
-                #f8fbff 100%
+                var(--bg) 0%,
+                var(--bg-soft) 100%
             );
     }
 
@@ -282,7 +702,7 @@
         right: -220px;
         top: 100px;
         border-radius: 50%;
-        border: 1px solid rgba(8, 120, 249, .09);
+        border: 1px solid var(--art-hero-ring);
     }
 
     .hero-content {
@@ -312,7 +732,7 @@
 
     .hero-text p {
         max-width: 520px;
-        color: var(--text-light);
+        color: var(--text-muted);
         font-size: 17px;
         line-height: 1.7;
         margin-bottom: 30px;
@@ -352,7 +772,7 @@
         width: 38px;
         height: 38px;
         border-radius: 50%;
-        border: 2px solid white;
+        border: 2px solid var(--surface);
         margin-left: -8px;
         display: flex;
         align-items: center;
@@ -360,8 +780,8 @@
         background:
             linear-gradient(
                 135deg,
-                #d9eaff,
-                #6eaaf1
+                var(--art-avatar-a),
+                var(--art-avatar-b)
             );
         font-size: 18px;
     }
@@ -372,7 +792,7 @@
 
     .hero-users span {
         max-width: 190px;
-        color: #526175;
+        color: var(--text-muted);
         font-size: 12px;
         line-height: 1.5;
     }
@@ -395,7 +815,7 @@
         background:
             radial-gradient(
                 ellipse,
-                rgba(8, 120, 249, .18),
+                var(--art-glow),
                 transparent 68%
             );
         filter: blur(15px);
@@ -411,13 +831,13 @@
             rotateZ(-2deg);
         filter:
             drop-shadow(
-                0 25px 30px rgba(31, 56, 87, .18)
+                0 25px 30px rgb(var(--shadow) / .18)
             );
         z-index: 2;
     }
 
     .laptop-screen {
-        background: #111;
+        background: var(--art-screen-frame);
         border-radius: 12px 12px 5px 5px;
         padding: 9px;
         aspect-ratio: 16 / 10;
@@ -426,7 +846,7 @@
     .screen-inner {
         height: 100%;
         border-radius: 5px;
-        background: #f9fbff;
+        background: var(--art-screen-bg);
         overflow: hidden;
         padding: 30px 28px;
     }
@@ -440,7 +860,7 @@
 
     .screen-subtitle {
         text-align: center;
-        color: #69778b;
+        color: var(--text-soft);
         font-size: 9px;
         margin-bottom: 20px;
     }
@@ -453,12 +873,11 @@
 
     .simulation-card {
         min-height: 115px;
-        background: white;
+        background: var(--surface);
         border-radius: 9px;
         padding: 13px 8px;
         text-align: center;
-        box-shadow:
-            0 3px 15px rgba(30, 55, 80, .07);
+        box-shadow: var(--shadow-weak);
     }
 
     .sim-icon {
@@ -473,15 +892,15 @@
     }
 
     .sim-orange {
-        background: #fff0dc;
+        background: var(--art-tint-orange);
     }
 
     .sim-green {
-        background: #ddf6f0;
+        background: var(--art-tint-green);
     }
 
     .sim-purple {
-        background: #eee9ff;
+        background: var(--art-tint-purple);
     }
 
     .simulation-card strong {
@@ -492,7 +911,7 @@
 
     .simulation-card small {
         display: block;
-        color: #6a7585;
+        color: var(--text-soft);
         font-size: 7px;
         line-height: 1.4;
     }
@@ -505,8 +924,8 @@
         background:
             linear-gradient(
                 180deg,
-                #d8dde2,
-                #9fa8b0
+                var(--art-base-a),
+                var(--art-base-b)
             );
         border-radius:
             3px 3px 25px 25px;
@@ -514,7 +933,7 @@
             perspective(300px)
             rotateX(15deg);
         box-shadow:
-            0 7px 15px rgba(0, 0, 0, .16);
+            0 7px 15px rgb(var(--shadow) / .16);
     }
 
     .laptop-base::after {
@@ -524,7 +943,7 @@
         height: 5px;
         left: 38.5%;
         top: 7px;
-        background: #89929a;
+        background: var(--art-base-notch);
         border-radius: 20px;
     }
 
@@ -532,7 +951,7 @@
        COMPETÊNCIAS
     ========================================================= */
     .skills-section {
-        background: white;
+        background: var(--bg);
         padding: 75px 0 90px;
     }
 
@@ -570,21 +989,20 @@
     .skill-card {
         min-height: 215px;
         padding: 24px 16px;
-        border: 1px solid #e8edf3;
+        border: 1px solid var(--border);
         border-radius: 18px;
         text-align: center;
-        background: white;
+        background: var(--surface);
         transition:
-            transform .25s ease,
-            box-shadow .25s ease,
-            border-color .25s ease;
+            transform var(--dur) var(--ease),
+            box-shadow var(--dur) var(--ease),
+            border-color var(--dur) var(--ease);
     }
 
     .skill-card:hover {
         transform: translateY(-6px);
-        border-color: #d4e6fb;
-        box-shadow:
-            0 15px 35px rgba(32, 76, 124, .09);
+        border-color: var(--border-strong);
+        box-shadow: var(--shadow-soft);
     }
 
     .skill-icon {
@@ -605,34 +1023,34 @@
     }
 
     .skill-card p {
-        color: #657184;
+        color: var(--text-muted);
         font-size: 12px;
         line-height: 1.55;
     }
 
     .icon-blue {
-        color: #0878f9;
-        background: #e8f3ff;
+        color: var(--blue);
+        background: var(--blue-light);
     }
 
     .icon-green {
-        color: #10ae8c;
-        background: #e0f7f1;
+        color: var(--green);
+        background: var(--art-tint-green);
     }
 
     .icon-orange {
-        color: #ee9d00;
-        background: #fff2d9;
+        color: var(--orange);
+        background: var(--art-tint-orange);
     }
 
     .icon-purple {
-        color: #7658ee;
-        background: #eeeaff;
+        color: var(--purple);
+        background: var(--art-tint-purple);
     }
 
     .icon-pink {
-        color: #ed6b86;
-        background: #ffe8ed;
+        color: var(--pink);
+        background: var(--art-tint-pink);
     }
 
     /* =========================================================
@@ -643,8 +1061,8 @@
         background:
             linear-gradient(
                 180deg,
-                #ffffff,
-                #f8fbff
+                var(--bg),
+                var(--bg-soft)
             );
     }
 
@@ -663,7 +1081,7 @@
     }
 
     .growth-text p {
-        color: #5b687a;
+        color: var(--text-muted);
         font-size: 15px;
         line-height: 1.75;
         max-width: 440px;
@@ -678,8 +1096,8 @@
         background:
             linear-gradient(
                 135deg,
-                #dfeeff,
-                #f7f9fb
+                var(--art-growth-a),
+                var(--art-growth-b)
             );
         display: flex;
         align-items: flex-end;
@@ -696,6 +1114,9 @@
         margin-bottom: -45px;
     }
 
+    /*
+       O tom de pele é o mesmo nos dois temas — de propósito.
+    */
     .person-head {
         position: absolute;
         width: 100px;
@@ -718,7 +1139,7 @@
         height: 75px;
         left: 98px;
         top: 10px;
-        background: #392d29;
+        background: var(--art-hair);
         border-radius:
             55% 55% 25% 25%;
         z-index: 4;
@@ -735,8 +1156,8 @@
         background:
             linear-gradient(
                 135deg,
-                #26394c,
-                #496278
+                var(--art-body-a),
+                var(--art-body-b)
             );
     }
 
@@ -750,15 +1171,15 @@
         background:
             linear-gradient(
                 135deg,
-                #cbd2d9,
-                #f1f3f5
+                var(--art-note-a),
+                var(--art-note-b)
             );
         border-radius: 7px;
         transform:
             perspective(600px)
             rotateX(2deg);
         box-shadow:
-            0 10px 20px rgba(0,0,0,.15);
+            0 10px 20px rgb(var(--shadow) / .15);
     }
 
     .laptop-small::before {
@@ -768,8 +1189,8 @@
         background:
             linear-gradient(
                 135deg,
-                #30465a,
-                #7892a9
+                var(--art-note-screen-a),
+                var(--art-note-screen-b)
             );
         border-radius: 3px;
     }
@@ -781,10 +1202,9 @@
         align-items: center;
         gap: 12px;
         padding: 15px 20px;
-        background: rgba(255,255,255,.96);
+        background: var(--surface);
         border-radius: 14px;
-        box-shadow:
-            0 12px 30px rgba(30, 60, 90, .12);
+        box-shadow: var(--shadow-soft);
         font-size: 12px;
     }
 
@@ -811,7 +1231,7 @@
         align-items: center;
         justify-content: center;
         border-radius: 10px;
-        background: #e8f3ff;
+        background: var(--blue-light);
         color: var(--blue);
         font-size: 18px;
     }
@@ -834,8 +1254,8 @@
         background:
             linear-gradient(
                 100deg,
-                #e9f4ff,
-                #f1f6ff
+                var(--art-cta-a),
+                var(--art-cta-b)
             );
     }
 
@@ -849,20 +1269,12 @@
         width: 60px;
         height: 60px;
         border-radius: 14px;
-        background: var(--blue);
+        background: var(--surface-2);
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        box-shadow:
-            0 10px 25px rgba(8, 120, 249, .2);
-    }
-
-    .cta-icon img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
+        box-shadow: var(--shadow-soft);
     }
 
     .cta-brand h2 {
@@ -874,16 +1286,16 @@
     .cta-text {
         font-size: 13px;
         line-height: 1.6;
-        color: #4c5a6d;
+        color: var(--text-muted);
     }
 
     /* =========================================================
        FOOTER
     ========================================================= */
     footer {
-        border-top: 1px solid #edf0f4;
+        border-top: 1px solid var(--border);
         padding: 25px 0;
-        background: white;
+        background: var(--bg);
     }
 
     .footer-content {
@@ -905,25 +1317,22 @@
         width: 29px;
         height: 29px;
         border-radius: 7px;
-        background: var(--blue);
+        background: var(--surface-2);
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
     }
 
-    .footer-logo-icon img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-
     .footer-links {
         display: flex;
         gap: 35px;
-        color: #536074;
+        color: var(--text-muted);
         font-size: 11px;
+    }
+
+    .footer-links a {
+        transition: color var(--dur-fast) var(--ease);
     }
 
     .footer-links a:hover {
@@ -942,15 +1351,18 @@
         align-items: center;
         justify-content: center;
         border-radius: 9px;
-        background: #f3f5f8;
+        background: var(--surface-2);
         font-size: 13px;
         font-weight: 700;
-        color: #1b2b3e;
+        color: var(--text);
+        transition:
+            color var(--dur-fast) var(--ease),
+            background-color var(--dur) var(--ease);
     }
 
     .social:hover {
         color: var(--blue);
-        background: #eaf4ff;
+        background: var(--blue-light);
     }
 
     /* =========================================================
@@ -973,6 +1385,38 @@
 
     .stat-two {
         animation-delay: 1.2s;
+    }
+
+    /* =========================================================
+       REVELAÇÃO AO ROLAR
+    ========================================================= */
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(26px);
+        transition:
+            opacity var(--dur-slow) var(--ease),
+            transform var(--dur-slow) var(--ease);
+        transition-delay: var(--reveal-delay, 0ms);
+        will-change: transform, opacity;
+    }
+
+    .reveal.is-visible {
+        opacity: 1;
+        transform: none;
+        will-change: auto;
+    }
+
+    /* Entrada da dobra inicial, sem esperar o scroll */
+    @keyframes sobe {
+        from { opacity: 0; transform: translateY(22px); }
+        to   { opacity: 1; transform: none; }
+    }
+
+    .enter {
+        opacity: 0;
+        animation: sobe var(--dur-slow) var(--ease) forwards;
+        animation-delay: var(--enter-delay, 0ms);
     }
 
     /* =========================================================
@@ -1027,6 +1471,25 @@
         }
 
         /*
+           MENU DAS 3 BARRAS ABERTO
+           O JS só liga/desliga esta classe — nada de
+           estilo inline, para o painel seguir o tema.
+        */
+        .nav-links.mobile-open {
+            display: flex;
+            position: absolute;
+            top: 75px;
+            left: 16px;
+            right: 16px;
+            padding: 20px;
+            flex-direction: column;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        /*
            NO MOBILE: Entrar e Começar agora ficam
            sempre visíveis ao lado da logo.
            Eles NÃO fazem parte do menu das 3 barras.
@@ -1045,6 +1508,17 @@
             border-radius: 9px;
             font-size: 11px;
             white-space: nowrap;
+        }
+
+        .theme-toggle {
+            width: 34px;
+            height: 38px;
+            border-radius: 9px;
+        }
+
+        .theme-icon {
+            width: 18px;
+            height: 18px;
         }
 
         .menu-button {
@@ -1182,6 +1656,17 @@
             font-size: 10px;
         }
 
+        .theme-toggle {
+            width: 32px;
+            height: 35px;
+            border-radius: 8px;
+        }
+
+        .theme-icon {
+            width: 17px;
+            height: 17px;
+        }
+
         .menu-button {
             width: 28px;
             height: 35px;
@@ -1312,8 +1797,13 @@
     ========================================================= */
     @media (max-width: 370px) {
 
+        /*
+           Com o botão de tema no meio, cada pixel do
+           cabeçalho conta: tudo encolhe junto para a
+           linha não quebrar nem cobrir a logo.
+        */
         .navbar {
-            gap: 3px;
+            gap: 2px;
         }
 
         .logo {
@@ -1327,13 +1817,24 @@
         }
 
         .nav-buttons {
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-buttons .btn {
             min-height: 33px;
-            padding: 0 6px;
+            padding: 0 5px;
             font-size: 9px;
+        }
+
+        .theme-toggle {
+            width: 24px;
+            height: 33px;
+            border-radius: 7px;
+        }
+
+        .theme-icon {
+            width: 14px;
+            height: 14px;
         }
 
         .menu-button {
@@ -1368,6 +1869,16 @@
             animation-iteration-count: 1 !important;
             transition-duration: .01ms !important;
         }
+
+        .reveal {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        .enter {
+            opacity: 1 !important;
+            animation: none !important;
+        }
     }
 
 </style>
@@ -1389,7 +1900,19 @@
         <a href="#" class="logo">
 
             <div class="logo-icon">
-                <img src="static/logo.jpg" alt="Skill Bloom">
+
+                <svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect x="6" y="13" width="52" height="47" rx="9" fill="var(--mark-case)"/>
+                    <rect x="20" y="5" width="24" height="12" rx="5" stroke="var(--mark-accent)" stroke-width="3"/>
+                    <path d="M32 25C25 19 16 26 18.5 34C13 39 18 48 24 47C28 53 36 53 40 47C47 48 52 39 46 34C49 26 39 19 32 25Z"
+                          fill="var(--mark-brain)" stroke="var(--mark-accent)" stroke-width="2"/>
+                    <path d="M32 25V48" stroke="var(--mark-accent)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M29 29C25 27 22 30 24 33M29 35C25 34 23 37 25 40M29 41C27 41 26 43 27 45"
+                          stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
+                    <path d="M35 29C39 27 42 30 40 33M35 35C39 34 41 37 39 40M35 41C37 41 38 43 37 45"
+                          stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+
             </div>
 
             Skill <span>Bloom</span>
@@ -1418,6 +1941,91 @@
 
         <div class="nav-buttons">
 
+            <button
+                class="theme-toggle"
+                id="themeToggle"
+                type="button"
+                aria-label="Alternar tema claro e escuro"
+                title="Alternar tema"
+            >
+                <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.9"/>
+                    <path d="M12 2.6V5M12 19V21.4M21.4 12H19M5 12H2.6M18.6 5.4L17 7M7 17L5.4 18.6M18.6 18.6L17 17M7 7L5.4 5.4"
+                          stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                </svg>
+
+                <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a6.8 6.8 0 0 0 10.8 10.8Z"
+                          stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            {% if usuario %}
+
+            <div class="conta" id="conta">
+
+                <button
+                    class="conta-botao"
+                    id="contaBotao"
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    aria-controls="contaPainel"
+                    aria-label="Sua conta"
+                    data-nome="{{ usuario.nome }}"
+                >
+                    <span class="conta-iniciais" aria-hidden="true"></span>
+
+                    {% if usuario.foto %}
+                    <img
+                        class="conta-foto"
+                        src="{{ usuario.foto }}"
+                        alt=""
+                        referrerpolicy="no-referrer"
+                        loading="lazy"
+                    >
+                    {% endif %}
+                </button>
+
+                <div class="conta-painel" id="contaPainel" role="dialog" aria-label="Sua conta" hidden>
+
+                    <div class="conta-cabecalho">
+
+                        <span class="conta-avatar" aria-hidden="true">
+                            <span class="conta-iniciais"></span>
+
+                            {% if usuario.foto %}
+                            <img
+                                class="conta-foto"
+                                src="{{ usuario.foto }}"
+                                alt=""
+                                referrerpolicy="no-referrer"
+                            >
+                            {% endif %}
+                        </span>
+
+                        <div class="conta-dados">
+                            <strong class="conta-nome">{{ usuario.nome }}</strong>
+                            <span class="conta-email">{{ usuario.email }}</span>
+
+                            {% if usuario.provedor %}
+                            <span class="conta-provedor">via {{ usuario.provedor|capitalize }}</span>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <div class="conta-acoes">
+                        <a href="/dash" class="conta-acao">Meu painel</a>
+                        <a href="/auth/sair" class="conta-acao conta-sair">Sair</a>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% else %}
+
             <a href="/login" class="btn btn-outline">
                 Entrar
             </a>
@@ -1425,6 +2033,8 @@
             <a href="/cadastro" class="btn btn-primary">
                 Começar agora
             </a>
+
+            {% endif %}
 
         </div>
 
@@ -1457,7 +2067,7 @@
 
             <div class="hero-text">
 
-                <h1>
+                <h1 class="enter">
 
                     Prepare-se hoje,
 
@@ -1471,7 +2081,10 @@
 
                 </h1>
 
-                <p>
+                <p
+                    class="enter"
+                    style="--enter-delay:80ms"
+                >
 
                     Skill Bloom é um simulador de ambiente de trabalho
                     que desenvolve suas competências socioemocionais
@@ -1480,7 +2093,10 @@
 
                 </p>
 
-                <div class="hero-actions">
+                <div
+                    class="hero-actions enter"
+                    style="--enter-delay:160ms"
+                >
 
                     <a
                         href="/dash"
@@ -1506,7 +2122,10 @@
 
                 </div>
 
-                <div class="hero-users">
+                <div
+                    class="hero-users enter"
+                    style="--enter-delay:240ms"
+                >
 
                     <div class="avatars">
 
@@ -1646,13 +2265,13 @@
 
                     Habilidades para
 
-                    <span style="color:#168c86">
+                    <span style="color:var(--green)">
                         a vida
                     </span>
 
                     e para
 
-                    <span style="color:#7257ef">
+                    <span style="color:var(--purple)">
                         o trabalho.
                     </span>
 
@@ -1664,7 +2283,9 @@
 
             <div class="skills-grid">
 
-                <article class="skill-card">
+                <article
+                    class="skill-card reveal"
+                >
 
                     <div class="skill-icon icon-blue">
                         ♙
@@ -1683,7 +2304,10 @@
 
 
 
-                <article class="skill-card">
+                <article
+                    class="skill-card reveal"
+                    style="--reveal-delay:80ms"
+                >
 
                     <div class="skill-icon icon-green">
                         ♧
@@ -1702,7 +2326,10 @@
 
 
 
-                <article class="skill-card">
+                <article
+                    class="skill-card reveal"
+                    style="--reveal-delay:160ms"
+                >
 
                     <div class="skill-icon icon-orange">
                         💡
@@ -1721,7 +2348,10 @@
 
 
 
-                <article class="skill-card">
+                <article
+                    class="skill-card reveal"
+                    style="--reveal-delay:240ms"
+                >
 
                     <div class="skill-icon icon-purple">
                         🎯
@@ -1740,7 +2370,10 @@
 
 
 
-                <article class="skill-card">
+                <article
+                    class="skill-card reveal"
+                    style="--reveal-delay:320ms"
+                >
 
                     <div class="skill-icon icon-pink">
                         ♡
@@ -1759,7 +2392,10 @@
 
 
 
-                <article class="skill-card">
+                <article
+                    class="skill-card reveal"
+                    style="--reveal-delay:400ms"
+                >
 
                     <div class="skill-icon icon-blue">
                         ↗
@@ -1795,7 +2431,7 @@
 
         <div class="container growth-content">
 
-            <div class="growth-text">
+            <div class="growth-text reveal">
 
                 <h2>
 
@@ -1834,7 +2470,10 @@
 
 
 
-            <div class="growth-image">
+            <div
+                class="growth-image reveal"
+                style="--reveal-delay:120ms"
+            >
 
                 <div class="floating-stat stat-one">
 
@@ -1870,8 +2509,8 @@
                     <div
                         class="stat-icon"
                         style="
-                            background:#fff3df;
-                            color:#ee9d00;
+                            background:var(--art-tint-orange);
+                            color:var(--orange);
                         "
                     >
                         🏆
@@ -1903,12 +2542,24 @@
 
         <div class="container">
 
-            <div class="cta-box">
+            <div class="cta-box reveal">
 
                 <div class="cta-brand">
 
                     <div class="cta-icon">
-                        <img src="static/logo.jpg" alt="Skill Bloom">
+
+                        <svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <rect x="6" y="13" width="52" height="47" rx="9" fill="var(--mark-case)"/>
+                            <rect x="20" y="5" width="24" height="12" rx="5" stroke="var(--mark-accent)" stroke-width="3"/>
+                            <path d="M32 25C25 19 16 26 18.5 34C13 39 18 48 24 47C28 53 36 53 40 47C47 48 52 39 46 34C49 26 39 19 32 25Z"
+                                  fill="var(--mark-brain)" stroke="var(--mark-accent)" stroke-width="2"/>
+                            <path d="M32 25V48" stroke="var(--mark-accent)" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M29 29C25 27 22 30 24 33M29 35C25 34 23 37 25 40M29 41C27 41 26 43 27 45"
+                                  stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
+                            <path d="M35 29C39 27 42 30 40 33M35 35C39 34 41 37 39 40M35 41C37 41 38 43 37 45"
+                                  stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
+                        </svg>
+
                     </div>
 
                     <h2>
@@ -1966,7 +2617,19 @@
         <div class="footer-logo">
 
             <div class="footer-logo-icon">
-                <img src="static/logo.jpg" alt="Skill Bloom">
+
+                <svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect x="6" y="13" width="52" height="47" rx="9" fill="var(--mark-case)"/>
+                    <rect x="20" y="5" width="24" height="12" rx="5" stroke="var(--mark-accent)" stroke-width="3"/>
+                    <path d="M32 25C25 19 16 26 18.5 34C13 39 18 48 24 47C28 53 36 53 40 47C47 48 52 39 46 34C49 26 39 19 32 25Z"
+                          fill="var(--mark-brain)" stroke="var(--mark-accent)" stroke-width="2"/>
+                    <path d="M32 25V48" stroke="var(--mark-accent)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M29 29C25 27 22 30 24 33M29 35C25 34 23 37 25 40M29 41C27 41 26 43 27 45"
+                          stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
+                    <path d="M35 29C39 27 42 30 40 33M35 35C39 34 41 37 39 40M35 41C37 41 38 43 37 45"
+                          stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+
             </div>
 
             Skill Bloom
@@ -1983,14 +2646,6 @@
 
             <a href="#">
                 Contato
-            </a>
-
-            <a href="#">
-                Termos de uso
-            </a>
-
-            <a href="#">
-                Política de privacidade
             </a>
 
         </div>
@@ -2047,23 +2702,15 @@
 
         if (isOpen) {
             nav.classList.remove("mobile-open");
-            nav.style.display = "";
             menuButton.setAttribute("aria-label", "Abrir menu");
             return;
         }
 
+        /*
+           Só a classe: a aparência do painel mora no CSS,
+           então ele segue o tema claro/escuro.
+        */
         nav.classList.add("mobile-open");
-        nav.style.display = "flex";
-        nav.style.position = "absolute";
-        nav.style.top = "75px";
-        nav.style.left = "16px";
-        nav.style.right = "16px";
-        nav.style.padding = "20px";
-        nav.style.flexDirection = "column";
-        nav.style.background = "white";
-        nav.style.borderRadius = "16px";
-        nav.style.boxShadow =
-            "0 15px 40px rgba(20,50,80,.12)";
 
         /*
            IMPORTANTE:
@@ -2091,7 +2738,6 @@
 
             if (window.innerWidth <= 780) {
                 nav.classList.remove("mobile-open");
-                nav.style.display = "";
                 menuButton.setAttribute("aria-label", "Abrir menu");
             }
         });
@@ -2134,8 +2780,196 @@
 
     });
 
+
+
+    /* =========================================================
+       REVELAÇÃO AO ROLAR
+    ========================================================= */
+
+    (function () {
+
+        var alvos = document.querySelectorAll(".reveal");
+        if (!alvos.length) return;
+
+        var prefereMenosMovimento =
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        if (prefereMenosMovimento || !("IntersectionObserver" in window)) {
+            alvos.forEach(function (alvo) {
+                alvo.classList.add("is-visible");
+            });
+            return;
+        }
+
+        var observador = new IntersectionObserver(function (entradas) {
+            entradas.forEach(function (entrada) {
+                if (entrada.isIntersecting) {
+                    entrada.target.classList.add("is-visible");
+                    observador.unobserve(entrada.target);
+                }
+            });
+        }, {
+            rootMargin: "0px 0px -12% 0px",
+            threshold: 0.12
+        });
+
+        alvos.forEach(function (alvo) {
+            observador.observe(alvo);
+        });
+
+    })();
+
+
+
+    /* =========================================================
+       TEMA
+       O SkillBloom é escuro por padrão. O botão leva ao claro
+       e a escolha fica salva no navegador.
+    ========================================================= */
+
+    (function () {
+
+        var raiz = document.documentElement;
+        var botao = document.getElementById("themeToggle");
+        if (!botao) return;
+
+        function temaAtual() {
+            return raiz.getAttribute("data-theme") === "light"
+                ? "light"
+                : "dark";
+        }
+
+        function pintarBarra(tema) {
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) {
+                meta.setAttribute(
+                    "content",
+                    tema === "light" ? "#ffffff" : "#061a36"
+                );
+            }
+        }
+
+        botao.addEventListener("click", function () {
+
+            var proximo = temaAtual() === "light" ? "dark" : "light";
+
+            /* Suaviza a troca sem animar durante o carregamento. */
+            raiz.classList.add("theme-switching");
+
+            if (proximo === "light") {
+                raiz.setAttribute("data-theme", "light");
+            } else {
+                raiz.removeAttribute("data-theme");
+            }
+
+            pintarBarra(proximo);
+
+            try {
+                localStorage.setItem("skillbloom-tema", proximo);
+            } catch (e) {}
+
+            window.setTimeout(function () {
+                raiz.classList.remove("theme-switching");
+            }, 420);
+        });
+
+    })();
+
+
+
+    /* =========================================================
+       CONTA
+       Iniciais como reserva, e o painel abre no clique.
+    ========================================================= */
+
+    (function () {
+
+        var caixa = document.getElementById("conta");
+        if (!caixa) return;
+
+        var botao = document.getElementById("contaBotao");
+        var painel = document.getElementById("contaPainel");
+        if (!botao || !painel) return;
+
+
+        /* ----- iniciais a partir do nome ----- */
+
+        var nome = (botao.getAttribute("data-nome") || "").trim();
+
+        var partes = nome.split(/\s+/).filter(Boolean);
+
+        var iniciais = partes.length > 1
+            ? partes[0][0] + partes[partes.length - 1][0]
+            : (partes[0] ? partes[0].slice(0, 2) : "?");
+
+        iniciais = iniciais.toUpperCase();
+
+        caixa.querySelectorAll(".conta-iniciais").forEach(function (alvo) {
+            alvo.textContent = iniciais;
+        });
+
+
+        /* ----- foto do provedor pode falhar; some e deixa as iniciais ----- */
+
+        caixa.querySelectorAll(".conta-foto").forEach(function (foto) {
+            foto.addEventListener("error", function () {
+                foto.remove();
+            });
+        });
+
+
+        /* ----- abrir e fechar ----- */
+
+        function aberto() {
+            return botao.getAttribute("aria-expanded") === "true";
+        }
+
+        function abrir() {
+            painel.hidden = false;
+            painel.classList.remove("is-fechando");
+            painel.classList.add("is-abrindo");
+            botao.setAttribute("aria-expanded", "true");
+        }
+
+        function fechar() {
+            if (!aberto()) return;
+
+            botao.setAttribute("aria-expanded", "false");
+            painel.classList.remove("is-abrindo");
+            painel.classList.add("is-fechando");
+
+            window.setTimeout(function () {
+                painel.classList.remove("is-fechando");
+                painel.hidden = true;
+            }, 180);
+        }
+
+        botao.addEventListener("click", function (evento) {
+            evento.stopPropagation();
+            if (aberto()) {
+                fechar();
+            } else {
+                abrir();
+            }
+        });
+
+        /* Clique fora fecha, mas clique dentro do painel não. */
+        painel.addEventListener("click", function (evento) {
+            evento.stopPropagation();
+        });
+
+        document.addEventListener("click", fechar);
+
+        document.addEventListener("keydown", function (evento) {
+            if (evento.key === "Escape" && aberto()) {
+                fechar();
+                botao.focus();
+            }
+        });
+
+    })();
+
 </script>
-```
 
 </body>
 

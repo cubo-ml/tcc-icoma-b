@@ -2743,165 +2743,77 @@
        SUBMIT
     ========================================================= */
 
-    form.addEventListener(
-        "submit",
-        function(event) {
+   form.addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-            event.preventDefault();
+    const nome = document.getElementById("name").value.trim();
+    const nascimento = document.getElementById("birthdate").value;
+    const genero = document.getElementById("gender").value;
+    const emailValue = document.getElementById("email").value.trim();
+    const telefone = document.getElementById("phone").value.trim();
+    const senha = password.value;
+    const confirmarSenha = confirmPassword.value;
 
+    if (senha !== confirmarSenha) {
+        passwordError.textContent = "As senhas não coincidem.";
+        passwordError.classList.add("show");
+        return;
+    }
 
-            const name =
-                document.getElementById("name");
+    if (senha.length < 8) {
+        passwordError.textContent = "A senha precisa ter pelo menos 8 caracteres.";
+        passwordError.classList.add("show");
+        return;
+    }
 
-            const email =
-                document.getElementById("email");
+    passwordError.classList.remove("show");
 
-            const birthdate =
-                document.getElementById("birthdate");
+    submitButton.disabled = true;
+    submitButton.textContent = "Cadastrando...";
 
+    try {
+        const resposta = await fetch("/api/cadastro", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nome: nome,
+                nascimento: nascimento,
+                genero: genero,
+                email: emailValue,
+                telefone: telefone,
+                senha: senha
+            })
+        });
 
-            let valid = true;
+        const resultado = await resposta.json();
 
-
-            /* NOME */
-
-            if (name.value.trim().length < 3) {
-
-                name.classList.add("invalid");
-
-                document
-                    .getElementById("nameError")
-                    .classList.add("show");
-
-                valid = false;
-
-            } else {
-
-                name.classList.remove("invalid");
-
-                document
-                    .getElementById("nameError")
-                    .classList.remove("show");
-
-            }
-
-
-            /* EMAIL */
-
-            if (!validEmail(email.value.trim())) {
-
-                email.classList.add("invalid");
-
-                document
-                    .getElementById("emailError")
-                    .classList.add("show");
-
-                valid = false;
-
-            } else {
-
-                email.classList.remove("invalid");
-
-                document
-                    .getElementById("emailError")
-                    .classList.remove("show");
-
-            }
-
-
-            /* DATA */
-
-            if (!birthdate.value) {
-
-                birthdate.classList.add("invalid");
-
-                valid = false;
-
-            } else {
-
-                birthdate.classList.remove("invalid");
-
-            }
-
-
-            /* SENHA */
-
-            if (
-                password.value.length < 8 ||
-                password.value !== confirmPassword.value
-            ) {
-
-                confirmPassword.classList.add("invalid");
-
-                document
-                    .getElementById("passwordError")
-                    .classList.add("show");
-
-                valid = false;
-
-            } else {
-
-                confirmPassword.classList.remove("invalid");
-
-                document
-                    .getElementById("passwordError")
-                    .classList.remove("show");
-
-            }
-
-
-            /* RESULTADO */
-
-            if (!valid) {
-                return;
-            }
-
-
-            /*
-                ====================================================
-                IMPORTANTE
-
-                Aqui é onde futuramente você vai enviar
-                os dados para o seu backend/API.
-
-                Exemplo:
-
-                fetch("/api/cadastro", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        nome: name.value,
-                        nascimento: birthdate.value,
-                        genero: document.getElementById("gender").value,
-                        email: email.value,
-                        telefone: phone.value,
-                        senha: password.value
-                    })
-                });
-
-                ====================================================
-            */
-
-
-            successMessage.classList.add("show");
-
-            form.reset();
-
-            strengthFill.style.width = "0%";
-
-            strengthFill.classList.remove(
-                "fraca",
-                "media",
-                "boa",
-                "forte"
+        if (!resposta.ok || !resultado.sucesso) {
+            throw new Error(
+                resultado.mensagem || "Não foi possível criar a conta."
             );
-
-            strengthText.textContent = "-";
-
         }
-    );
+
+        successMessage.classList.add("show");
+
+        form.reset();
+
+        strengthFill.style.width = "0%";
+        strengthText.textContent = "";
+
+        console.log("Cadastro realizado com sucesso!");
+
+    } catch (erro) {
+        console.error("Erro no cadastro:", erro);
+
+        alert(erro.message || "Ocorreu um erro ao criar a conta.");
+
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Criar conta";
+    }
+});
 
 
     /* =========================================================

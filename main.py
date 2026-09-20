@@ -1,8 +1,11 @@
 import os
 import secrets
 
-from flask import Flask, redirect, render_template, session
+from flask import Flask, redirect, render_template, session, request, jsonify
 from werkzeug.middleware.proxy_fix import ProxyFix
+
+import firebase_admin
+from firebase_admin import credentials, firestore, auth
 
 from app.auth.oauth import (
     CHAVE_SESSAO,
@@ -14,50 +17,57 @@ from app.auth.oauth import (
 )
 from app.services.user_service import conquistas_de, conquistas_zeradas
 
-# Le o .env antes de qualquer consulta a variavel de ambiente.
+
+# =========================================================
+# AMBIENTE
+# =========================================================
+
 carregar_ambiente()
 
 app = Flask(__name__)
 
 
 # =========================================================
-# ATRAS DE PROXY (Render, Railway, Nginx)
-# Nesses lugares o TLS termina no proxy e a aplicacao recebe a
-# requisicao em http. Sem isto o url_for(..., _external=True)
-# monta redirect_uri com http:// e o Google devolve
-# redirect_uri_mismatch, derrubando o login inteiro.
-#
-# O ProxyFix so olha os cabecalhos X-Forwarded-*; rodando na
-# propria maquina ninguem os envia, entao no localhost nada
-# muda. Os numeros dizem "confie em UM proxy na frente" - e o
-# caso do Render. Vale so quando existe mesmo esse proxy: e ele
-# quem garante que o cliente nao forjou os cabecalhos.
+# FIREBASE
 # =========================================================
 
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+cred = credentials.Certificate("firebase-admin.json")
+
+if not firebase_admin._apps:
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+
+# =========================================================
+# ATRAS DE PROXY
+# =========================================================
+
+app.wsgi_app = ProxyFix(
+    app.wsgi_app,
+    x_for=1,
+    x_proto=1,
+    x_host=1
+)
 
 
 # =========================================================
 # SESSAO E LOGIN SOCIAL
-# Sem FLASK_SECRET_KEY o app ainda sobe: gera uma chave
-# aleatoria em memoria, boa apenas para desenvolvimento.
 # =========================================================
 
 chave = os.environ.get("FLASK_SECRET_KEY", "").strip()
 
 if not chave:
     chave = secrets.token_hex(32)
+
     print(
         "[auth] AVISO: FLASK_SECRET_KEY nao definida. "
-        "Usando chave aleatoria em memoria (so desenvolvimento) - "
-        "as sessoes caem a cada reinicio do servidor."
+        "Usando chave aleatoria em memoria (so desenvolvimento)."
     )
+
     print(
         "[auth] AVISO: em producao com MAIS DE UM WORKER isto QUEBRA "
-        "o login: cada worker gera a sua chave, o cookie assinado por "
-        "um e' recusado pelo outro e o state do OAuth se perde entre "
-        "/auth/google e o callback (?erro=oauth_estado intermitente). "
-        "Defina FLASK_SECRET_KEY, a MESMA para todos os workers."
+        "o login. Defina FLASK_SECRET_KEY."
     )
 
 app.secret_key = chave
@@ -65,100 +75,300 @@ app.secret_key = chave
 
 # =========================================================
 # COOKIE DE SESSAO
-# HTTPONLY: o JavaScript da pagina nao le o cookie.
-# SAMESITE "Lax": o navegador manda o cookie quando o usuario
-#   volta do Google/LinkedIn (navegacao de topo). "Strict"
-#   seguraria o cookie justamente nesse retorno e o callback
-#   nao acharia o state - o login quebraria.
-# SECURE: o cookie so viaja em https. Ligado em producao; no
-#   http://localhost isso impediria o login, por isso o padrao
-#   e desligado e a escolha vem do ambiente.
 # =========================================================
 
 def cookie_somente_https():
     """Decide o SESSION_COOKIE_SECURE a partir do ambiente."""
-    escolha = os.environ.get("SESSION_COOKIE_SECURE", "").strip().lower()
 
-    if escolha:
-        return escolha in ("1", "true", "sim", "on", "yes")
-
-    ambiente = (
-        os.environ.get("AMBIENTE", "") or os.environ.get("FLASK_ENV", "")
+    escolha = os.environ.get(
+        "SESSION_COOKIE_SECURE",
+        ""
     ).strip().lower()
 
-    if ambiente in ("producao", "production", "prod"):
+    if escolha:
+        return escolha in (
+            "1",
+            "true",
+            "sim",
+            "on",
+            "yes"
+        )
+
+    ambiente = (
+        os.environ.get("AMBIENTE", "")
+        or os.environ.get("FLASK_ENV", "")
+    ).strip().lower()
+
+    if ambiente in (
+        "producao",
+        "production",
+        "prod"
+    ):
         return True
 
-    # O Render exporta RENDER=true nas suas maquinas.
-    return bool(os.environ.get("RENDER", "").strip())
+    return bool(
+        os.environ.get(
+            "RENDER",
+            ""
+        ).strip()
+    )
 
 
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["SESSION_COOKIE_SECURE"] = cookie_somente_https()
 
+
+# =========================================================
+# OAUTH
+# =========================================================
+
 configurar_oauth(app)
+
 app.register_blueprint(auth_bp)
 
+
+# =========================================================
+# USUARIO GLOBAL DAS TEMPLATES
+# =========================================================
 
 @app.context_processor
 def injetar_usuario():
     """
-    Deixa o usuario logado e suas conquistas visiveis para todas
-    as templates - e o que alimenta o menu de conta do cabecalho.
-
-    O cookie guarda apenas a chave do cadastro (mais nome e foto
-    de reserva): email e provedor sao lidos do repositorio aqui,
-    e nao viajam no navegador.
-
-    Sem ninguem logado, conquistas vem None e a interface decide
-    o que fazer. Logado mas sem cadastro em disco (gravacao que
-    falhou, ou sessao antiga), devolvemos tudo zerado: numero
-    inventado nao entra na tela.
+    Deixa o usuario logado e suas conquistas visiveis
+    para todas as templates.
     """
+
     usuario = usuario_da_sessao()
 
     if not usuario:
-        return {"usuario": None, "conquistas": None}
+        return {
+            "usuario": None,
+            "conquistas": None
+        }
 
     try:
-        conquistas = conquistas_de(session.get(CHAVE_SESSAO, ""))
+        conquistas = conquistas_de(
+            session.get(CHAVE_SESSAO, "")
+        )
+
     except Exception as erro:
-        # Uma pagina inteira nao pode cair por causa do painel de conta.
-        print("[usuarios] AVISO: falha ao ler conquistas: " + erro.__class__.__name__)
+
+        print(
+            "[usuarios] AVISO: falha ao ler conquistas: "
+            + erro.__class__.__name__
+        )
+
         conquistas = None
 
     if conquistas is None:
         conquistas = conquistas_zeradas()
 
-    return {"usuario": usuario, "conquistas": conquistas}
+    return {
+        "usuario": usuario,
+        "conquistas": conquistas
+    }
 
+
+# =========================================================
+# PAGINA INICIAL
+# =========================================================
 
 @app.route("/")
 def index():
-    nome = 'icoma.com.br'
-    return render_template('index.html', site = nome)
+
+    nome = "icoma.com.br"
+
+    return render_template(
+        "index.html",
+        site=nome
+    )
+
+
+# =========================================================
+# LOGIN
+# =========================================================
 
 @app.route("/login")
 def login():
-    return render_template('login/login.html')
+
+    return render_template(
+        "login/login.html"
+    )
+
+
+# =========================================================
+# CADASTRO
+# =========================================================
 
 @app.route("/cadastro")
+@app.route("/login/cadastro")
 def cadastro():
-    return render_template('login/cadastro.html')
+    return render_template("login/cadastro.html")
+
+# =========================================================
+# API DO CADASTRO
+# =========================================================
+
+@app.route("/api/cadastro", methods=["POST"])
+def cadastrar_usuario():
+
+    try:
+
+        dados = request.get_json()
+
+        nome = dados.get("nome")
+        nascimento = dados.get("nascimento")
+        genero = dados.get("genero")
+        email = dados.get("email")
+        telefone = dados.get("telefone")
+        senha = dados.get("senha")
+
+
+        # -------------------------------------------------
+        # VERIFICAR CAMPOS
+        # -------------------------------------------------
+
+        if (
+            not nome
+            or not nascimento
+            or not email
+            or not telefone
+            or not senha
+        ):
+
+            return jsonify({
+                "sucesso": False,
+                "mensagem": "Preencha todos os campos obrigatórios."
+            }), 400
+
+
+        # -------------------------------------------------
+        # CRIAR USUARIO NO FIREBASE AUTHENTICATION
+        # -------------------------------------------------
+
+        usuario = auth.create_user(
+            email=email,
+            password=senha,
+            display_name=nome
+        )
+
+
+        # -------------------------------------------------
+        # SALVAR DADOS NO FIRESTORE
+        # -------------------------------------------------
+
+        db.collection("usuarios").document(
+            usuario.uid
+        ).set({
+
+            "uid": usuario.uid,
+            "nome": nome,
+            "nascimento": nascimento,
+            "genero": genero,
+            "email": email,
+            "telefone": telefone
+
+        })
+
+
+        # -------------------------------------------------
+        # RESPOSTA DE SUCESSO
+        # -------------------------------------------------
+
+        return jsonify({
+
+            "sucesso": True,
+            "mensagem": "Conta criada com sucesso!"
+
+        })
+
+
+    # -----------------------------------------------------
+    # EMAIL JÁ EXISTENTE
+    # -----------------------------------------------------
+
+    except auth.EmailAlreadyExistsError:
+
+        return jsonify({
+
+            "sucesso": False,
+            "mensagem": "Este e-mail já está cadastrado."
+
+        }), 400
+
+
+    # -----------------------------------------------------
+    # OUTRO ERRO
+    # -----------------------------------------------------
+
+    except Exception as erro:
+
+        print(
+            "[cadastro] ERRO:",
+            erro
+        )
+
+        return jsonify({
+
+            "sucesso": False,
+            "mensagem": "Ocorreu um erro ao criar a conta."
+
+        }), 500
+
+
+# =========================================================
+# TESTE DO FIREBASE
+# =========================================================
+
+@app.route("/teste")
+def teste():
+
+    db.collection("teste").add({
+
+        "mensagem": "Funcionou!",
+        "autor": "Lucas"
+
+    })
+
+    return "Dados enviados com sucesso!"
+
+
+# =========================================================
+# DASHBOARD
+# =========================================================
 
 @app.route("/dash")
 def dash():
-    # Painel e area de quem entrou. Sem sessao, volta para o login.
-    # /login e /cadastro nao tem guarda nenhuma, entao nao ha como
-    # este redirecionamento virar laco.
+
+    # Se nao estiver logado,
+    # volta para o login.
+
     if not sessao_iniciada():
+
         return redirect("/login")
 
-    return render_template('pages/landpage.html')
+    return render_template(
+        "pages/landpage.html"
+    )
+
+
+# =========================================================
+# INICIAR SERVIDOR
+# =========================================================
 
 def main():
-    app.run(host="0.0.0.0", port = int(os.environ.get("PORT", 10000)))
+
+    app.run(
+        host="0.0.0.0",
+        port=int(
+            os.environ.get(
+                "PORT",
+                10000
+            )
+        )
+    )
+
 
 if __name__ == "__main__":
     main()

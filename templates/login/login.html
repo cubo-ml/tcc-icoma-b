@@ -2858,58 +2858,10 @@
 
     });
 
-
-    /*
-     * ===========================================================
-     * LOGIN
-     *
-     * Aqui você pode conectar sua API posteriormente.
-     * ===========================================================
-     */
-
-    const loginForm =
-      document.getElementById("loginForm");
+  
 
 
-    loginForm.addEventListener("submit", function (event) {
-
-      event.preventDefault();
-
-      const email =
-        document.getElementById("email").value.trim();
-
-      const password =
-        document.getElementById("password").value;
-
-
-      if (!email || !password) {
-        return;
-      }
-
-
-      /*
-       * EXEMPLO:
-       *
-       * fetch("/api/login", {
-       *   method: "POST",
-       *   headers: {
-       *     "Content-Type": "application/json"
-       *   },
-       *   body: JSON.stringify({
-       *     email,
-       *     password
-       *   })
-       * });
-       *
-       */
-
-
-      /* Nunca registre a senha no console. */
-      console.log("Login:", {
-        email
-      });
-
-    });
+    
 
 
     /* =========================================================
@@ -3152,7 +3104,118 @@
 
 })();
 
-  </script>
+    </script>
+  <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+      import {
+          getAuth,
+          signInWithEmailAndPassword
+      } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-</body>
-</html>
+      const firebaseConfig = {
+          apiKey: "AIzaSyBjDHcdFM-cg4jl7mdMUIBTeEst-D6oMYg",
+          authDomain: "skill-bloom-tcc.firebaseapp.com",
+          projectId: "skill-bloom-tcc",
+          storageBucket: "skill-bloom-tcc.firebasestorage.app",
+          messagingSenderId: "319233231599",
+          appId: "1:319233231599:web:63c6e54448d426afcfe91a",
+          measurementId: "G-6JW0NTYF19"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const loginForm =
+      document.getElementById("loginForm");
+
+  loginForm.addEventListener(
+      "submit",
+      async function (event) {
+
+          event.preventDefault();
+
+          const email =
+              document.getElementById("email")
+                  .value
+                  .trim();
+
+          const password =
+              document.getElementById("password")
+                  .value;
+
+          if (!email || !password) {
+              return;
+          }
+
+          const botao =
+              loginForm.querySelector(
+                  'button[type="submit"]'
+              );
+
+          botao.disabled = true;
+          botao.textContent = "Entrando...";
+
+          try {
+
+              const resultado =
+                  await signInWithEmailAndPassword(
+                      auth,
+                      email,
+                      password
+                  );
+
+              const usuarioFirebase =
+                  resultado.user;
+
+              console.log(
+                  "Login Firebase realizado!",
+                  usuarioFirebase.email
+              );
+              const token =
+    await usuarioFirebase.getIdToken();
+
+const resposta =
+    await fetch("/api/login", {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+const resultadoSessao =
+    await resposta.json();
+
+if (
+    !resposta.ok ||
+    !resultadoSessao.sucesso
+) {
+    throw new Error(
+        resultadoSessao.mensagem ||
+        "Não foi possível criar a sessão."
+    );
+}
+
+window.location.href = "/dash";
+
+          } catch (erro) {
+
+              console.error(
+                  "Erro no login:",
+                  erro
+              );
+
+              alert(
+                  "E-mail ou senha incorretos."
+              );
+
+          } finally {
+
+              botao.disabled = false;
+              botao.textContent = "Entrar";
+          }
+      }
+  );
+
+      console.log("Firebase Authentication carregado!");
+  </script>
+  </body>
+  </html>

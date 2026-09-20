@@ -15,7 +15,13 @@ from app.auth.oauth import (
     sessao_iniciada,
     usuario_da_sessao,
 )
-from app.services.user_service import conquistas_de, conquistas_zeradas
+
+from app.services.user_service import (
+    conquistas_de,
+    conquistas_zeradas,
+    chave_do_perfil,
+    registrar_ou_atualizar,
+)
 
 
 # =========================================================
@@ -315,7 +321,97 @@ def cadastrar_usuario():
             "mensagem": "Ocorreu um erro ao criar a conta."
 
         }), 500
+# =========================================================
+# API DO LOGIN NORMAL
+# =========================================================
 
+@app.route("/api/login", methods=["POST"])
+def login_usuario():
+    try:
+        cabecalho = request.headers.get(
+            "Authorization", ""
+        ).strip()
+
+        if not cabecalho.startswith("Bearer "):
+            return jsonify({
+                "sucesso": False,
+                "mensagem": "Token de autenticação não informado."
+            }), 401
+
+        token = cabecalho[7:].strip()
+
+        if not token:
+            return jsonify({
+                "sucesso": False,
+                "mensagem": "Token de autenticação inválido."
+            }), 401
+
+        # Verifica o token usando o Firebase Admin SDK.
+        dados_token = auth.verify_id_token(token)
+
+        uid = str(
+            dados_token.get("uid") or ""
+        ).strip()
+
+        email = str(
+            dados_token.get("email") or ""
+        ).strip()
+
+        if not uid or not email:
+            return jsonify({
+                "sucesso": False,
+                "mensagem": "Não foi possível identificar o usuário."
+            }), 401
+
+        nome = (
+            str(dados_token.get("name") or "").strip()
+            or email.split("@")[0]
+            or "Usuario"
+        )
+
+        foto = str(
+            dados_token.get("picture") or ""
+        ).strip()
+
+        perfil = {
+            "id_externo": uid,
+            "provedor": "firebase",
+            "nome": nome,
+            "email": email,
+            "foto": foto
+        }
+
+        # Usa o mesmo sistema de usuários dos logins sociais.
+        chave = chave_do_perfil(perfil)
+        registrar_ou_atualizar(perfil)
+
+        if not chave:
+            return jsonify({
+                "sucesso": False,
+                "mensagem": "Não foi possível criar a sessão."
+            }), 500
+
+        # Cria a sessão Flask.
+        session["usuario_chave"] = chave
+        session["usuario_nome"] = nome
+        session["usuario_foto"] = foto
+        session.pop("usuario", None)
+
+        return jsonify({
+            "sucesso": True,
+            "mensagem": "Login realizado com sucesso."
+        })
+
+    except Exception as erro:
+        print(
+            "[login] ERRO:",
+            erro.__class__.__name__
+        )
+
+        return jsonify({
+            "sucesso": False,
+            "mensagem": "Não foi possível realizar o login."
+        }), 401
 
 # =========================================================
 # TESTE DO FIREBASE

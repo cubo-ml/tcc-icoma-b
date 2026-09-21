@@ -1068,7 +1068,7 @@
 
     .growth-content {
         display: grid;
-        grid-template-columns: 42% 58%;
+        grid-template-columns: 42% 1fr;
         align-items: center;
         gap: 30px;
     }
@@ -1224,16 +1224,47 @@
         bottom: 55px;
     }
 
+    .stat-three {
+        top: 60px;
+        right: 20px;
+    }
+
+    .stat-four {
+        left: 20px;
+        bottom: 55px;
+    }
+
     .stat-icon {
         width: 40px;
         height: 40px;
+        flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 10px;
         background: var(--blue-light);
         color: var(--blue);
-        font-size: 18px;
+    }
+
+    /* Ícones de traço, no mesmo estilo do sol e da lua do tema. */
+    .stat-svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .stat-icon-laranja {
+        background: var(--art-tint-orange);
+        color: var(--orange);
+    }
+
+    .stat-icon-verde {
+        background: var(--art-tint-green);
+        color: var(--green);
+    }
+
+    .stat-icon-roxo {
+        background: var(--art-tint-purple);
+        color: var(--purple);
     }
 
     /* =========================================================
@@ -1257,6 +1288,9 @@
                 var(--art-cta-a),
                 var(--art-cta-b)
             );
+
+        /* Sombra leve em repouso; cresce quando o cursor passa. */
+        box-shadow: var(--shadow-weak);
     }
 
     .cta-brand {
@@ -1385,6 +1419,32 @@
 
     .stat-two {
         animation-delay: 1.2s;
+    }
+
+    .stat-three {
+        animation-delay: .6s;
+    }
+
+    .stat-four {
+        animation-delay: 1.8s;
+    }
+
+    /*
+       O balão de chamada levanta quando o cursor passa por ele,
+       como os cartões de competências. Depois da entrada ao
+       rolar, a transição do transform fica mais curta para o
+       hover responder rápido.
+    */
+    .cta-box.is-visible {
+        transition:
+            opacity var(--dur-slow) var(--ease),
+            transform var(--dur) var(--ease),
+            box-shadow var(--dur) var(--ease);
+    }
+
+    .cta-box.is-visible:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-strong);
     }
 
     /* =========================================================
@@ -1782,9 +1842,20 @@
             bottom: 35px;
         }
 
+        /* Em tela pequena não cabem quatro; ficam só os dois originais. */
+        .stat-three,
+        .stat-four {
+            display: none;
+        }
+
         .stat-icon {
             width: 32px;
             height: 32px;
+        }
+
+        .stat-svg {
+            width: 17px;
+            height: 17px;
         }
 
         .footer-links {
@@ -2478,7 +2549,7 @@
                 <div class="floating-stat stat-one">
 
                     <div class="stat-icon">
-                        ↗
+                        <svg class="stat-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 17.5l5.5-5.5 4 4 8.5-8.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 7.5H21V13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
 
                     <div>
@@ -2506,14 +2577,8 @@
 
                 <div class="floating-stat stat-two">
 
-                    <div
-                        class="stat-icon"
-                        style="
-                            background:var(--art-tint-orange);
-                            color:var(--orange);
-                        "
-                    >
-                        🏆
+                    <div class="stat-icon stat-icon-laranja">
+                        <svg class="stat-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.5 4h9v5.5a4.5 4.5 0 0 1-9 0V4Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 6H5a2.5 2.5 0 0 0 2.5 2.5M16.5 6H19a2.5 2.5 0 0 1-2.5 2.5M12 14v3M9 20h6M9.5 17h5v3h-5z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
 
                     <div>
@@ -2521,6 +2586,42 @@
                         Desafios concluídos
 
                         <strong>12</strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="floating-stat stat-three">
+
+                    <div class="stat-icon stat-icon-verde">
+                        <svg class="stat-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5c.6 2.6 3.3 4 4.4 6.6a5.3 5.3 0 1 1-9.6 3.1c0-1.9.8-3.1 1.8-4.2.2 1.2.8 2 1.8 2.5C10.2 9 10.6 6 12 3.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <div>
+
+                        Dias seguidos
+
+                        <strong>7</strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="floating-stat stat-four">
+
+                    <div class="stat-icon stat-icon-roxo">
+                        <svg class="stat-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8L12 3.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <div>
+
+                        Competências dominadas
+
+                        <strong>4 de 6</strong>
 
                     </div>
 

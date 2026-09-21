@@ -882,12 +882,17 @@
 
             color: var(--blue);
 
-            font-size: 19px;
-
             overflow: hidden;
         }
 
-        /* A marca aqui é menor que o ladrilho, para pesar como os emojis. */
+        /* Ícones de traço, no mesmo estilo do sol e da lua. */
+
+        .benefit-icon .icone {
+            width: 21px;
+            height: 21px;
+        }
+
+        /* A marca aqui é menor que o ladrilho, para pesar como os outros ícones. */
 
         .benefit-icon .brand-mark {
             width: 78%;
@@ -1033,12 +1038,28 @@
             transform: translateY(-50%);
 
             width: 18px;
+            height: 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
             color: var(--text-soft);
 
-            font-size: 15px;
-
             pointer-events: none;
+
+            transition: color var(--dur-fast) var(--ease);
+        }
+
+        .input-icon .icone {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* O ícone acende junto com a borda quando o campo está em foco. */
+
+        .input-wrapper:focus-within .input-icon {
+            color: var(--blue);
         }
 
         .input {
@@ -1119,14 +1140,34 @@
         .select-arrow {
             position: absolute;
 
-            right: 13px;
+            right: 12px;
             top: 50%;
 
             transform: translateY(-50%);
 
+            width: 18px;
+            height: 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
             color: var(--text-soft);
 
             pointer-events: none;
+
+            transition:
+                color var(--dur-fast) var(--ease),
+                transform var(--dur-fast) var(--ease);
+        }
+
+        .select-arrow .icone {
+            width: 18px;
+            height: 18px;
+        }
+
+        .input-wrapper:focus-within .select-arrow {
+            color: var(--blue);
         }
 
 
@@ -1137,10 +1178,21 @@
         .password-toggle {
             position: absolute;
 
-            right: 12px;
+            right: 8px;
             top: 50%;
 
             transform: translateY(-50%);
+
+            width: 30px;
+            height: 30px;
+
+            padding: 0;
+
+            border-radius: 8px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
 
             background: transparent;
 
@@ -1148,15 +1200,27 @@
 
             cursor: pointer;
 
-            font-size: 16px;
-
             transition:
                 color var(--dur-fast) var(--ease),
+                background-color var(--dur-fast) var(--ease),
                 transform var(--dur-fast) var(--ease-spring);
         }
 
+        .password-toggle .icone {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Olho aberto = senha escondida; olho riscado = senha à mostra. */
+
+        .password-toggle .icone-olho-fechado { display: none; }
+
+        .password-toggle.is-visivel .icone-olho         { display: none; }
+        .password-toggle.is-visivel .icone-olho-fechado { display: block; }
+
         .password-toggle:hover {
             color: var(--blue);
+            background: var(--blue-light);
         }
 
         .password-toggle:active {
@@ -1462,6 +1526,20 @@
             animation: sobe var(--dur) var(--ease);
         }
 
+        .success-message strong {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 6px;
+        }
+
+        .icone-sucesso {
+            width: 15px;
+            height: 15px;
+
+            flex-shrink: 0;
+        }
+
 
         /* =========================================================
            ERROR MESSAGE
@@ -1633,8 +1711,11 @@
             .benefit-icon {
                 width: 32px;
                 height: 32px;
+            }
 
-                font-size: 15px;
+            .benefit-icon .icone {
+                width: 18px;
+                height: 18px;
             }
 
             .benefit strong {
@@ -1905,7 +1986,7 @@
 
                 <div class="benefit-icon">
 
-                    🎯
+                    <svg class="icone icone-alvo" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="5.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
 
                 </div>
 
@@ -1928,7 +2009,7 @@
 
                 <div class="benefit-icon">
 
-                    📈
+                    <svg class="icone icone-grafico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 17.5l5.5-5.5 4 4 8.5-8.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 7.5H21V13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
 
                 </div>
 
@@ -1984,7 +2065,7 @@
 
                 <div class="benefit-icon">
 
-                    🚀
+                    <svg class="icone icone-foguete" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3c2.9 2.3 4.3 5.7 3.6 9.9L14.4 16H9.6l-1.2-3.1C7.7 8.7 9.1 5.3 12 3Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="m8.4 12.9-2.9 2.4 1.1 3.1 3-1.8M15.6 12.9l2.9 2.4-1.1 3.1-3-1.8M10.6 18.7 12 21.5l1.4-2.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="1.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
 
                 </div>
 
@@ -2036,7 +2117,7 @@
                 id="successMessage"
             >
 
-                <strong>Conta criada com sucesso! 🎉</strong>
+                <strong><svg class="icone-sucesso icone-check" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="m8 12.4 2.7 2.7L16 9.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg> Conta criada com sucesso!</strong>
 
                 <br>
 
@@ -2075,7 +2156,7 @@
                         <div class="input-wrapper">
 
                             <span class="input-icon">
-                                👤
+                                <svg class="icone icone-usuario" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
 
                             <input
@@ -2117,7 +2198,7 @@
                         <div class="input-wrapper">
 
                             <span class="input-icon">
-                                📅
+                                <svg class="icone icone-calendario" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
 
                             <input
@@ -2177,7 +2258,7 @@
                             </select>
 
                             <span class="select-arrow">
-                                ▼
+                                <svg class="icone icone-seta" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
 
                         </div>
@@ -2200,7 +2281,7 @@
                         <div class="input-wrapper">
 
                             <span class="input-icon">
-                                ✉
+                                <svg class="icone icone-email" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="m3.5 8 8.5 5.8L20.5 8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
 
                             <input
@@ -2242,7 +2323,7 @@
                         <div class="input-wrapper">
 
                             <span class="input-icon">
-                                ☎
+                                <svg class="icone icone-telefone" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.8 3.5h2.9l1.6 4.1-2.1 1.4a11.6 11.6 0 0 0 5.8 5.8l1.4-2.1 4.1 1.6v2.9a2 2 0 0 1-2.2 2A16.6 16.6 0 0 1 4.8 5.7a2 2 0 0 1 2-2.2Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
 
                             <input
@@ -2276,7 +2357,7 @@
                         <div class="input-wrapper">
 
                             <span class="input-icon">
-                                🔒
+                                <svg class="icone icone-cadeado" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="15.5" r="1.3" fill="currentColor"/></svg>
                             </span>
 
                             <input
@@ -2296,7 +2377,8 @@
                                 data-target="password"
                                 aria-label="Mostrar senha"
                             >
-                                ◉
+                                <svg class="icone icone-olho" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg class="icone icone-olho-fechado" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 3l18 18M10.6 5.7A9.9 9.9 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3.3 4M6.5 6.5C3.8 8.5 2.5 12 2.5 12s3.5 6.5 9.5 6.5c1.5 0 2.8-.4 4-1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
 
                         </div>
@@ -2339,7 +2421,7 @@
                         <div class="input-wrapper">
 
                             <span class="input-icon">
-                                🔒
+                                <svg class="icone icone-cadeado" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="15.5" r="1.3" fill="currentColor"/></svg>
                             </span>
 
                             <input
@@ -2358,7 +2440,8 @@
                                 data-target="confirmPassword"
                                 aria-label="Mostrar senha"
                             >
-                                ◉
+                                <svg class="icone icone-olho" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg class="icone icone-olho-fechado" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 3l18 18M10.6 5.7A9.9 9.9 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3.3 4M6.5 6.5C3.8 8.5 2.5 12 2.5 12s3.5 6.5 9.5 6.5c1.5 0 2.8-.4 4-1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
 
                         </div>
@@ -2564,7 +2647,7 @@
 
                         target.type = "text";
 
-                        this.textContent = "◉";
+                        this.classList.add("is-visivel");
 
                         this.setAttribute(
                             "aria-label",
@@ -2575,7 +2658,7 @@
 
                         target.type = "password";
 
-                        this.textContent = "◉";
+                        this.classList.remove("is-visivel");
 
                         this.setAttribute(
                             "aria-label",

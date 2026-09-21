@@ -1448,30 +1448,35 @@
     }
 
     /* ---------- avatares do hero ----------
-       As carinhas ficam sempre sobrepostas. A que está sob o
-       cursor sobe RÁPIDO e desce DEVAGAR: assim, ao passar de uma
-       para a outra, a anterior ainda está descendo enquanto a
-       próxima sobe — um fade, não um salto. As vizinhas sobem um
-       pouco junto, como uma onda. */
+       Em repouso as carinhas ficam sobrepostas. Com o cursor na
+       fileira, elas deslizam e se abrem lado a lado, uma puxando
+       a outra (cada uma com um atrasinho).
+
+       A carinha sob o cursor sobe RÁPIDO e desce DEVAGAR: assim,
+       ao passar de uma para a outra, a anterior ainda está
+       descendo enquanto a próxima sobe — um fade, não um salto.
+       As vizinhas sobem um pouco junto, como uma onda. */
     .avatar {
         position: relative;
         cursor: default;
         transition:
             transform .75s var(--ease),
-            box-shadow .75s var(--ease);
+            box-shadow .75s var(--ease),
+            margin-left var(--dur-slow) var(--ease-spring) var(--avatar-atraso, 0ms);
     }
 
-    /* A fileira inteira desliza um pouco para a esquerda com o
-       cursor por perto (vai rápido, volta devagar) — sem separar. */
-    .avatars {
-        transition: translate .7s var(--ease);
-    }
+    .avatar:nth-child(2) { --avatar-atraso: 0ms; }
+    .avatar:nth-child(3) { --avatar-atraso: 60ms; }
+    .avatar:nth-child(4) { --avatar-atraso: 120ms; }
 
     @media (hover: hover) {
 
-        .hero-users:hover .avatars {
-            translate: -12px 0;
-            transition: translate .3s var(--ease-spring);
+        .hero-users:hover .avatar {
+            margin-left: 6px;
+        }
+
+        .hero-users:hover .avatar:first-child {
+            margin-left: 0;
         }
 
         /* vizinhas da carinha sob o cursor: meio caminho */
@@ -1480,76 +1485,20 @@
             transform: translateY(-2px) scale(1.08);
             transition:
                 transform .25s var(--ease-spring),
-                box-shadow .25s var(--ease);
+                box-shadow .25s var(--ease),
+                margin-left var(--dur-slow) var(--ease-spring) var(--avatar-atraso, 0ms);
         }
 
-        /* a carinha sob o cursor: sobe rápido e vem para a frente */
+        /* a carinha sob o cursor: sobe rápido */
         .avatar:hover {
             transform: translateY(-5px) scale(1.18);
             box-shadow: var(--shadow-soft);
             z-index: 2;
             transition:
                 transform .2s var(--ease-spring),
-                box-shadow .2s var(--ease);
+                box-shadow .2s var(--ease),
+                margin-left var(--dur-slow) var(--ease-spring) var(--avatar-atraso, 0ms);
         }
-
-    }
-
-    /* ---------- cartões de competências ----------
-       A revelação ao rolar (.reveal) manda no `transform`, o que
-       anulava o levantar do hover. Por isso o hover usa a
-       propriedade `translate`, que é separada e não briga com a
-       entrada. Sobe rápido, desce devagar; o ícone dá um pulinho;
-       os vizinhos sobem um pouco junto; a borda acende na cor do
-       ícone. */
-    .skill-card.reveal {
-        transition:
-            opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
-            transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
-            translate .7s var(--ease),
-            box-shadow .7s var(--ease),
-            border-color .7s var(--ease);
-    }
-
-    .skill-icon {
-        transition: transform .6s var(--ease);
-    }
-
-    @media (hover: hover) {
-
-        .skill-card.reveal:hover {
-            translate: 0 -8px;
-            box-shadow: var(--shadow-strong);
-            border-color: var(--blue);
-            transition:
-                opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
-                transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
-                translate .25s var(--ease-spring),
-                box-shadow .25s var(--ease),
-                border-color .25s var(--ease);
-        }
-
-        .skill-card.reveal:hover + .skill-card,
-        .skill-card.reveal:has(+ .skill-card:hover) {
-            translate: 0 -3px;
-            transition:
-                opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
-                transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
-                translate .3s var(--ease-spring),
-                box-shadow .3s var(--ease),
-                border-color .3s var(--ease);
-        }
-
-        .skill-card:hover .skill-icon {
-            transform: scale(1.15) rotate(-6deg);
-            transition: transform .25s var(--ease-spring);
-        }
-
-        /* a borda acende na cor do ícone do cartão */
-        .skill-card.reveal:has(.icon-green):hover  { border-color: var(--green); }
-        .skill-card.reveal:has(.icon-orange):hover { border-color: var(--orange); }
-        .skill-card.reveal:has(.icon-purple):hover { border-color: var(--purple); }
-        .skill-card.reveal:has(.icon-pink):hover   { border-color: var(--pink); }
 
     }
 

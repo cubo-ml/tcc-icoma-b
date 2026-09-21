@@ -37,7 +37,8 @@ app = Flask(__name__)
 # FIREBASE
 # =========================================================
 
-cred = credentials.Certificate("firebase-admin.json")
+cred = credentials.Certificate("/etc/secrets/firebase-admin.json")
+
 
 if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)

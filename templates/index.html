@@ -1447,6 +1447,172 @@
         box-shadow: var(--shadow-strong);
     }
 
+    /* ---------- avatares do hero ----------
+       As carinhas ficam sempre sobrepostas. A que está sob o
+       cursor sobe RÁPIDO e desce DEVAGAR: assim, ao passar de uma
+       para a outra, a anterior ainda está descendo enquanto a
+       próxima sobe — um fade, não um salto. As vizinhas sobem um
+       pouco junto, como uma onda. */
+    .avatar {
+        position: relative;
+        cursor: default;
+        transition:
+            transform .75s var(--ease),
+            box-shadow .75s var(--ease);
+    }
+
+    /* A fileira inteira desliza um pouco para a esquerda com o
+       cursor por perto (vai rápido, volta devagar) — sem separar. */
+    .avatars {
+        transition: translate .7s var(--ease);
+    }
+
+    @media (hover: hover) {
+
+        .hero-users:hover .avatars {
+            translate: -12px 0;
+            transition: translate .3s var(--ease-spring);
+        }
+
+        /* vizinhas da carinha sob o cursor: meio caminho */
+        .avatar:hover + .avatar,
+        .avatar:has(+ .avatar:hover) {
+            transform: translateY(-2px) scale(1.08);
+            transition:
+                transform .25s var(--ease-spring),
+                box-shadow .25s var(--ease);
+        }
+
+        /* a carinha sob o cursor: sobe rápido e vem para a frente */
+        .avatar:hover {
+            transform: translateY(-5px) scale(1.18);
+            box-shadow: var(--shadow-soft);
+            z-index: 2;
+            transition:
+                transform .2s var(--ease-spring),
+                box-shadow .2s var(--ease);
+        }
+
+    }
+
+    /* ---------- cartões de competências ----------
+       A revelação ao rolar (.reveal) manda no `transform`, o que
+       anulava o levantar do hover. Por isso o hover usa a
+       propriedade `translate`, que é separada e não briga com a
+       entrada. Sobe rápido, desce devagar; o ícone dá um pulinho;
+       os vizinhos sobem um pouco junto; a borda acende na cor do
+       ícone. */
+    .skill-card.reveal {
+        transition:
+            opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            translate .7s var(--ease),
+            box-shadow .7s var(--ease),
+            border-color .7s var(--ease);
+    }
+
+    .skill-icon {
+        transition: transform .6s var(--ease);
+    }
+
+    @media (hover: hover) {
+
+        .skill-card.reveal:hover {
+            translate: 0 -8px;
+            box-shadow: var(--shadow-strong);
+            border-color: var(--blue);
+            transition:
+                opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                translate .25s var(--ease-spring),
+                box-shadow .25s var(--ease),
+                border-color .25s var(--ease);
+        }
+
+        .skill-card.reveal:hover + .skill-card,
+        .skill-card.reveal:has(+ .skill-card:hover) {
+            translate: 0 -3px;
+            transition:
+                opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                translate .3s var(--ease-spring),
+                box-shadow .3s var(--ease),
+                border-color .3s var(--ease);
+        }
+
+        .skill-card:hover .skill-icon {
+            transform: scale(1.15) rotate(-6deg);
+            transition: transform .25s var(--ease-spring);
+        }
+
+        /* a borda acende na cor do ícone do cartão */
+        .skill-card.reveal:has(.icon-green):hover  { border-color: var(--green); }
+        .skill-card.reveal:has(.icon-orange):hover { border-color: var(--orange); }
+        .skill-card.reveal:has(.icon-purple):hover { border-color: var(--purple); }
+        .skill-card.reveal:has(.icon-pink):hover   { border-color: var(--pink); }
+
+    }
+
+    /* ---------- notebook do hero ----------
+       Flutua o tempo todo (pela propriedade `translate`, que não
+       briga com a inclinação 3D que já está no `transform`). */
+    @keyframes notebookFlutua {
+        0%, 100% { translate: 0 0; }
+        50%      { translate: 0 -8px; }
+    }
+
+    @keyframes brilhoPulsa {
+        0%, 100% { opacity: .75; transform: scale(1); }
+        50%      { opacity: 1;   transform: scale(1.08); }
+    }
+
+    .laptop {
+        animation: notebookFlutua 6s ease-in-out infinite;
+        transition:
+            transform var(--dur-slow) var(--ease),
+            filter var(--dur-slow) var(--ease);
+    }
+
+    .glow {
+        animation: brilhoPulsa 6s ease-in-out infinite;
+    }
+
+    /* Ao passar o mouse, o notebook vira um pouco de frente. */
+    @media (hover: hover) {
+        .hero-visual:hover .laptop {
+            transform:
+                perspective(1000px)
+                rotateY(-2deg)
+                rotateX(1deg)
+                rotateZ(-1deg)
+                scale(1.02);
+            filter:
+                drop-shadow(
+                    0 35px 40px rgb(var(--shadow) / .26)
+                );
+        }
+    }
+
+    /* Os cartões da tela levantam, e o ícone dá um pulinho. */
+    .simulation-card {
+        transition:
+            transform var(--dur) var(--ease),
+            box-shadow var(--dur) var(--ease);
+    }
+
+    .simulation-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .sim-icon {
+        transition: transform var(--dur) var(--ease-spring);
+    }
+
+    .simulation-card:hover .sim-icon {
+        transform: scale(1.15) rotate(-5deg);
+    }
+
     /* =========================================================
        REVELAÇÃO AO ROLAR
     ========================================================= */

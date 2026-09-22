@@ -16,6 +16,9 @@
 # =========================================================
 
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 import secrets
 
 from flask import Blueprint, current_app, redirect, request, session, url_for

@@ -37,14 +37,17 @@ app = Flask(__name__)
 # FIREBASE
 # =========================================================
 
-cred = credentials.Certificate("/etc/secrets/firebase-admin.json")
-
-
 if not firebase_admin._apps:
-    firebase_admin.initialize_app(cred)
+    if os.path.exists("/etc/secrets/firebase-admin.json"):
+        cred = credentials.Certificate("/etc/secrets/firebase-admin.json")
+        firebase_admin.initialize_app(cred)
+    elif os.path.exists("firebase-admin.json"):
+        cred = credentials.Certificate("firebase-admin.json")
+        firebase_admin.initialize_app(cred)
+    else:
+        firebase_admin.initialize_app()
 
 db = firestore.client()
-
 
 # =========================================================
 # ATRAS DE PROXY

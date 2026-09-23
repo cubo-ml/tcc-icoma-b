@@ -79,12 +79,12 @@
         --ring:            0 0 0 4px rgb(8 120 249 / .14);
 
         /* movimento */
-        --ease:            cubic-bezier(.22, .61, .36, 1);
-        --ease-soft:       cubic-bezier(.4, .14, .3, 1);
-        --ease-spring:     cubic-bezier(.34, 1.4, .64, 1);
-        --dur-fast:        .18s;
-        --dur:             .34s;
-        --dur-slow:        .62s;
+        --ease:            cubic-bezier(.16, 1, .3, 1);      /* saída longa e macia */
+        --ease-soft:       cubic-bezier(.65, 0, .35, 1);     /* entra e sai macio (trocas de tema, loops) */
+        --ease-spring:     cubic-bezier(.34, 1.36, .64, 1);  /* mola suave, pouco exagero */
+        --dur-fast:        .3s;
+        --dur:             .5s;
+        --dur-slow:        .9s;
 
         /* arte decorativa (hero, notebook, ilustração, CTA) */
         --art-hero-glow-a:   rgb(105 169 255 / .17);
@@ -148,13 +148,13 @@
         --shadow-strong:   0 22px 55px rgb(var(--shadow) / .56);
         --ring:            0 0 0 4px rgb(61 155 255 / .26);
 
-        /* movimento — inalterado */
-        --ease:            cubic-bezier(.22, .61, .36, 1);
-        --ease-soft:       cubic-bezier(.4, .14, .3, 1);
-        --ease-spring:     cubic-bezier(.34, 1.4, .64, 1);
-        --dur-fast:        .18s;
-        --dur:             .34s;
-        --dur-slow:        .62s;
+        /* movimento — igual nos dois temas */
+        --ease:            cubic-bezier(.16, 1, .3, 1);      /* saída longa e macia */
+        --ease-soft:       cubic-bezier(.65, 0, .35, 1);     /* entra e sai macio (trocas de tema, loops) */
+        --ease-spring:     cubic-bezier(.34, 1.36, .64, 1);  /* mola suave, pouco exagero */
+        --dur-fast:        .3s;
+        --dur:             .5s;
+        --dur-slow:        .9s;
 
         /* arte decorativa (hero, notebook, ilustração, CTA) */
         --art-hero-glow-a:   rgb(61 155 255 / .16);
@@ -197,6 +197,40 @@
             fill var(--dur) var(--ease-soft),
             stroke var(--dur) var(--ease-soft) !important;
     }
+
+    /* A regra acima tira o movimento de tudo durante a troca.
+       O botão de tema e o sol/lua continuam se mexendo, senão o
+       ícone troca seco e o botão "pula" ao soltar o clique. */
+    @media (prefers-reduced-motion: no-preference) {
+        .theme-switching .theme-toggle {
+            transition:
+                background-color var(--dur) var(--ease-soft),
+                border-color var(--dur) var(--ease-soft),
+                color var(--dur) var(--ease-soft),
+                transform .5s var(--ease-spring) !important;
+        }
+
+        .theme-switching .theme-icon {
+            transition:
+                opacity var(--dur) var(--ease),
+                transform var(--dur-slow) var(--ease-spring) !important;
+        }
+    }
+
+    /* =========================================================
+       TRANSIÇÃO ENTRE PÁGINAS
+       A página atual some de leve e a próxima sobe no lugar,
+       em vez do corte seco (mesmo efeito em todo o site).
+    ========================================================= */
+    @media (prefers-reduced-motion: no-preference) {
+        @view-transition { navigation: auto; }
+    }
+
+    ::view-transition-old(root) { animation: paginaSai .4s var(--ease-soft) both; }
+    ::view-transition-new(root) { animation: paginaEntra .7s var(--ease) both; }
+
+    @keyframes paginaSai   { to   { opacity: 0; transform: translateY(-8px) scale(.99); filter: blur(4px); } }
+    @keyframes paginaEntra { from { opacity: 0; transform: translateY(14px) scale(.99); filter: blur(6px); } }
 
     /* =========================================================
        RESET
@@ -320,13 +354,16 @@
         display: block;
         object-fit: cover;
         scale: 1.4;
-        transition: transform var(--dur-slow) var(--ease-spring);
+        /* volta devagar */
+        transition: transform .8s var(--ease);
     }
 
+    /* entra com mola */
     a:hover > .brand-mark,
     .logo:hover .brand-mark,
     .brand:hover .brand-mark {
         transform: scale(1.07) rotate(-3deg);
+        transition: transform .55s var(--ease-spring);
     }
 
     .logo span {
@@ -346,7 +383,7 @@
         color: var(--text);
         position: relative;
         padding: 10px 0;
-        transition: color var(--dur-fast) var(--ease);
+        transition: color var(--dur) var(--ease);
     }
 
     .nav-links a:hover {
@@ -366,6 +403,14 @@
         height: 2px;
         background: var(--blue);
         border-radius: 10px;
+        /* o traço se desenha da esquerda ao trocar de seção */
+        transform-origin: left center;
+        animation: tracoDesenha var(--dur) var(--ease) both;
+    }
+
+    @keyframes tracoDesenha {
+        from { opacity: 0; transform: scaleX(0); }
+        to   { opacity: 1; transform: none; }
     }
 
     .nav-buttons {
@@ -386,20 +431,30 @@
         border-radius: 10px;
         font-size: 14px;
         font-weight: 600;
+        /* volta devagar */
         transition:
-            transform var(--dur-fast) var(--ease),
-            box-shadow var(--dur) var(--ease),
-            border-color var(--dur) var(--ease),
+            transform .8s var(--ease),
+            box-shadow .8s var(--ease),
+            border-color .8s var(--ease),
             color var(--dur) var(--ease),
             background-color var(--dur) var(--ease);
     }
 
+    /* sobe com mola */
     .btn:hover {
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+        transition:
+            transform .5s var(--ease-spring),
+            box-shadow .5s var(--ease),
+            border-color .5s var(--ease),
+            color var(--dur) var(--ease),
+            background-color var(--dur) var(--ease);
     }
 
+    /* clique: resposta rápida */
     .btn:active {
         transform: translateY(0) scale(.97);
+        transition-duration: .15s;
     }
 
     .btn-primary {
@@ -452,18 +507,23 @@
         overflow: hidden;
         transition:
             background var(--dur) var(--ease),
-            border-color var(--dur) var(--ease),
+            border-color .8s var(--ease),
             color var(--dur) var(--ease),
-            transform var(--dur-fast) var(--ease-spring);
+            transform .8s var(--ease);
     }
 
     .theme-toggle:hover {
         color: var(--blue);
         border-color: var(--border-strong);
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+        transition:
+            background var(--dur) var(--ease),
+            border-color .5s var(--ease),
+            color var(--dur) var(--ease),
+            transform .5s var(--ease-spring);
     }
 
-    .theme-toggle:active { transform: translateY(0) scale(.94); }
+    .theme-toggle:active { transform: translateY(0) scale(.94); transition-duration: .15s; }
 
     .theme-icon {
         position: absolute;
@@ -503,18 +563,22 @@
         align-items: center;
         justify-content: center;
         transition:
-            border-color var(--dur) var(--ease),
-            transform var(--dur-fast) var(--ease-spring),
-            box-shadow var(--dur) var(--ease);
+            border-color .8s var(--ease),
+            transform .8s var(--ease),
+            box-shadow .8s var(--ease);
     }
 
     .conta-botao:hover {
         border-color: var(--blue);
-        transform: translateY(-2px);
+        transform: translateY(-3px);
         box-shadow: var(--shadow-weak);
+        transition:
+            border-color .5s var(--ease),
+            transform .5s var(--ease-spring),
+            box-shadow .5s var(--ease);
     }
 
-    .conta-botao:active { transform: translateY(0) scale(.95); }
+    .conta-botao:active { transform: translateY(0) scale(.95); transition-duration: .15s; }
 
     .conta-botao[aria-expanded="true"] {
         border-color: var(--blue);
@@ -557,22 +621,24 @@
 
     .conta-painel[hidden] { display: none; }
 
+    /* abre com mola e desfoque saindo; fecha macio
+       (o JS espera o --dur-fast antes de esconder) */
     .conta-painel.is-abrindo {
-        animation: contaEntra var(--dur) var(--ease-spring);
+        animation: contaEntra .55s var(--ease-spring);
     }
 
     .conta-painel.is-fechando {
-        animation: contaSai var(--dur-fast) var(--ease) forwards;
+        animation: contaSai var(--dur-fast) var(--ease-soft) forwards;
     }
 
     @keyframes contaEntra {
-        from { opacity: 0; transform: translateY(-8px) scale(.94); }
-        to   { opacity: 1; transform: none; }
+        from { opacity: 0; transform: translateY(-10px) scale(.94); filter: blur(6px); }
+        to   { opacity: 1; transform: none; filter: none; }
     }
 
     @keyframes contaSai {
-        from { opacity: 1; transform: none; }
-        to   { opacity: 0; transform: translateY(-6px) scale(.96); }
+        from { opacity: 1; transform: none; filter: none; }
+        to   { opacity: 0; transform: translateY(-6px) scale(.96); filter: blur(4px); }
     }
 
     .conta-cabecalho {
@@ -649,10 +715,18 @@
         color: var(--blue);
         transition:
             background var(--dur) var(--ease),
-            color var(--dur) var(--ease);
+            color var(--dur) var(--ease),
+            translate .7s var(--ease);
     }
 
-    .conta-acao:hover { background: var(--blue-light); }
+    .conta-acao:hover {
+        background: var(--blue-light);
+        translate: 0 -2px;
+        transition:
+            background var(--dur) var(--ease),
+            color var(--dur) var(--ease),
+            translate .45s var(--ease-spring);
+    }
 
     .conta-sair { color: var(--text-muted); }
 
@@ -664,6 +738,9 @@
     @media (prefers-reduced-motion: reduce) {
         .conta-painel.is-abrindo,
         .conta-painel.is-fechando { animation: none !important; }
+
+        /* sem animação, some na hora (não espera o JS esconder) */
+        .conta-painel.is-fechando { opacity: 0; }
     }
 
     /* =========================================================
@@ -991,16 +1068,25 @@
         border-radius: 18px;
         text-align: center;
         background: var(--surface);
+        /* levanta pelo `translate`, que não briga com a entrada */
         transition:
-            transform var(--dur) var(--ease),
-            box-shadow var(--dur) var(--ease),
-            border-color var(--dur) var(--ease);
+            translate .8s var(--ease),
+            box-shadow .8s var(--ease),
+            border-color .8s var(--ease);
     }
 
     .skill-card:hover {
-        transform: translateY(-6px);
         border-color: var(--border-strong);
         box-shadow: var(--shadow-soft);
+        transition:
+            translate .5s var(--ease-spring),
+            box-shadow .5s var(--ease),
+            border-color .5s var(--ease);
+    }
+
+    /* Só com mouse: no toque o cartão não fica "preso" no alto. */
+    @media (hover: hover) {
+        .skill-card:hover { translate: 0 -6px; }
     }
 
     .skill-icon {
@@ -1049,6 +1135,68 @@
     .icon-pink {
         color: var(--pink);
         background: var(--art-tint-pink);
+    }
+
+    /* =========================================================
+       SOBRE NÓS
+       Os cartões do time reaproveitam o .skill-card (e os
+       hovers dele); aqui só entra o que é do time.
+    ========================================================= */
+    .sobre-section {
+        padding: 75px 0 90px;
+        background:
+            linear-gradient(
+                180deg,
+                var(--bg-soft),
+                var(--bg)
+            );
+    }
+
+    .sobre-texto {
+        max-width: 620px;
+        margin: 14px auto 0;
+        color: var(--text-muted);
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    /* Flex em vez de grid: a última linha fica centralizada
+       quando os 5 cartões quebram em telas menores. */
+    .time-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+    }
+
+    /* Sem crescer: o cartão que sobra sozinho numa linha fica
+       do mesmo tamanho dos outros. */
+    .skill-card.time-card {
+        flex: 0 1 180px;
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .time-svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .time-card h3 {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+
+    /* Aparece quando a pessoa clica em "Sobre nós". */
+    @keyframes sobreAbre {
+        from { opacity: 0; transform: translateY(32px) scale(.98); filter: blur(8px); }
+        to   { opacity: 1; transform: none; filter: none; }
+    }
+
+    .sobre-section.abrindo {
+        animation: sobreAbre var(--dur-slow) var(--ease) both;
     }
 
     /* =========================================================
@@ -1364,42 +1512,20 @@
     }
 
     .footer-links a {
-        transition: color var(--dur-fast) var(--ease);
+        transition: color var(--dur) var(--ease);
     }
 
     .footer-links a:hover {
         color: var(--blue);
     }
 
-    .socials {
-        display: flex;
-        gap: 9px;
-    }
 
-    .social {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 9px;
-        background: var(--surface-2);
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--text);
-        transition:
-            color var(--dur-fast) var(--ease),
-            background-color var(--dur) var(--ease);
-    }
 
-    .social:hover {
-        color: var(--blue);
-        background: var(--blue-light);
-    }
 
     /* =========================================================
        ANIMAÇÕES
     ========================================================= */
+    /* Flutuar lento e curto, como se boiasse. */
     @keyframes float {
         0%,
         100% {
@@ -1407,42 +1533,52 @@
         }
 
         50% {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
         }
     }
 
     .floating-stat {
-        animation: float 4s ease-in-out infinite;
+        animation: float 6.5s var(--ease-soft) infinite;
     }
 
+    /* Atrasos negativos: cada balão já começa num ponto
+       diferente da onda, sem ficar parado no início. */
     .stat-two {
-        animation-delay: 1.2s;
+        animation-delay: -2.4s;
     }
 
     .stat-three {
-        animation-delay: .6s;
+        animation-delay: -1.2s;
     }
 
     .stat-four {
-        animation-delay: 1.8s;
+        animation-delay: -3.6s;
     }
 
     /*
        O balão de chamada levanta quando o cursor passa por ele,
-       como os cartões de competências. Depois da entrada ao
-       rolar, a transição do transform fica mais curta para o
-       hover responder rápido.
+       como os cartões de competências. A entrada ao rolar
+       (.reveal) manda no `transform`; o levantar usa o
+       `translate`, então um não anula o outro.
     */
-    .cta-box.is-visible {
+    .cta-box.reveal {
         transition:
-            opacity var(--dur-slow) var(--ease),
-            transform var(--dur) var(--ease),
-            box-shadow var(--dur) var(--ease);
+            opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            filter    var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            translate .8s var(--ease),
+            box-shadow .8s var(--ease);
     }
 
     .cta-box.is-visible:hover {
-        transform: translateY(-6px);
+        translate: 0 -6px;
         box-shadow: var(--shadow-strong);
+        transition:
+            opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            filter    var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            translate .5s var(--ease-spring),
+            box-shadow .5s var(--ease);
     }
 
     /* ---------- avatares do hero ----------
@@ -1450,7 +1586,7 @@
        fileira, elas deslizam e se abrem lado a lado, uma puxando
        a outra (cada uma com um atrasinho).
 
-       A carinha sob o cursor sobe RÁPIDO e desce DEVAGAR: assim,
+       A carinha sob o cursor sobe com mola e desce DEVAGAR: assim,
        ao passar de uma para a outra, a anterior ainda está
        descendo enquanto a próxima sobe — um fade, não um salto.
        As vizinhas sobem um pouco junto, como uma onda. */
@@ -1458,8 +1594,8 @@
         position: relative;
         cursor: default;
         transition:
-            transform .75s var(--ease),
-            box-shadow .75s var(--ease),
+            transform .85s var(--ease),
+            box-shadow .85s var(--ease),
             margin-left var(--dur-slow) var(--ease-spring) var(--avatar-atraso, 0ms);
     }
 
@@ -1482,19 +1618,19 @@
         .avatar:has(+ .avatar:hover) {
             transform: translateY(-2px) scale(1.08);
             transition:
-                transform .25s var(--ease-spring),
-                box-shadow .25s var(--ease),
+                transform .55s var(--ease-spring),
+                box-shadow .55s var(--ease),
                 margin-left var(--dur-slow) var(--ease-spring) var(--avatar-atraso, 0ms);
         }
 
-        /* a carinha sob o cursor: sobe rápido */
+        /* a carinha sob o cursor: sobe com mola */
         .avatar:hover {
             transform: translateY(-5px) scale(1.18);
             box-shadow: var(--shadow-soft);
             z-index: 2;
             transition:
-                transform .2s var(--ease-spring),
-                box-shadow .2s var(--ease),
+                transform .45s var(--ease-spring),
+                box-shadow .45s var(--ease),
                 margin-left var(--dur-slow) var(--ease-spring) var(--avatar-atraso, 0ms);
         }
 
@@ -1504,20 +1640,21 @@
        A revelação ao rolar (.reveal) manda no `transform`, o que
        anulava o levantar do hover. Por isso o hover usa a
        propriedade `translate`, que é separada e não briga com a
-       entrada. Sobe rápido, desce devagar; o ícone dá um pulinho;
+       entrada. Sobe com mola, desce devagar; o ícone dá um pulinho;
        os vizinhos sobem um pouco junto; a borda acende na cor do
        ícone. */
     .skill-card.reveal {
         transition:
             opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
             transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
-            translate .7s var(--ease),
-            box-shadow .7s var(--ease),
-            border-color .7s var(--ease);
+            filter    var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            translate .8s var(--ease),
+            box-shadow .8s var(--ease),
+            border-color .8s var(--ease);
     }
 
     .skill-icon {
-        transition: transform .6s var(--ease);
+        transition: transform .8s var(--ease);
     }
 
     @media (hover: hover) {
@@ -1529,9 +1666,10 @@
             transition:
                 opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
                 transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
-                translate .25s var(--ease-spring),
-                box-shadow .25s var(--ease),
-                border-color .25s var(--ease);
+                filter    var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                translate .5s var(--ease-spring),
+                box-shadow .5s var(--ease),
+                border-color .5s var(--ease);
         }
 
         .skill-card.reveal:hover + .skill-card,
@@ -1540,14 +1678,15 @@
             transition:
                 opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
                 transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
-                translate .3s var(--ease-spring),
-                box-shadow .3s var(--ease),
-                border-color .3s var(--ease);
+                filter    var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                translate .6s var(--ease-spring),
+                box-shadow .6s var(--ease),
+                border-color .6s var(--ease);
         }
 
         .skill-card:hover .skill-icon {
             transform: scale(1.15) rotate(-6deg);
-            transition: transform .25s var(--ease-spring);
+            transition: transform .5s var(--ease-spring);
         }
 
         /* a borda acende na cor do ícone do cartão */
@@ -1568,23 +1707,33 @@
 
     @keyframes brilhoPulsa {
         0%, 100% { opacity: .75; transform: scale(1); }
-        50%      { opacity: 1;   transform: scale(1.08); }
+        50%      { opacity: 1;   transform: scale(1.06); }
     }
 
+    /* Mesmo ritmo nos dois: o brilho respira junto com o notebook. */
     .laptop {
-        animation: notebookFlutua 6s ease-in-out infinite;
+        animation: notebookFlutua 7s var(--ease-soft) infinite;
+        /* volta devagar */
         transition:
-            transform var(--dur-slow) var(--ease),
-            filter var(--dur-slow) var(--ease);
+            transform .8s var(--ease),
+            filter .8s var(--ease);
     }
 
     .glow {
-        animation: brilhoPulsa 6s ease-in-out infinite;
+        animation: brilhoPulsa 7s var(--ease-soft) infinite;
+    }
+
+    /* O notebook chega junto com o texto do hero. */
+    .hero-visual {
+        animation: sobe var(--dur-slow) var(--ease) 200ms both;
     }
 
     /* Ao passar o mouse, o notebook vira um pouco de frente. */
     @media (hover: hover) {
         .hero-visual:hover .laptop {
+            transition:
+                transform .55s var(--ease),
+                filter .55s var(--ease);
             transform:
                 perspective(1000px)
                 rotateY(-2deg)
@@ -1601,33 +1750,40 @@
     /* Os cartões da tela levantam, e o ícone dá um pulinho. */
     .simulation-card {
         transition:
-            transform var(--dur) var(--ease),
-            box-shadow var(--dur) var(--ease);
+            translate .8s var(--ease),
+            box-shadow .8s var(--ease);
     }
 
     .simulation-card:hover {
-        transform: translateY(-4px);
+        translate: 0 -5px;
         box-shadow: var(--shadow-soft);
+        transition:
+            translate .5s var(--ease-spring),
+            box-shadow .5s var(--ease);
     }
 
     .sim-icon {
-        transition: transform var(--dur) var(--ease-spring);
+        transition: transform .8s var(--ease);
     }
 
     .simulation-card:hover .sim-icon {
         transform: scale(1.15) rotate(-5deg);
+        transition: transform .5s var(--ease-spring);
     }
 
     /* =========================================================
        REVELAÇÃO AO ROLAR
     ========================================================= */
 
+    /* Sobe, cresce um tiquinho e sai do desfoque ao mesmo tempo. */
     .reveal {
         opacity: 0;
-        transform: translateY(26px);
+        transform: translateY(30px) scale(.98);
+        filter: blur(8px);
         transition:
             opacity var(--dur-slow) var(--ease),
-            transform var(--dur-slow) var(--ease);
+            transform var(--dur-slow) var(--ease),
+            filter var(--dur-slow) var(--ease);
         transition-delay: var(--reveal-delay, 0ms);
         will-change: transform, opacity;
     }
@@ -1635,13 +1791,14 @@
     .reveal.is-visible {
         opacity: 1;
         transform: none;
+        filter: none;
         will-change: auto;
     }
 
     /* Entrada da dobra inicial, sem esperar o scroll */
     @keyframes sobe {
-        from { opacity: 0; transform: translateY(22px); }
-        to   { opacity: 1; transform: none; }
+        from { opacity: 0; transform: translateY(30px) scale(.98); filter: blur(8px); }
+        to   { opacity: 1; transform: none; filter: none; }
     }
 
     .enter {
@@ -1718,6 +1875,14 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             box-shadow: var(--shadow-soft);
+            /* abre deslizando, igual ao painel da conta */
+            transform-origin: top center;
+            animation: menuAbre .55s var(--ease-spring);
+        }
+
+        @keyframes menuAbre {
+            from { opacity: 0; transform: translateY(-10px) scale(.97); filter: blur(6px); }
+            to   { opacity: 1; transform: none; filter: none; }
         }
 
         /*
@@ -1853,6 +2018,11 @@
 
         .section {
             padding: 65px 0;
+        }
+
+        /* Dois cartões do time por linha; o último fica no meio. */
+        .skill-card.time-card {
+            flex-basis: calc(50% - 7px);
         }
 
         .hero-text h1 {
@@ -2115,10 +2285,28 @@
         .reveal {
             opacity: 1 !important;
             transform: none !important;
+            filter: none !important;
         }
 
         .enter {
             opacity: 1 !important;
+            animation: none !important;
+        }
+
+        /* loops e entradas com atraso: parados de vez */
+        .hero-visual,
+        .sobre-section.abrindo,
+        .laptop,
+        .glow,
+        .floating-stat,
+        .nav-links a.active::after,
+        .nav-links.mobile-open {
+            animation: none !important;
+        }
+
+        ::view-transition-group(*),
+        ::view-transition-old(*),
+        ::view-transition-new(*) {
             animation: none !important;
         }
     }
@@ -2658,7 +2846,7 @@
 
     <section
         class="growth-section"
-        id="sobre"
+        id="evolucao"
     >
 
         <div class="container growth-content">
@@ -2797,6 +2985,141 @@
 
 
     <!-- =====================================================
+         SOBRE NÓS
+    ====================================================== -->
+
+    <!-- Escondida até a pessoa clicar em "Sobre nós". -->
+    <section
+        class="sobre-section"
+        id="sobre"
+        hidden
+    >
+
+        <div class="container">
+
+            <div class="section-heading reveal">
+
+                <div class="eyebrow">
+
+                    <span class="eyebrow-icon">♡</span>
+
+                    Sobre nós
+
+                </div>
+
+                <h2>
+
+                    Um TCC feito por estudantes da
+
+                    <span class="gradient-text">
+                        Etec de Matão.
+                    </span>
+
+                </h2>
+
+                <p class="sobre-texto">
+
+                    O Skill Bloom nasceu como nosso Trabalho de Conclusão de Curso,
+                    com uma ideia simples: ajudar jovens a desenvolver, na prática,
+                    as competências socioemocionais que o mercado de trabalho procura.
+
+                </p>
+
+            </div>
+
+
+
+            <div class="time-grid">
+
+                <article class="skill-card time-card reveal">
+
+                    <div class="skill-icon icon-blue">
+                        <svg class="time-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <h3>Miguel</h3>
+
+                    <p>Desenvolvimento (dev) e planejamento</p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card time-card reveal"
+                    style="--reveal-delay:80ms"
+                >
+
+                    <div class="skill-icon icon-green">
+                        <svg class="time-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" stroke="currentColor" stroke-width="1.9"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <h3>Lucas</h3>
+
+                    <p>Ciência de dados e banco de dados</p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card time-card reveal"
+                    style="--reveal-delay:160ms"
+                >
+
+                    <div class="skill-icon icon-purple">
+                        <svg class="time-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="m3 13 9 5 9-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <h3>Rafael Sgorlon</h3>
+
+                    <p>Arquitetura do sistema</p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card time-card reveal"
+                    style="--reveal-delay:240ms"
+                >
+
+                    <div class="skill-icon icon-pink">
+                        <svg class="time-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 3.5 19 10l-6.2 1.8L10 18 5 3.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="m13 12 5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+                    </div>
+
+                    <h3>Ruan</h3>
+
+                    <p>Experiência do usuário (UX)</p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card time-card reveal"
+                    style="--reveal-delay:320ms"
+                >
+
+                    <div class="skill-icon icon-orange">
+                        <svg class="time-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3h7l5 5v13H7V3Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M14 3v5h5M10 13h6M10 17h6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <h3>Rafael Souza</h3>
+
+                    <p>Documentação</p>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
          CTA
     ====================================================== -->
 
@@ -2896,36 +3219,6 @@
 
         </div>
 
-
-
-        <div class="socials">
-
-            <a
-                href="#"
-                class="social"
-                aria-label="Instagram"
-            >
-                ◎
-            </a>
-
-            <a
-                href="#"
-                class="social"
-                aria-label="LinkedIn"
-            >
-                in
-            </a>
-
-            <a
-                href="#"
-                class="social"
-                aria-label="YouTube"
-            >
-                ▶
-            </a>
-
-        </div>
-
     </div>
 
 </footer>
@@ -2995,6 +3288,9 @@
 
         sections.forEach(section => {
 
+            /* Seção escondida (o "Sobre nós" fechado) não conta. */
+            if (section.hidden) return;
+
             const top =
                 section.offsetTop - 180;
 
@@ -3025,6 +3321,55 @@
         });
 
     });
+
+
+
+    /* =========================================================
+       SOBRE NÓS
+       A seção fica escondida e só aparece quando a pessoa
+       clica em "Sobre nós" (ou chega pelo link /#sobre).
+    ========================================================= */
+
+    (function () {
+
+        var sobre = document.getElementById("sobre");
+        if (!sobre) return;
+
+        function mostrarSobre(rolar) {
+
+            if (sobre.hidden) {
+                sobre.hidden = false;
+                sobre.classList.add("abrindo");
+            }
+
+            if (rolar) {
+                /* Espera a seção existir no layout antes de rolar. */
+                window.requestAnimationFrame(function () {
+                    sobre.scrollIntoView({ behavior: "smooth", block: "start" });
+                });
+            }
+        }
+
+        document.querySelectorAll('a[href="#sobre"]').forEach(function (link) {
+            link.addEventListener("click", function (evento) {
+                evento.preventDefault();
+                mostrarSobre(true);
+
+                if (window.location.hash !== "#sobre") {
+                    history.pushState(null, "", "#sobre");
+                }
+            });
+        });
+
+        window.addEventListener("hashchange", function () {
+            if (window.location.hash === "#sobre") mostrarSobre(true);
+        });
+
+        if (window.location.hash === "#sobre") {
+            mostrarSobre(true);
+        }
+
+    })();
 
 
 
@@ -3114,9 +3459,10 @@
                 localStorage.setItem("skillbloom-tema", proximo);
             } catch (e) {}
 
+            /* Um pouco mais que o --dur (.5s) da troca de cores. */
             window.setTimeout(function () {
                 raiz.classList.remove("theme-switching");
-            }, 420);
+            }, 560);
         });
 
     })();
@@ -3170,7 +3516,11 @@
             return botao.getAttribute("aria-expanded") === "true";
         }
 
+        var timerFechar = null;
+
         function abrir() {
+            /* Reabriu no meio do fechamento: cancela o esconder. */
+            window.clearTimeout(timerFechar);
             painel.hidden = false;
             painel.classList.remove("is-fechando");
             painel.classList.add("is-abrindo");
@@ -3184,10 +3534,15 @@
             painel.classList.remove("is-abrindo");
             painel.classList.add("is-fechando");
 
-            window.setTimeout(function () {
+            /* Espera o contaSai (--dur-fast, .3s) terminar, com uma
+               folga de 60 ms. Se a pessoa reabriu nesse meio-tempo,
+               não esconde. */
+            window.clearTimeout(timerFechar);
+            timerFechar = window.setTimeout(function () {
+                if (aberto()) return;
                 painel.classList.remove("is-fechando");
                 painel.hidden = true;
-            }, 180);
+            }, 360);
         }
 
         botao.addEventListener("click", function (evento) {

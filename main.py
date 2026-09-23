@@ -212,14 +212,6 @@ def empresas():
 # API DO CONTATO DE EMPRESAS
 # =========================================================
 
-PLANOS_EMPRESA = (
-    "Simples",
-    "Standard",
-    "Plus",
-    "Deluxe",
-    "Ainda não sei"
-)
-
 FORMATO_EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
@@ -241,7 +233,6 @@ def contato_empresa():
         email = str(dados.get("email") or "").strip()[:160]
         empresa = str(dados.get("empresa") or "").strip()[:160]
         telefone = str(dados.get("telefone") or "").strip()[:40]
-        plano = str(dados.get("plano") or "").strip()
         mensagem = str(dados.get("mensagem") or "").strip()[:1500]
 
 
@@ -275,9 +266,6 @@ def contato_empresa():
                 "mensagem": "Informe quantos colaboradores a empresa tem."
             }), 400
 
-        if plano not in PLANOS_EMPRESA:
-            plano = "Ainda não sei"
-
 
         # -------------------------------------------------
         # SALVAR NO FIRESTORE
@@ -290,7 +278,6 @@ def contato_empresa():
             "empresa": empresa,
             "telefone": telefone,
             "colaboradores": colaboradores,
-            "plano": plano,
             "mensagem": mensagem,
             "criado_em": firestore.SERVER_TIMESTAMP
 

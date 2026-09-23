@@ -113,13 +113,13 @@
             --shadow-strong:   0 22px 55px rgb(var(--shadow) / .56);
             --ring:            0 0 0 4px rgb(61 155 255 / .26);
 
-            /* movimento — inalterado */
-            --ease:            cubic-bezier(.22, .61, .36, 1);
-            --ease-soft:       cubic-bezier(.4, .14, .3, 1);
-            --ease-spring:     cubic-bezier(.34, 1.4, .64, 1);
-            --dur-fast:        .18s;
-            --dur:             .34s;
-            --dur-slow:        .62s;
+            /* movimento — fluido: saídas longas e macias */
+            --ease:            cubic-bezier(.16, 1, .3, 1);      /* saída longa e macia */
+            --ease-soft:       cubic-bezier(.65, 0, .35, 1);     /* entra e sai macio (tema, loops) */
+            --ease-spring:     cubic-bezier(.34, 1.36, .64, 1);  /* mola suave, pouco exagero */
+            --dur-fast:        .3s;
+            --dur:             .5s;
+            --dur-slow:        .9s;
         }
 
 
@@ -334,17 +334,49 @@
            de competência que cresce de zero até o percentual.
         ========================================================= */
 
+        /* Sobe, cresce um pouco e sai do desfoque. */
         @keyframes sobe {
-            from { opacity: 0; transform: translateY(22px); }
-            to   { opacity: 1; transform: none; }
+            from { opacity: 0; transform: translateY(30px) scale(.98); filter: blur(7px); }
+            to   { opacity: 1; transform: none; filter: none; }
         }
 
+        /*
+            A entrada usa `transform`; os hovers dos blocos com
+            .enter usam `translate`, para um não anular o outro.
+        */
         .enter {
             opacity: 0;
             animation: sobe var(--dur-slow) var(--ease) forwards;
             animation-delay: var(--enter-delay, 0ms);
-            will-change: transform, opacity;
+            will-change: transform, opacity, filter;
         }
+
+        /* Loops lentos e de pouca amplitude — só dão vida. */
+        @keyframes luzRespira {
+            0%, 100% { opacity: .65; scale: 1; }
+            50%      { opacity: .85; scale: 1.15; }
+        }
+
+        @keyframes brilhoFlutua {
+            0%, 100% { translate: 0 0;    opacity: 1; }
+            50%      { translate: 0 -3px; opacity: .78; }
+        }
+
+        @keyframes auraDeriva {
+            from { translate: 0 0;         scale: 1; }
+            to   { translate: -26px -18px; scale: 1.08; }
+        }
+
+        /* Transição suave entre páginas (mesma origem). */
+        @media (prefers-reduced-motion: no-preference) {
+            @view-transition { navigation: auto; }
+        }
+
+        ::view-transition-old(root) { animation: paginaSai .4s var(--ease-soft) both; }
+        ::view-transition-new(root) { animation: paginaEntra .7s var(--ease) both; }
+
+        @keyframes paginaSai   { to   { opacity: 0; transform: translateY(-8px) scale(.99); filter: blur(4px); } }
+        @keyframes paginaEntra { from { opacity: 0; transform: translateY(14px) scale(.99); filter: blur(6px); } }
 
         /* Ângulo animável do anel — sem @property ele apenas salta. */
         @property --dash-anel-grau {
@@ -367,7 +399,20 @@
                 border-color var(--dur) var(--ease-soft),
                 color var(--dur) var(--ease-soft),
                 fill var(--dur) var(--ease-soft),
-                stroke var(--dur) var(--ease-soft) !important;
+                stroke var(--dur) var(--ease-soft),
+                /* o botão clicado volta do "aperto" sem saltar */
+                translate var(--dur) var(--ease-spring),
+                scale var(--dur) var(--ease-spring) !important;
+        }
+
+        /*
+            Sem isto a regra acima apagaria o giro do sol/lua
+            justamente na troca de tema.
+        */
+        .theme-switching .theme-icon {
+            transition:
+                opacity var(--dur) var(--ease),
+                transform var(--dur-slow) var(--ease-spring) !important;
         }
 
 
@@ -555,15 +600,29 @@
             font-size: 13px;
             font-weight: 600;
 
+            /* Volta devagar; a ida (hover) é mais curta, com mola. */
             transition:
-                background-color var(--dur-fast) var(--ease),
-                transform var(--dur-fast) var(--ease),
-                color var(--dur-fast) var(--ease);
+                background-color .7s var(--ease),
+                color .7s var(--ease),
+                translate .8s var(--ease),
+                scale .8s var(--ease);
         }
 
+        /* `translate`, e não `transform`: o item também tem .enter. */
         .nav-item:hover {
             background-color: var(--dash-hover);
-            transform: translateX(2px);
+            translate: 3px 0;
+
+            transition:
+                background-color var(--dur) var(--ease),
+                color var(--dur) var(--ease),
+                translate var(--dur) var(--ease-spring),
+                scale var(--dur) var(--ease-spring);
+        }
+
+        .nav-item:active {
+            scale: .97;
+            transition-duration: .15s;
         }
 
         .nav-item.active {
@@ -625,13 +684,29 @@
             cursor: pointer;
 
             transition:
-                background-color var(--dur-fast) var(--ease),
-                color var(--dur-fast) var(--ease);
+                background-color .7s var(--ease),
+                color .7s var(--ease),
+                translate .8s var(--ease),
+                scale .8s var(--ease);
         }
 
         .bottom-button:hover {
             background-color: var(--dash-hover-forte);
             color: var(--dash-texto);
+            translate: 0 -2px;
+
+            transition:
+                background-color var(--dur) var(--ease),
+                color var(--dur) var(--ease),
+                translate var(--dur) var(--ease-spring),
+                scale var(--dur) var(--ease-spring);
+        }
+
+        /* Clique: resposta rápida. */
+        .bottom-button:active {
+            translate: 0;
+            scale: .94;
+            transition-duration: .15s;
         }
 
 
@@ -645,20 +720,9 @@
             overflow: hidden;
 
             padding: 0;
-
-            transition:
-                background-color var(--dur) var(--ease),
-                color var(--dur) var(--ease),
-                transform var(--dur-fast) var(--ease-spring);
         }
 
-        .theme-toggle:hover {
-            transform: translateY(-2px);
-        }
-
-        .theme-toggle:active {
-            transform: translateY(0) scale(.94);
-        }
+        /* Subida e clique vêm do .bottom-button (translate/scale). */
 
         .theme-icon {
             position: absolute;
@@ -710,6 +774,9 @@
                 );
 
             pointer-events: none;
+
+            /* A aura roxa deriva devagar, quase imperceptível. */
+            animation: auraDeriva 18s var(--ease-soft) infinite alternate;
         }
 
 
@@ -792,6 +859,27 @@
             font-size: 18px;
 
             position: relative;
+
+            transition:
+                translate .8s var(--ease),
+                scale .8s var(--ease),
+                box-shadow .8s var(--ease);
+        }
+
+        .notification:hover {
+            translate: 0 -2px;
+            box-shadow: var(--shadow-weak);
+
+            transition:
+                translate var(--dur) var(--ease-spring),
+                scale var(--dur) var(--ease-spring),
+                box-shadow var(--dur) var(--ease-spring);
+        }
+
+        .notification:active {
+            translate: 0;
+            scale: .97;
+            transition-duration: .15s;
         }
 
         .notification::after {
@@ -856,6 +944,35 @@
             box-shadow: var(--dash-card-sombra);
         }
 
+        /*
+            Cartões do painel: sobem com mola no hover e voltam
+            devagar. `translate`, e não `transform`, porque eles
+            também têm a entrada .enter.
+        */
+        .play-card,
+        .competency,
+        .stat-card {
+            transition:
+                translate .8s var(--ease),
+                box-shadow .8s var(--ease);
+        }
+
+        .play-card:hover,
+        .competency:hover,
+        .stat-card:hover {
+            translate: 0 -6px;
+            box-shadow: var(--shadow-soft);
+
+            transition:
+                translate var(--dur) var(--ease-spring),
+                box-shadow var(--dur) var(--ease-spring);
+        }
+
+        /* O cartão de jogar já tem sombra; no hover ela cresce mais. */
+        .play-card:hover {
+            box-shadow: var(--shadow-strong);
+        }
+
         .play-content {
             padding: 25px 20px;
 
@@ -913,18 +1030,27 @@
             box-shadow: var(--dash-verde-sombra);
 
             transition:
-                transform var(--dur-fast) var(--ease),
-                box-shadow var(--dur) var(--ease);
+                translate .8s var(--ease),
+                scale .8s var(--ease),
+                box-shadow .8s var(--ease);
         }
 
         .play-button:hover {
-            transform: translateY(-2px);
+            translate: 0 -3px;
 
             box-shadow: var(--dash-verde-sombra-alta);
+
+            transition:
+                translate var(--dur) var(--ease-spring),
+                scale var(--dur) var(--ease-spring),
+                box-shadow var(--dur) var(--ease-spring);
         }
 
+        /* Clique: resposta rápida. */
         .play-button:active {
-            transform: translateY(0) scale(.97);
+            translate: 0;
+            scale: .97;
+            transition-duration: .15s;
         }
 
         .play-image {
@@ -963,6 +1089,9 @@
             filter: blur(10px);
 
             opacity: .65;
+
+            /* A luz da mesa respira devagar. */
+            animation: luzRespira 6s var(--ease-soft) infinite;
         }
 
         .monitor {
@@ -1000,6 +1129,9 @@
             color: var(--dash-cena-icone);
 
             font-size: 21px;
+
+            /* O ✦ flutua na tela; `translate` soma ao centralizador. */
+            animation: brilhoFlutua 5.5s var(--ease-soft) infinite;
         }
 
         .monitor-stand {
@@ -1124,8 +1256,12 @@
             margin: 1px auto 8px;
         }
 
+        /*
+            Cresce quando o cartão já apareceu: .3s de espera e
+            1.6s de subida (o JS usa os mesmos tempos nos números).
+        */
         .circle.anel-animado {
-            animation: anelCresce var(--dur-slow) var(--ease) forwards;
+            animation: anelCresce 1.6s var(--ease) .3s both;
         }
 
         .circle::before {
@@ -1196,6 +1332,23 @@
             justify-content: space-between;
 
             cursor: pointer;
+
+            transition: scale .8s var(--ease);
+        }
+
+        /* A seta desliza para a direita no hover. */
+        .details span:last-child {
+            transition: translate .8s var(--ease);
+        }
+
+        .details:hover span:last-child {
+            translate: 4px 0;
+            transition: translate var(--dur) var(--ease-spring);
+        }
+
+        .details:active {
+            scale: .97;
+            transition-duration: .15s;
         }
 
 
@@ -1248,6 +1401,14 @@
             background: var(--dash-stat-aura);
 
             filter: blur(5px);
+
+            transition: scale .8s var(--ease);
+        }
+
+        /* No hover a aura se espalha e o ícone cresce de leve. */
+        .stat-card:hover::after {
+            scale: 1.3;
+            transition: scale var(--dur) var(--ease);
         }
 
         .stat-icon {
@@ -1265,6 +1426,13 @@
             font-size: 21px;
 
             border: 1px solid currentColor;
+
+            transition: scale .8s var(--ease);
+        }
+
+        .stat-card:hover .stat-icon {
+            scale: 1.08;
+            transition: scale var(--dur) var(--ease-spring);
         }
 
         .stat-icon.green {
@@ -1383,6 +1551,11 @@
                 justify-content: flex-end;
 
                 overflow-x: auto;
+                /*
+                    A entrada desce os itens; sem isto a faixa ganha
+                    uma barra de rolagem vertical durante a subida.
+                */
+                overflow-y: hidden;
 
                 gap: 4px;
             }
@@ -1393,6 +1566,14 @@
                 padding: 8px;
 
                 justify-content: center;
+            }
+
+            /*
+                Na faixa rolável o deslize lateral do hover abriria
+                uma barra de rolagem; aqui fica só o fundo.
+            */
+            .nav-item:hover {
+                translate: none;
             }
 
             .nav-item span:last-child {
@@ -1516,6 +1697,38 @@
 
             /* O anel já nasce no valor final, sem crescer. */
             .circle.anel-animado {
+                animation: none !important;
+            }
+
+            /* Loops de fundo e do cenário ficam parados. */
+            .main::before,
+            .desk-light,
+            .monitor::after {
+                animation: none !important;
+            }
+
+            /*
+                A troca de tema só cruza as cores: sem mola no
+                botão nem giro do sol/lua (as regras !important
+                de .theme-switching venceriam o * acima).
+            */
+            .theme-switching,
+            .theme-switching *,
+            .theme-switching *::before,
+            .theme-switching *::after,
+            .theme-switching .theme-icon {
+                transition-property:
+                    background-color,
+                    border-color,
+                    color,
+                    fill,
+                    stroke !important;
+            }
+
+            /* Sem transição entre páginas. */
+            ::view-transition-group(*),
+            ::view-transition-old(*),
+            ::view-transition-new(*) {
                 animation: none !important;
             }
 
@@ -1912,8 +2125,9 @@
 
 
     /*
-        Conta de zero até o valor final desacelerando no fim
-        (easeOutCubic), no mesmo tempo do anel de competência.
+        Conta de zero até o valor final desacelerando longo no
+        fim (easeOutExpo, a mesma curva do --ease), com a mesma
+        espera e o mesmo tempo do anel de competência.
     */
     function animarNumero(elemento, valor, sufixo) {
 
@@ -1926,16 +2140,20 @@
 
         }
 
-        const duracao = 620;
+        const espera = 300;
+        const duracao = 1600;
         const inicio = performance.now();
 
         function passo(agora) {
 
             const avanco =
-                Math.min((agora - inicio) / duracao, 1);
+                Math.min(
+                    Math.max((agora - inicio - espera) / duracao, 0),
+                    1
+                );
 
             const suave =
-                1 - Math.pow(1 - avanco, 3);
+                avanco === 1 ? 1 : 1 - Math.pow(2, -10 * avanco);
 
             elemento.textContent =
                 Math.round(valor * suave) + sufixo;
@@ -2109,9 +2327,10 @@
                 localStorage.setItem("skillbloom-tema", proximo);
             } catch (e) {}
 
+            /* Um pouco além do --dur (.5s), para a troca terminar inteira. */
             window.setTimeout(function () {
                 raiz.classList.remove("theme-switching");
-            }, 420);
+            }, 560);
         });
 
     })();

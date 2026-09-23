@@ -15,6 +15,9 @@
 
 <title>Skill Bloom — Prepare-se hoje, destaque-se amanhã.</title>
 
+<link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='logo.jpg') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.jpg') }}">
+
 <script>
     /* O SkillBloom abre no escuro. Só o claro precisa ser
        restaurado antes da primeira pintura. */
@@ -82,11 +85,6 @@
         --dur-fast:        .18s;
         --dur:             .34s;
         --dur-slow:        .62s;
-
-        /* marca SVG */
-        --mark-case:   #102b4c;
-        --mark-brain:  #0a2745;
-        --mark-accent: #7cc5ff;
 
         /* arte decorativa (hero, notebook, ilustração, CTA) */
         --art-hero-glow-a:   rgb(105 169 255 / .17);
@@ -157,11 +155,6 @@
         --dur-fast:        .18s;
         --dur:             .34s;
         --dur-slow:        .62s;
-
-        /* marca SVG */
-        --mark-case:   #0d2b53;
-        --mark-brain:  #061a36;
-        --mark-accent: #7cc5ff;
 
         /* arte decorativa (hero, notebook, ilustração, CTA) */
         --art-hero-glow-a:   rgb(61 155 255 / .16);
@@ -313,15 +306,20 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        background: var(--surface-2);
+        /* Mesmo branco do fundo da logo.jpg */
+        background: #ffffff;
         box-shadow: var(--shadow-weak);
     }
 
-    /* Marca em SVG: acompanha o tema, sem fundo sólido */
+    /* Logo original (static/logo.jpg).
+       O arquivo tem bastante respiro branco em volta da maleta,
+       então ela é ampliada para preencher o ícone. */
     .brand-mark {
         width: 100%;
         height: 100%;
         display: block;
+        object-fit: cover;
+        scale: 1.4;
         transition: transform var(--dur-slow) var(--ease-spring);
     }
 
@@ -1303,7 +1301,7 @@
         width: 60px;
         height: 60px;
         border-radius: 14px;
-        background: var(--surface-2);
+        background: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1351,7 +1349,7 @@
         width: 29px;
         height: 29px;
         border-radius: 7px;
-        background: var(--surface-2);
+        background: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -2141,21 +2139,11 @@
 
     <div class="container navbar">
 
-        <a href="#" class="logo">
+        <a href="/#inicio" class="logo" aria-label="Skill Bloom - início">
 
             <div class="logo-icon">
 
-                <svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <rect x="6" y="13" width="52" height="47" rx="9" fill="var(--mark-case)"/>
-                    <rect x="20" y="5" width="24" height="12" rx="5" stroke="var(--mark-accent)" stroke-width="3"/>
-                    <path d="M32 25C25 19 16 26 18.5 34C13 39 18 48 24 47C28 53 36 53 40 47C47 48 52 39 46 34C49 26 39 19 32 25Z"
-                          fill="var(--mark-brain)" stroke="var(--mark-accent)" stroke-width="2"/>
-                    <path d="M32 25V48" stroke="var(--mark-accent)" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M29 29C25 27 22 30 24 33M29 35C25 34 23 37 25 40M29 41C27 41 26 43 27 45"
-                          stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
-                    <path d="M35 29C39 27 42 30 40 33M35 35C39 34 41 37 39 40M35 41C37 41 38 43 37 45"
-                          stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
-                </svg>
+                <img class="brand-mark" src="{{ url_for('static', filename='logo.jpg') }}" alt="" width="42" height="42">
 
             </div>
 
@@ -2173,7 +2161,7 @@
                 Como funciona
             </a>
 
-            <a href="#empresas">
+            <a href="/empresas">
                 Para empresas
             </a>
 
@@ -2822,17 +2810,7 @@
 
                     <div class="cta-icon">
 
-                        <svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <rect x="6" y="13" width="52" height="47" rx="9" fill="var(--mark-case)"/>
-                            <rect x="20" y="5" width="24" height="12" rx="5" stroke="var(--mark-accent)" stroke-width="3"/>
-                            <path d="M32 25C25 19 16 26 18.5 34C13 39 18 48 24 47C28 53 36 53 40 47C47 48 52 39 46 34C49 26 39 19 32 25Z"
-                                  fill="var(--mark-brain)" stroke="var(--mark-accent)" stroke-width="2"/>
-                            <path d="M32 25V48" stroke="var(--mark-accent)" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M29 29C25 27 22 30 24 33M29 35C25 34 23 37 25 40M29 41C27 41 26 43 27 45"
-                                  stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
-                            <path d="M35 29C39 27 42 30 40 33M35 35C39 34 41 37 39 40M35 41C37 41 38 43 37 45"
-                                  stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
-                        </svg>
+                        <img class="brand-mark" src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo Skill Bloom" width="60" height="60" loading="lazy">
 
                     </div>
 
@@ -2892,17 +2870,7 @@
 
             <div class="footer-logo-icon">
 
-                <svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <rect x="6" y="13" width="52" height="47" rx="9" fill="var(--mark-case)"/>
-                    <rect x="20" y="5" width="24" height="12" rx="5" stroke="var(--mark-accent)" stroke-width="3"/>
-                    <path d="M32 25C25 19 16 26 18.5 34C13 39 18 48 24 47C28 53 36 53 40 47C47 48 52 39 46 34C49 26 39 19 32 25Z"
-                          fill="var(--mark-brain)" stroke="var(--mark-accent)" stroke-width="2"/>
-                    <path d="M32 25V48" stroke="var(--mark-accent)" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M29 29C25 27 22 30 24 33M29 35C25 34 23 37 25 40M29 41C27 41 26 43 27 45"
-                          stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
-                    <path d="M35 29C39 27 42 30 40 33M35 35C39 34 41 37 39 40M35 41C37 41 38 43 37 45"
-                          stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
-                </svg>
+                <img class="brand-mark" src="{{ url_for('static', filename='logo.jpg') }}" alt="" width="29" height="29" loading="lazy">
 
             </div>
 
@@ -2916,6 +2884,10 @@
 
             <a href="#sobre">
                 Sobre nós
+            </a>
+
+            <a href="/empresas">
+                Para empresas
             </a>
 
             <a href="#">

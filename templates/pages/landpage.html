@@ -29,6 +29,9 @@
 
     <title>SkillBloom — Dashboard</title>
 
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='logo.jpg') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.jpg') }}">
+
     <style>
         /* =========================================================
            TOKENS DE TEMA
@@ -162,8 +165,6 @@
             --dash-hover-forte:        rgba(16,32,51,.075);
 
             /* marca na sidebar */
-            --dash-logo-1:             rgba(0,170,255,.16);
-            --dash-logo-2:             rgba(0,100,255,.04);
             --dash-logo-borda:         rgba(0,174,255,.3);
             --dash-logo-brilho:        0 0 22px rgba(0,166,255,.14);
             /* Ciano rebaixado: no claro ele vive sobre branco. */
@@ -262,8 +263,6 @@
             --dash-hover:              rgba(255,255,255,.055);
             --dash-hover-forte:        rgba(255,255,255,.08);
 
-            --dash-logo-1:             rgba(0,170,255,.25);
-            --dash-logo-2:             rgba(0,100,255,.05);
             --dash-logo-borda:         rgba(0,174,255,.18);
             --dash-logo-brilho:        0 0 22px rgba(0,166,255,.12);
             --dash-ciano:              #00b7ff;
@@ -497,20 +496,25 @@
 
             border-radius: 12px;
 
-            background:
-                radial-gradient(
-                    circle,
-                    var(--dash-logo-1),
-                    var(--dash-logo-2)
-                );
+            overflow: hidden;
 
-            color: var(--dash-ciano);
-
-            font-size: 25px;
+            /* Mesmo branco do fundo da logo.jpg */
+            background: #ffffff;
 
             border: 1px solid var(--dash-logo-borda);
 
             box-shadow: var(--dash-logo-brilho);
+        }
+
+        /* Logo original (static/logo.jpg).
+           O arquivo tem bastante respiro branco em volta da maleta,
+           então ela é ampliada para preencher o ícone. */
+        .logo-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            scale: 1.4;
         }
 
         .logo-name {
@@ -1534,7 +1538,7 @@
         <div class="logo">
 
             <div class="logo-icon">
-                🧠
+                <img class="logo-img" src="{{ url_for('static', filename='logo.jpg') }}" alt="" width="44" height="44">
             </div>
 
             <div class="logo-name">

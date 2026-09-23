@@ -14,6 +14,9 @@
 
   <title>Skill Bloom - Login</title>
 
+  <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='logo.jpg') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.jpg') }}">
+
   <meta name="theme-color" content="#061a36">
 
   <script>
@@ -124,10 +127,8 @@
     ========================================================= */
 
     :root[data-theme="light"] {
-        /* marca */
-        --mark-case:   #102b4c;
+        /* miolo do cérebro da ilustração */
         --mark-brain:  #0a2745;
-        --mark-accent: #7cc5ff;
 
         /* hero */
         --hero-brilho: rgba(103, 146, 255, 0.10);
@@ -202,9 +203,7 @@
     }
 
     :root {
-        --mark-case:   #0d2b53;
         --mark-brain:  #061a36;
-        --mark-accent: #7cc5ff;
 
         --hero-brilho: rgb(61 155 255 / .14);
         --hero-topo:   #061a36;
@@ -405,6 +404,29 @@
       width: 53px;
       height: 53px;
       flex: 0 0 53px;
+      display: block;
+      border-radius: 13px;
+      overflow: hidden;
+      /* Mesmo branco do fundo da logo.jpg */
+      background: #ffffff;
+      box-shadow: var(--shadow-weak);
+    }
+
+    /* Logo original (static/logo.jpg).
+       O arquivo tem bastante respiro branco em volta da maleta,
+       então ela é ampliada para preencher o ícone. */
+    .brand-logo {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      scale: 1.4;
+      transition: transform var(--dur-slow) var(--ease-spring);
+    }
+
+    .brand:hover .brand-logo,
+    .footer-brand:hover .brand-logo {
+      transform: scale(1.07) rotate(-3deg);
     }
 
     .brand-name {
@@ -1129,6 +1151,11 @@
     .footer-brand .brand-mini {
       width: 35px;
       height: 35px;
+      flex: 0 0 35px;
+      display: block;
+      border-radius: 9px;
+      overflow: hidden;
+      background: #ffffff;
     }
 
     .footer-brand span {
@@ -1894,74 +1921,15 @@
             aria-label="SkillBloom - início"
           >
 
-            <svg
-              class="brand-icon"
-              viewBox="0 0 64 64"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <rect
-                x="6"
-                y="13"
-                width="52"
-                height="47"
-                rx="9"
-                fill="url(#brandGradient)"
+            <span class="brand-icon">
+              <img
+                class="brand-logo"
+                src="{{ url_for('static', filename='logo.jpg') }}"
+                alt=""
+                width="53"
+                height="53"
               />
-
-              <rect
-                x="20"
-                y="5"
-                width="24"
-                height="12"
-                rx="5"
-                stroke="var(--blue)"
-                stroke-width="3"
-              />
-
-              <path
-                d="M32 25C25 19 16 26 18.5 34C13 39 18 48 24 47C28 53 36 53 40 47C47 48 52 39 46 34C49 26 39 19 32 25Z"
-                fill="var(--mark-brain)"
-                stroke="var(--mark-accent)"
-                stroke-width="2"
-              />
-
-              <path
-                d="M32 25V48"
-                stroke="var(--mark-accent)"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-
-              <path
-                d="M29 29C25 27 22 30 24 33M29 35C25 34 23 37 25 40M29 41C27 41 26 43 27 45"
-                stroke="var(--mark-accent)"
-                stroke-width="1.6"
-                stroke-linecap="round"
-              />
-
-              <path
-                d="M35 29C39 27 42 30 40 33M35 35C39 34 41 37 39 40M35 41C37 41 38 43 37 45"
-                stroke="var(--mark-accent)"
-                stroke-width="1.6"
-                stroke-linecap="round"
-              />
-
-              <defs>
-                <linearGradient
-                  id="brandGradient"
-                  x1="8"
-                  y1="13"
-                  x2="57"
-                  y2="60"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stop-color="var(--mark-case)"/>
-                  <stop offset="1" stop-color="var(--mark-brain)"/>
-                </linearGradient>
-              </defs>
-            </svg>
+            </span>
 
             <div class="brand-name">
               Skill <span>Bloom</span>
@@ -2580,46 +2548,16 @@
         aria-label="SkillBloom"
       >
 
-        <svg
-          class="brand-mini"
-          viewBox="0 0 64 64"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <rect
-            x="6"
-            y="13"
-            width="52"
-            height="47"
-            rx="9"
-            fill="var(--mark-case)"
+        <span class="brand-mini">
+          <img
+            class="brand-logo"
+            src="{{ url_for('static', filename='logo.jpg') }}"
+            alt=""
+            width="35"
+            height="35"
+            loading="lazy"
           />
-
-          <rect
-            x="20"
-            y="5"
-            width="24"
-            height="12"
-            rx="5"
-            stroke="var(--blue)"
-            stroke-width="3"
-          />
-
-          <path
-            d="M32 25C25 19 16 26 18.5 34C13 39 18 48 24 47C28 53 36 53 40 47C47 48 52 39 46 34C49 26 39 19 32 25Z"
-            fill="var(--mark-brain)"
-            stroke="var(--mark-accent)"
-            stroke-width="2"
-          />
-
-          <path
-            d="M32 25V48M29 29C25 27 22 30 24 33M29 35C25 34 23 37 25 40M35 29C39 27 42 30 40 33M35 35C39 34 41 37 39 40"
-            stroke="var(--mark-accent)"
-            stroke-width="1.8"
-            stroke-linecap="round"
-          />
-        </svg>
+        </span>
 
         Skill<span>Bloom</span>
 

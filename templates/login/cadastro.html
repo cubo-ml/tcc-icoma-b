@@ -10,6 +10,9 @@
 
     <title>Skill Bloom — Criar conta</title>
 
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='logo.jpg') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.jpg') }}">
+
     <script>
         /* O SkillBloom abre no escuro. Só o claro precisa ser
            restaurado antes da primeira pintura. */
@@ -63,11 +66,6 @@
             --orange:          #f5a623;
             --pink:            #ed6d88;
 
-            /* desenho da marca */
-            --mark-case:       #102b4c;
-            --mark-brain:      #0a2745;
-            --mark-accent:     #7cc5ff;
-
             /* sombra (componentes em rgb(var(--shadow) / alfa)) */
             --shadow:          31 56 87;
             --shadow-weak:     0 6px 18px rgb(var(--shadow) / .07);
@@ -102,10 +100,6 @@
             --purple:          #9d8bff;
             --orange:          #ffbc4d;
             --pink:            #ff8ca3;
-
-            --mark-case:       #0d2b53;
-            --mark-brain:      #061a36;
-            --mark-accent:     #7cc5ff;
 
             --shadow:          0 6 18;
             --shadow-weak:     0 6px 18px rgb(var(--shadow) / .34);
@@ -145,9 +139,7 @@
             --cartao:          rgb(255 255 255 / .95);
             --social-hover:    #f8fbff;
 
-            /* caixa da marca e ícone de benefício */
-            --marca-caixa-1:   #061c39;
-            --marca-caixa-2:   #0b315a;
+            /* ícone de benefício */
             --beneficio-1:     #e8f6ff;
             --beneficio-2:     #eef0ff;
 
@@ -179,8 +171,6 @@
             --cartao:          rgb(10 36 71 / .94);
             --social-hover:    #0d2b53;
 
-            --marca-caixa-1:   #0d2b53;
-            --marca-caixa-2:   #123163;
             --beneficio-1:     rgb(61 155 255 / .18);
             --beneficio-2:     rgb(157 139 255 / .18);
 
@@ -701,12 +691,8 @@
             align-items: center;
             justify-content: center;
 
-            background:
-                linear-gradient(
-                    145deg,
-                    var(--marca-caixa-1),
-                    var(--marca-caixa-2)
-                );
+            /* Mesmo branco do fundo da logo.jpg */
+            background: #ffffff;
 
             box-shadow: var(--shadow-soft);
 
@@ -716,12 +702,16 @@
         }
 
 
-        /* Marca em SVG — acompanha o tema, não é mais um JPG. */
+        /* Logo original (static/logo.jpg).
+           O arquivo tem bastante respiro branco em volta da maleta,
+           então ela é ampliada para preencher o ícone. */
 
         .brand-mark {
             width: 100%;
             height: 100%;
             display: block;
+            object-fit: cover;
+            scale: 1.4;
             transition: transform var(--dur-slow) var(--ease-spring);
         }
 
@@ -892,11 +882,10 @@
             height: 21px;
         }
 
-        /* A marca aqui é menor que o ladrilho, para pesar como os outros ícones. */
+        /* Ladrilho com a logo: fundo branco como o da logo.jpg. */
 
-        .benefit-icon .brand-mark {
-            width: 78%;
-            height: 78%;
+        .benefit-icon-logo {
+            background: #ffffff;
         }
 
         .benefit strong {
@@ -1930,17 +1919,7 @@
 
             <div class="brand-icon">
 
-                <svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <rect x="6" y="13" width="52" height="47" rx="9" fill="var(--mark-case)"/>
-                    <rect x="20" y="5" width="24" height="12" rx="5" stroke="var(--mark-accent)" stroke-width="3"/>
-                    <path d="M32 25C25 19 16 26 18.5 34C13 39 18 48 24 47C28 53 36 53 40 47C47 48 52 39 46 34C49 26 39 19 32 25Z"
-                          fill="var(--mark-brain)" stroke="var(--mark-accent)" stroke-width="2"/>
-                    <path d="M32 25V48" stroke="var(--mark-accent)" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M29 29C25 27 22 30 24 33M29 35C25 34 23 37 25 40M29 41C27 41 26 43 27 45"
-                          stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
-                    <path d="M35 29C39 27 42 30 40 33M35 35C39 34 41 37 39 40M35 41C37 41 38 43 37 45"
-                          stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
-                </svg>
+                <img class="brand-mark" src="{{ url_for('static', filename='logo.jpg') }}" alt="" width="54" height="54">
 
             </div>
 
@@ -2030,19 +2009,9 @@
 
             <div class="benefit enter" style="--enter-delay:320ms">
 
-                <div class="benefit-icon">
+                <div class="benefit-icon benefit-icon-logo">
 
-                    <svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <rect x="6" y="13" width="52" height="47" rx="9" fill="var(--mark-case)"/>
-                        <rect x="20" y="5" width="24" height="12" rx="5" stroke="var(--mark-accent)" stroke-width="3"/>
-                        <path d="M32 25C25 19 16 26 18.5 34C13 39 18 48 24 47C28 53 36 53 40 47C47 48 52 39 46 34C49 26 39 19 32 25Z"
-                              fill="var(--mark-brain)" stroke="var(--mark-accent)" stroke-width="2"/>
-                        <path d="M32 25V48" stroke="var(--mark-accent)" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M29 29C25 27 22 30 24 33M29 35C25 34 23 37 25 40M29 41C27 41 26 43 27 45"
-                              stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
-                        <path d="M35 29C39 27 42 30 40 33M35 35C39 34 41 37 39 40M35 41C37 41 38 43 37 45"
-                              stroke="var(--mark-accent)" stroke-width="1.6" stroke-linecap="round"/>
-                    </svg>
+                    <img class="brand-mark" src="{{ url_for('static', filename='logo.jpg') }}" alt="" width="38" height="38">
 
                 </div>
 

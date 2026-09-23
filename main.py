@@ -1,4 +1,5 @@
 import os
+import re
 import secrets
 
 from flask import Flask, redirect, render_template, session, request, jsonify
@@ -193,6 +194,124 @@ def index():
         "index.html",
         site=nome
     )
+
+
+# =========================================================
+# PARA EMPRESAS
+# =========================================================
+
+@app.route("/empresas")
+def empresas():
+
+    return render_template(
+        "pages/empresas.html"
+    )
+
+
+# =========================================================
+# API DO CONTATO DE EMPRESAS
+# =========================================================
+
+PLANOS_EMPRESA = (
+    "Simples",
+    "Standard",
+    "Plus",
+    "Deluxe",
+    "Ainda não sei"
+)
+
+FORMATO_EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+@app.route("/api/empresas/contato", methods=["POST"])
+def contato_empresa():
+
+    try:
+
+        dados = request.get_json(silent=True) or {}
+
+        # Campo escondido: pessoas não preenchem, robôs sim.
+        if str(dados.get("site") or "").strip():
+            return jsonify({
+                "sucesso": True,
+                "mensagem": "Recebemos seu pedido!"
+            })
+
+        nome = str(dados.get("nome") or "").strip()[:120]
+        email = str(dados.get("email") or "").strip()[:160]
+        empresa = str(dados.get("empresa") or "").strip()[:160]
+        telefone = str(dados.get("telefone") or "").strip()[:40]
+        plano = str(dados.get("plano") or "").strip()
+        mensagem = str(dados.get("mensagem") or "").strip()[:1500]
+
+
+        # -------------------------------------------------
+        # VERIFICAR CAMPOS
+        # -------------------------------------------------
+
+        if not nome or not email or not empresa:
+
+            return jsonify({
+                "sucesso": False,
+                "mensagem": "Preencha nome, e-mail e empresa."
+            }), 400
+
+        if not FORMATO_EMAIL.match(email):
+
+            return jsonify({
+                "sucesso": False,
+                "mensagem": "Informe um e-mail válido."
+            }), 400
+
+        try:
+            colaboradores = int(dados.get("colaboradores") or 0)
+        except (TypeError, ValueError):
+            colaboradores = 0
+
+        if colaboradores < 1 or colaboradores > 1000000:
+
+            return jsonify({
+                "sucesso": False,
+                "mensagem": "Informe quantos colaboradores a empresa tem."
+            }), 400
+
+        if plano not in PLANOS_EMPRESA:
+            plano = "Ainda não sei"
+
+
+        # -------------------------------------------------
+        # SALVAR NO FIRESTORE
+        # -------------------------------------------------
+
+        db.collection("contatos_empresas").add({
+
+            "nome": nome,
+            "email": email,
+            "empresa": empresa,
+            "telefone": telefone,
+            "colaboradores": colaboradores,
+            "plano": plano,
+            "mensagem": mensagem,
+            "criado_em": firestore.SERVER_TIMESTAMP
+
+        })
+
+        return jsonify({
+            "sucesso": True,
+            "mensagem": "Recebemos seu pedido!"
+        })
+
+    except Exception as erro:
+
+        print(
+            "[empresas] ERRO:",
+            erro.__class__.__name__
+        )
+
+        return jsonify({
+            "sucesso": False,
+            "mensagem": "Não foi possível enviar agora. Tente de novo em instantes."
+        }), 500
 
 
 # =========================================================

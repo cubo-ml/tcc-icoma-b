@@ -582,8 +582,11 @@ if __name__ == "__main__":
 
 
 
-from flask import render_template
-
 @app.route("/jogo")
 def jogo():
     return render_template("jogo/index.html")
+
+
+@app.route("/dash")
+def dash():
+    return render_template("pages/dash.html")

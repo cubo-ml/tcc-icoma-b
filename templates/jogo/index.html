@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SkillBloom — Office Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="melhorias.css">
+</head>
+<body>
+<div id="scene"></div>
+
+<header>
+  <div class="brand">Skill<b>Bloom</b><small>SIMULADOR DE COMPETÊNCIAS SOCIOEMOCIONAIS</small></div>
+  <div class="hc">
+    <span id="clock">08:00</span><span id="dayInfo"></span>
+    <div id="stressTop"><span>Estresse</span><i><u></u></i><b>0%</b></div>
+  </div>
+  <div class="hr"><span id="status"></span><button onclick="location.href='/dash'">Painel</button><button onclick="save();toast('Progresso salvo.')">Salvar</button><button onclick="help()">Controles</button></div>
+</header>
+
+<aside id="skills" class="glass"></aside>
+<aside class="glass" id="tasksP"><div class="pt"><span>TAREFAS</span><b id="tcount">0</b></div><div id="tasks"></div></aside>
+
+<nav id="nav"></nav>
+<div id="hint">Clique nos objetos · A / D vira a câmera · E interage · TAB próxima tarefa</div>
+
+<div id="panel" class="ov hidden"><div class="card">
+  <div class="ch"><h2 id="ptitle"></h2><div id="ptabs"></div><button class="x" onclick="closePanel()">×</button></div>
+  <div id="pbody"></div>
+</div></div>
+
+<div id="popup" class="ov hidden"><div class="card sm"><h2 id="popT"></h2><p id="popX"></p><button class="pri" onclick="closePopup()">Continuar</button></div></div>
+<div id="over" class="ov hidden"><div class="card sm"><h2>Expediente encerrado</h2><p id="overX"></p><button class="pri" onclick="location.reload()">Reiniciar</button></div></div>
+<div id="toasts"></div>
+
+<script>
+/* Ritmo mais calmo: o relógio do jogo avança a cada 2 s (o dia dura cerca de 10 min).
+   Também faz o tick usar sempre a versão mais recente da função e impede
+   que o autosave grave o jogo depois do fim de jogo (isso reabria a partida perdida). */
+(function () {
+  var si = window.setInterval;
+  window.setInterval = function (f, ms) {
+    if (f && f.name === "tick") return si(function () { window.tick(); }, ms * 2);
+    if (f && f.name === "save") return si(function () { if (!over) f(); }, ms);
+    return si.apply(window, arguments);
+  };
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="game.js"></script>
+<script src="melhorias.js"></script>
+</body>
+</html>

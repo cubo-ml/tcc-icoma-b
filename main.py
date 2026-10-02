@@ -608,3 +608,90 @@ def simulador():
 @app.route("/jogo")
 def jogo_antigo():
     return redirect("/simulador")
+
+
+
+
+    # Sistema de média do SkillBloom. Coloque este arquivo na MESMA pasta do main.py.
+from flask import Blueprint, request, jsonify, session
+from firebase_admin import firestore
+
+bp = Blueprint("desempenho", __name__)
+
+# ordem e nomes iguais aos do painel (/dash)
+CHAVES = {"com": "Comunicação", "team": "Trabalho em equipe", "prob": "Resolução de problemas",
+          "pro": "Proatividade", "emp": "Inteligência emocional", "self": "Responsabilidade"}
+
+
+def _uid():
+    """Quem está logado. Se o seu login guarda de outro jeito, é SÓ esta função que muda."""
+    u = session.get("usuario") or session.get("user")
+    if isinstance(u, dict):
+        return u.get("uid") or u.get("id") or u.get("email")
+    return session.get("uid") or session.get("user_id") or session.get("email") or (u if isinstance(u, str) else None)
+
+
+def _calcular(d):
+    soma, tent = d.get("soma", {}), d.get("tent", {})
+    comps = [{"n": nome, "v": round(soma[k] / tent[k])} for k, nome in CHAVES.items() if tent.get(k)]
+    geral = round(sum(c["v"] for c in comps) / len(comps)) if comps else 0
+    total = d.get("total", 0)
+    sucesso = round(d.get("acertos", 0) / total * 100) if total else None
+    return {"competencias": comps, "geral": geral, "sucesso": sucesso}
+
+
+@firestore.transactional
+def _gravar(tx, ref, eventos, acerto):
+    snap = ref.get(transaction=tx)
+    d = snap.to_dict() if snap.exists else {}
+    soma, tent = d.setdefault("soma", {}), d.setdefault("tent", {})
+    for chave, pts in eventos:
+        soma[chave] = soma.get(chave, 0) + pts
+        tent[chave] = tent.get(chave, 0) + 1
+    if acerto is not None:                       # uma missão respondida
+        d["total"] = d.get("total", 0) + 1
+        d["acertos"] = d.get("acertos", 0) + (1 if acerto else 0)
+    r = _calcular(d)
+    d["geral"] = r["geral"]                      # a porcentagem geral fica salva na conta da pessoa
+    d["atualizado"] = firestore.SERVER_TIMESTAMP
+    tx.set(ref, d)
+    return r
+
+
+def registrar(uid, eventos, acerto=None):
+    """eventos = [("com", 100), ("pro", 80)]. Pode ser chamada também pelo questionário."""
+    db = firestore.client()
+    return _gravar(db.transaction(), db.collection("desempenho").document(str(uid)), eventos, acerto)
+
+
+def montar_dados(uid):
+    snap = firestore.client().collection("desempenho").document(str(uid)).get()
+    return _calcular(snap.to_dict() if snap.exists else {})
+
+
+def _pts(v):
+    return max(0, min(100, int(v)))
+
+
+@bp.post("/api/desempenho/registrar")
+def api_registrar():
+    uid = _uid()
+    if not uid:
+        return jsonify(erro="login"), 401
+    j = request.get_json(silent=True) or {}
+    ev, acerto = [], None
+    if j.get("habilidade") in CHAVES:
+        pts = _pts(j.get("pontos", 0))
+        ev.append((j["habilidade"], pts))
+        acerto = pts == 100
+    if j.get("pro") is not None:
+        ev.append(("pro", _pts(j["pro"])))
+    if not ev:
+        return jsonify(erro="vazio"), 400
+    return jsonify(registrar(uid, ev, acerto))
+
+
+@bp.get("/api/desempenho/resumo")
+def api_resumo():
+    uid = _uid()
+    return (jsonify(montar_dados(uid)), 200) if uid else (jsonify(erro="login"), 401)

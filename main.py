@@ -582,11 +582,12 @@ if __name__ == "__main__":
 
 
 
+from flask import redirect
+
 @app.route("/simulador")
 def simulador():
     return render_template("pages/simulador.html")
 
-
-@app.route("/dash")
-def dash():
-    return render_template("pages/dash.html")
+@app.route("/jogo")
+def jogo_antigo():
+    return redirect("/simulador")

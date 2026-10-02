@@ -578,3 +578,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+from flask import render_template
+
+@app.route("/jogo")
+def jogo():
+    return render_template("jogo/index.html")

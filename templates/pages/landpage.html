@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#06182f">
 <script>
 (function(){try{if(localStorage.getItem("skillbloom-tema")==="light"){
@@ -155,8 +155,47 @@ dialog[open]{animation:pop .5s var(--spring)}
 @keyframes areaIn{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
 .enter{opacity:0;animation:sobe .9s var(--ease) forwards;animation-delay:var(--d,0ms)}
 
-@media(max-width:940px){.hero{grid-template-columns:1fr}.suc,.rad,.qz{grid-column:span 12}.suc .ring{margin:18px 0}}
-@media(max-width:560px){.logo b{display:none}.tab{margin-left:4px;padding:8px 14px}.tab.sec{margin-left:0}.card{padding:18px}.glass{flex-direction:column;text-align:center}}
+/* NAVEGAÇÃO MOBILE, TRANSIÇÃO PARA O SIMULADOR */
+button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+body:has(dialog[open]){overflow:hidden}
+.bnav{display:none}
+.indo-ov{position:fixed;inset:0;z-index:100;display:none;place-items:center;text-align:center;font-weight:600;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px)}
+body.indo .indo-ov{display:grid}
+.sp{width:34px;height:34px;margin:0 auto 14px;border-radius:50%;border:3px solid var(--track);border-top-color:var(--sky);animation:gira .8s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+
+@media(max-width:940px){.hero{grid-template-columns:1fr}.suc,.qz{grid-column:span 6}.rad{grid-column:span 12;order:3}}
+@media(max-width:700px){
+  .tab{display:none}
+  .topbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  .wrap{padding:18px 0 calc(100px + env(safe-area-inset-bottom))}
+  .bnav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:40;display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:6px;padding:7px;border:1px solid var(--line);border-radius:22px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(16px);box-shadow:var(--sombra)}
+  .bnav a,.bnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:52px;border-radius:16px;background:none;color:var(--muted);font-size:11px;font-weight:700}
+  .bnav svg{width:22px;height:22px}
+  .bnav [aria-current]{color:var(--sky);background:var(--chip)}
+  .bnav .play{background:linear-gradient(90deg,#0a58d6,#1d8fe8);color:#fff;box-shadow:0 8px 20px rgba(10,88,214,.4)}
+}
+@media(max-width:560px){
+  .suc,.qz,.rad{grid-column:span 12;order:0}
+  .grid{gap:12px}
+  .card{padding:18px;border-radius:20px}
+  .hero{border-radius:24px;padding:24px 20px;gap:20px}
+  .hero h1{letter-spacing:-1px}.hero p{font-size:14px}
+  .hero-btns{margin-top:20px}.hero-btns .btn{flex:1 1 100%;min-height:52px}
+  .glass{flex-direction:row;padding:16px;gap:16px;text-align:left}
+  .glass .ring{width:92px;height:92px}.glass .ring::before{inset:10px}.glass .ring strong{font-size:22px}
+  .suc{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;align-items:center;text-align:left}
+  .suc .ring{grid-column:1;grid-row:1/3;width:104px;height:104px;margin:0}
+  .suc>div:first-child{grid-column:2;grid-row:1;align-self:end}
+  .suc p{grid-column:2;grid-row:2;align-self:start}
+  .rl,.rv{font-size:13px}
+  .qz h3{font-size:18px}
+  .conta-painel{width:min(270px,calc(100vw - 32px))}
+  .op{min-height:52px;font-size:15px}.qt{font-size:18px}
+  dialog{width:100%;max-width:none;margin:auto 0 0;border-radius:24px 24px 0 0;max-height:92vh}
+  .dlg{padding:20px 18px calc(24px + env(safe-area-inset-bottom))}
+  .row .btn{flex:1 1 100%;min-height:50px}
+}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 .enter{opacity:1!important;animation:none!important}.ring.anim,.area{animation:none!important}}
 </style>
@@ -239,6 +278,13 @@ dialog[open]{animation:pop .5s var(--spring)}
     </article>
   </div>
 </main>
+
+<nav class="bnav" aria-label="Navegação principal">
+  <a href="/dash" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-3"/></svg>Painel</a>
+  <a href="/simulador" class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Jogar</a>
+  <button type="button" id="abrirQuiz3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.2.9-1.2 1.7M12 16.6v.1"/></svg>Questionário</button>
+</nav>
+<div class="indo-ov" aria-live="polite"><div><div class="sp"></div>Entrando no escritório…</div></div>
 
 <dialog id="quiz" aria-label="Questionário de teste"><div class="dlg" id="quizCorpo"></div></dialog>
 
@@ -386,6 +432,7 @@ desenhar(dados);
   function abrir() { i = 0; escolhas = []; pergunta(); dlg.showModal(); }
   document.getElementById("abrirQuiz").addEventListener("click", abrir);
   document.getElementById("abrirQuiz2").addEventListener("click", abrir);
+  document.getElementById("abrirQuiz3").addEventListener("click", abrir);
   corpo.addEventListener("click", e => {
     const op = e.target.closest(".op"); if (op) responder(+op.dataset.k);
     if (e.target.closest("[data-fechar]")) dlg.close();
@@ -393,6 +440,10 @@ desenhar(dados);
   });
   dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
 })();
+
+/* ---------- Ir para o simulador: feedback enquanto a página 3D carrega ---------- */
+document.querySelectorAll('a[href="/simulador"]').forEach(a => a.addEventListener("click", () => document.body.classList.add("indo")));
+addEventListener("pageshow", e => { if (e.persisted) document.body.classList.remove("indo"); });
 
 /* ---------- Tema ---------- */
 (function () {

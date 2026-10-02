@@ -44,6 +44,8 @@ button,a{font-family:inherit}button{border:0;cursor:pointer}a{color:inherit;text
 .logo-icon{width:38px;height:38px;border-radius:10px;overflow:hidden;background:#fff;border:1px solid var(--line)}
 .logo-icon img{width:100%;height:100%;display:block;object-fit:cover;scale:1.4}
 .tab{margin-left:14px;padding:9px 18px;border-radius:10px;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(90deg,#0a58d6,#1d8fe8)}
+.tab.sec{margin-left:0;background:var(--chip);color:var(--muted);border:1px solid var(--line)}
+.tab.sec:hover{color:var(--sky);border-color:var(--sky)}
 .actions{margin-left:auto;display:flex;align-items:center;gap:10px}
 .ico-btn{position:relative;width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--chip);color:var(--muted);display:grid;place-items:center;overflow:hidden;transition:color .3s,translate .5s var(--spring)}
 .ico-btn:hover{color:var(--sky);translate:0 -2px}
@@ -154,7 +156,7 @@ dialog[open]{animation:pop .5s var(--spring)}
 .enter{opacity:0;animation:sobe .9s var(--ease) forwards;animation-delay:var(--d,0ms)}
 
 @media(max-width:940px){.hero{grid-template-columns:1fr}.suc,.rad,.qz{grid-column:span 12}.suc .ring{margin:18px 0}}
-@media(max-width:560px){.logo b{display:none}.tab{margin-left:4px;padding:8px 14px}.card{padding:18px}.glass{flex-direction:column;text-align:center}}
+@media(max-width:560px){.logo b{display:none}.tab{margin-left:4px;padding:8px 14px}.tab.sec{margin-left:0}.card{padding:18px}.glass{flex-direction:column;text-align:center}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 .enter{opacity:1!important;animation:none!important}.ring.anim,.area{animation:none!important}}
 </style>
@@ -166,7 +168,8 @@ dialog[open]{animation:pop .5s var(--spring)}
     <span class="logo-icon"><img src="{{ url_for('static', filename='logo.jpg') }}" alt="" width="38" height="38"></span>
     <b>Skill<span>Bloom</span></b>
   </a>
-  <a href="/dash" class="tab" aria-current="page">Jogar</a>
+  <a href="/dash" class="tab" aria-current="page">Painel</a>
+  <a href="/simulador" class="tab sec">Jogar</a>
   <div class="actions">
     <button class="ico-btn" id="themeToggle" type="button" aria-label="Alternar tema claro e escuro" title="Alternar tema">
       <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.9"/><path d="M12 2.6V5M12 19V21.4M21.4 12H19M5 12H2.6M18.6 5.4L17 7M7 17L5.4 18.6M18.6 18.6L17 17M7 7L5.4 5.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
@@ -203,8 +206,7 @@ dialog[open]{animation:pop .5s var(--spring)}
         <h1>Olá{% if primeiro %}, {{ primeiro }}{% endif %}!</h1>
         <p id="heroTexto">Pronto para evoluir suas habilidades?</p>
         <div class="hero-btns">
-
-          <a href="/jogo" class="btn branco"><span aria-hidden="true">▶</span> Jogar agora</a>
+          <a href="/simulador" class="btn branco"><span aria-hidden="true">▶</span> Jogar agora</a>
           <button class="btn linha" id="abrirQuiz" type="button">Questionário de teste</button>
         </div>
         <span class="acessos" id="acessos" hidden></span>
@@ -240,8 +242,7 @@ dialog[open]{animation:pop .5s var(--spring)}
 
 <dialog id="quiz" aria-label="Questionário de teste"><div class="dlg" id="quizCorpo"></div></dialog>
 
-<!-- Vem do banco: a rota /dash passa `dados` (veja dash_backend_exemplo.py).
-     Sem dados salvos ainda, vira null e a página mostra o estado vazio. -->
+<!-- Vem do banco: a rota /dash passa `dados`. Sem dados salvos ainda, vira null e a página mostra o estado vazio. -->
 <script type="application/json" id="dados-json">{{ dados|tojson if dados else 'null' }}</script>
 <script>
 const dados = JSON.parse(document.getElementById("dados-json").textContent);

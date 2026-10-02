@@ -582,9 +582,9 @@ if __name__ == "__main__":
 
 
 
-@app.route("/jogo")
+@app.route("/simulador")
 def jogo():
-    return render_template("pages/index.html")
+    return render_template("pages/simulador.html")
 
 
 @app.route("/dash")

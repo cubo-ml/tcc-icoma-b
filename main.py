@@ -580,13 +580,30 @@ if __name__ == "__main__":
     main()
 
 
+# =========================================================
+# DASHBOARD
+# =========================================================
+
+@app.route("/dash")
+def dash():
+    if not sessao_iniciada():
+        return redirect("/login")
+
+    # troque pelo caminho onde você salvou o dash.html novo
+    return render_template("pages/dash.html", dados=None)
 
 
-from flask import redirect
+# =========================================================
+# SIMULADOR
+# =========================================================
 
 @app.route("/simulador")
 def simulador():
+    if not sessao_iniciada():
+        return redirect("/login")
+
     return render_template("pages/simulador.html")
+
 
 @app.route("/jogo")
 def jogo_antigo():

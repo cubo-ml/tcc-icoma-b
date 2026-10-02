@@ -583,7 +583,7 @@ if __name__ == "__main__":
 
 
 @app.route("/simulador")
-def jogo():
+def simulador():
     return render_template("pages/simulador.html")
 
 

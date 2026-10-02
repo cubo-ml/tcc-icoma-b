@@ -3,6 +3,7 @@ import re
 import secrets
 
 from flask import Flask, redirect, render_template, session, request, jsonify
+from jinja2 import TemplateNotFound
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 import firebase_admin
@@ -23,6 +24,9 @@ from app.services.user_service import (
     chave_do_perfil,
     registrar_ou_atualizar,
 )
+
+# Sistema de média do desempenho (arquivo desempenho.py, na mesma pasta)
+from desempenho import bp as desempenho_bp, montar_dados, registrar_acesso
 
 
 # =========================================================
@@ -49,6 +53,7 @@ if not firebase_admin._apps:
         firebase_admin.initialize_app()
 
 db = firestore.client()
+
 
 # =========================================================
 # ATRAS DE PROXY
@@ -131,12 +136,13 @@ app.config["SESSION_COOKIE_SECURE"] = cookie_somente_https()
 
 
 # =========================================================
-# OAUTH
+# OAUTH E DESEMPENHO
 # =========================================================
 
 configurar_oauth(app)
 
 app.register_blueprint(auth_bp)
+app.register_blueprint(desempenho_bp)
 
 
 # =========================================================
@@ -235,11 +241,6 @@ def contato_empresa():
         telefone = str(dados.get("telefone") or "").strip()[:40]
         mensagem = str(dados.get("mensagem") or "").strip()[:1500]
 
-
-        # -------------------------------------------------
-        # VERIFICAR CAMPOS
-        # -------------------------------------------------
-
         if not nome or not email or not empresa:
 
             return jsonify({
@@ -265,11 +266,6 @@ def contato_empresa():
                 "sucesso": False,
                 "mensagem": "Informe quantos colaboradores a empresa tem."
             }), 400
-
-
-        # -------------------------------------------------
-        # SALVAR NO FIRESTORE
-        # -------------------------------------------------
 
         db.collection("contatos_empresas").add({
 
@@ -322,6 +318,7 @@ def login():
 def cadastro():
     return render_template("login/cadastro.html")
 
+
 # =========================================================
 # API DO CADASTRO
 # =========================================================
@@ -340,11 +337,6 @@ def cadastrar_usuario():
         telefone = dados.get("telefone")
         senha = dados.get("senha")
 
-
-        # -------------------------------------------------
-        # VERIFICAR CAMPOS
-        # -------------------------------------------------
-
         if (
             not nome
             or not nascimento
@@ -358,21 +350,11 @@ def cadastrar_usuario():
                 "mensagem": "Preencha todos os campos obrigatórios."
             }), 400
 
-
-        # -------------------------------------------------
-        # CRIAR USUARIO NO FIREBASE AUTHENTICATION
-        # -------------------------------------------------
-
         usuario = auth.create_user(
             email=email,
             password=senha,
             display_name=nome
         )
-
-
-        # -------------------------------------------------
-        # SALVAR DADOS NO FIRESTORE
-        # -------------------------------------------------
 
         db.collection("usuarios").document(
             usuario.uid
@@ -387,22 +369,12 @@ def cadastrar_usuario():
 
         })
 
-
-        # -------------------------------------------------
-        # RESPOSTA DE SUCESSO
-        # -------------------------------------------------
-
         return jsonify({
 
             "sucesso": True,
             "mensagem": "Conta criada com sucesso!"
 
         })
-
-
-    # -----------------------------------------------------
-    # EMAIL JÁ EXISTENTE
-    # -----------------------------------------------------
 
     except auth.EmailAlreadyExistsError:
 
@@ -412,11 +384,6 @@ def cadastrar_usuario():
             "mensagem": "Este e-mail já está cadastrado."
 
         }), 400
-
-
-    # -----------------------------------------------------
-    # OUTRO ERRO
-    # -----------------------------------------------------
 
     except Exception as erro:
 
@@ -431,6 +398,8 @@ def cadastrar_usuario():
             "mensagem": "Ocorreu um erro ao criar a conta."
 
         }), 500
+
+
 # =========================================================
 # API DO LOGIN NORMAL
 # =========================================================
@@ -523,6 +492,7 @@ def login_usuario():
             "mensagem": "Não foi possível realizar o login."
         }), 401
 
+
 # =========================================================
 # TESTE DO FIREBASE
 # =========================================================
@@ -541,26 +511,56 @@ def teste():
 
 
 # =========================================================
-# DASHBOARD
+# DASHBOARD (PAINEL COM OS GRÁFICOS DE DESEMPENHO)
 # =========================================================
 
 @app.route("/dash")
 def dash():
 
-    # Se nao estiver logado,
-    # volta para o login.
-
+    # Se nao estiver logado, volta para o login.
     if not sessao_iniciada():
-
         return redirect("/login")
 
-    return render_template(
-        "pages/landpage.html"
-    )
+    uid = session.get(CHAVE_SESSAO, "")
+
+    # Busca o desempenho salvo desta pessoa; se falhar, o painel abre no estado vazio.
+    try:
+        registrar_acesso(uid)
+        dados = montar_dados(uid)
+    except Exception as erro:
+        print("[desempenho] AVISO:", erro.__class__.__name__)
+        dados = None
+
+    # O painel novo é pages/dash.html; se o seu ainda tiver o nome antigo, cai no landpage.html
+    for pagina in ("pages/dash.html", "pages/landpage.html"):
+        try:
+            return render_template(pagina, dados=dados)
+        except TemplateNotFound:
+            continue
+
+    return "Página do painel não encontrada.", 500
 
 
 # =========================================================
-# INICIAR SERVIDOR
+# SIMULADOR
+# =========================================================
+
+@app.route("/simulador")
+def simulador():
+
+    if not sessao_iniciada():
+        return redirect("/login")
+
+    return render_template("pages/simulador.html")
+
+
+@app.route("/jogo")
+def jogo_antigo():
+    return redirect("/simulador")
+
+
+# =========================================================
+# INICIAR SERVIDOR  (sempre por último no arquivo)
 # =========================================================
 
 def main():
@@ -578,120 +578,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# =========================================================
-# DASHBOARD
-# =========================================================
-
-@app.route("/dash")
-def dash():
-    if not sessao_iniciada():
-        return redirect("/login")
-
-    # troque pelo caminho onde você salvou o dash.html novo
-    return render_template("pages/dash.html", dados=None)
-
-
-# =========================================================
-# SIMULADOR
-# =========================================================
-
-@app.route("/simulador")
-def simulador():
-    if not sessao_iniciada():
-        return redirect("/login")
-
-    return render_template("pages/simulador.html")
-
-
-@app.route("/jogo")
-def jogo_antigo():
-    return redirect("/simulador")
-
-
-
-
-    # Sistema de média do SkillBloom. Coloque este arquivo na MESMA pasta do main.py.
-from flask import Blueprint, request, jsonify, session
-from firebase_admin import firestore
-
-bp = Blueprint("desempenho", __name__)
-
-# ordem e nomes iguais aos do painel (/dash)
-CHAVES = {"com": "Comunicação", "team": "Trabalho em equipe", "prob": "Resolução de problemas",
-          "pro": "Proatividade", "emp": "Inteligência emocional", "self": "Responsabilidade"}
-
-
-def _uid():
-    """Quem está logado. Se o seu login guarda de outro jeito, é SÓ esta função que muda."""
-    u = session.get("usuario") or session.get("user")
-    if isinstance(u, dict):
-        return u.get("uid") or u.get("id") or u.get("email")
-    return session.get("uid") or session.get("user_id") or session.get("email") or (u if isinstance(u, str) else None)
-
-
-def _calcular(d):
-    soma, tent = d.get("soma", {}), d.get("tent", {})
-    comps = [{"n": nome, "v": round(soma[k] / tent[k])} for k, nome in CHAVES.items() if tent.get(k)]
-    geral = round(sum(c["v"] for c in comps) / len(comps)) if comps else 0
-    total = d.get("total", 0)
-    sucesso = round(d.get("acertos", 0) / total * 100) if total else None
-    return {"competencias": comps, "geral": geral, "sucesso": sucesso}
-
-
-@firestore.transactional
-def _gravar(tx, ref, eventos, acerto):
-    snap = ref.get(transaction=tx)
-    d = snap.to_dict() if snap.exists else {}
-    soma, tent = d.setdefault("soma", {}), d.setdefault("tent", {})
-    for chave, pts in eventos:
-        soma[chave] = soma.get(chave, 0) + pts
-        tent[chave] = tent.get(chave, 0) + 1
-    if acerto is not None:                       # uma missão respondida
-        d["total"] = d.get("total", 0) + 1
-        d["acertos"] = d.get("acertos", 0) + (1 if acerto else 0)
-    r = _calcular(d)
-    d["geral"] = r["geral"]                      # a porcentagem geral fica salva na conta da pessoa
-    d["atualizado"] = firestore.SERVER_TIMESTAMP
-    tx.set(ref, d)
-    return r
-
-
-def registrar(uid, eventos, acerto=None):
-    """eventos = [("com", 100), ("pro", 80)]. Pode ser chamada também pelo questionário."""
-    db = firestore.client()
-    return _gravar(db.transaction(), db.collection("desempenho").document(str(uid)), eventos, acerto)
-
-
-def montar_dados(uid):
-    snap = firestore.client().collection("desempenho").document(str(uid)).get()
-    return _calcular(snap.to_dict() if snap.exists else {})
-
-
-def _pts(v):
-    return max(0, min(100, int(v)))
-
-
-@bp.post("/api/desempenho/registrar")
-def api_registrar():
-    uid = _uid()
-    if not uid:
-        return jsonify(erro="login"), 401
-    j = request.get_json(silent=True) or {}
-    ev, acerto = [], None
-    if j.get("habilidade") in CHAVES:
-        pts = _pts(j.get("pontos", 0))
-        ev.append((j["habilidade"], pts))
-        acerto = pts == 100
-    if j.get("pro") is not None:
-        ev.append(("pro", _pts(j["pro"])))
-    if not ev:
-        return jsonify(erro="vazio"), 400
-    return jsonify(registrar(uid, ev, acerto))
-
-
-@bp.get("/api/desempenho/resumo")
-def api_resumo():
-    uid = _uid()
-    return (jsonify(montar_dados(uid)), 200) if uid else (jsonify(erro="login"), 401)

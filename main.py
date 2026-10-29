@@ -558,6 +558,9 @@ def simulador():
 def jogo_antigo():
     return redirect("/simulador")
 
+@app.route("/politica-privacidade")
+def politica_privacidade():
+    return render_template("politica_privacidade.html")
 
 # =========================================================
 # INICIAR SERVIDOR  (sempre por último no arquivo)

@@ -75,6 +75,7 @@ DESTINO_PADRAO = "/dash"
 PAGINA_PADRAO = "/login"
 
 DESCOBERTA_GOOGLE = "https://accounts.google.com/.well-known/openid-configuration"
+DESCOBERTA_LINKEDIN = "https://www.linkedin.com/oauth/.well-known/openid-configuration"
 
 AUTORIZACAO_LINKEDIN = "https://www.linkedin.com/oauth/v2/authorization"
 TOKEN_LINKEDIN = "https://www.linkedin.com/oauth/v2/accessToken"
@@ -153,10 +154,8 @@ def configurar_oauth(app):
             name="linkedin",
             client_id=identificador,
             client_secret=segredo,
-            authorize_url=AUTORIZACAO_LINKEDIN,
-            access_token_url=TOKEN_LINKEDIN,
+            server_metadata_url=DESCOBERTA_LINKEDIN,
             api_base_url="https://api.linkedin.com/v2/",
-            userinfo_endpoint=USERINFO_LINKEDIN,
             client_kwargs={
                 "scope": "openid profile email",
                 "token_endpoint_auth_method": "client_secret_post",
@@ -230,14 +229,13 @@ def _registrar_aviso(provedor, resumo):
 
 
 def _registrar_falha(provedor, erro):
-    """
-    Registra a falha pelo NOME DA CLASSE da excecao, como o resto
-    do projeto ja faz. repr(erro) despejaria no log um texto que,
-    em alguns caminhos, veio de fora (query do provedor) - e quem
-    le o log nao precisa do recado de terceiro.
-    """
-    _registrar_aviso(provedor, erro.__class__.__name__)
+    nome = type(erro).__name__
 
+    if nome == "MissingClaimError":
+        detalhe = str(erro)[:120]
+        _registrar_aviso(provedor, f"{nome}: {detalhe}")
+    else:
+        _registrar_aviso(provedor, nome)
 
 def _codigo_da_excecao(erro):
     """Traduz a excecao do Authlib para um dos codigos do contrato."""
@@ -436,18 +434,37 @@ def _iniciar(provedor):
     retorno = url_for("auth." + provedor + "_callback", _external=True)
 
     try:
-        if provedor == "google":
-            # O nonce amarra o id_token a esta sessao.
-            # O state de CSRF o proprio Authlib gera e confere.
-            nonce = secrets.token_urlsafe(24)
-            session["auth_nonce"] = nonce
-            return cliente.authorize_redirect(retorno, nonce=nonce)
+        if provedor == "linkedin":
+            # O LinkedIn nao documenta a claim nonce no ID Token.
+            # Mantemos o state OAuth e usamos o endpoint userinfo
+            # autenticado pelo token de acesso para obter o perfil.
+            from urllib.parse import parse_qs, urlparse
 
-        return cliente.authorize_redirect(retorno)
+            resposta = cliente.authorize_redirect(retorno)
+            local = resposta.headers.get("Location", "")
+            estados = parse_qs(urlparse(local).query).get("state", [])
+            estado = estados[0] if estados else None
+            dados = (
+                cliente.framework.get_state_data(session, estado)
+                if estado else None
+            )
+
+            if not isinstance(dados, dict):
+                raise RuntimeError(
+                    "Estado OAuth do LinkedIn nao foi salvo"
+                )
+
+            dados.pop("nonce", None)
+            cliente.framework.set_state_data(session, estado, dados)
+            session.pop("auth_nonce", None)
+            return resposta
+
+        nonce = secrets.token_urlsafe(24)
+        session["auth_nonce"] = nonce
+        return cliente.authorize_redirect(retorno, nonce=nonce)
     except Exception as erro:
         _registrar_falha(provedor, erro)
         return _falhar(pagina, ERRO_FALHOU)
-
 
 def _concluir(provedor):
     destino = caminho_seguro(session.pop("auth_next", DESTINO_PADRAO))

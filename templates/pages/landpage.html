@@ -300,24 +300,72 @@ const COMPS = [
 ];
 
 const QUIZ = [
-  { c: "Comunicação", q: "Em uma reunião, um colega apresenta uma ideia da qual você discorda. O que você faz?",
-    o: ["Interrompo para corrigir na hora.", "Ouço até o fim e depois explico meu ponto com exemplos.", "Fico em silêncio para evitar conflito.", "Comento depois só com outros colegas."],
-    e: "Ouvir primeiro e argumentar com exemplos mantém o respeito e leva a decisões melhores." },
-  { c: "Trabalho em equipe", q: "Um colega está sobrecarregado perto do prazo da equipe. Qual é a melhor atitude?",
-    o: ["Focar só nas minhas tarefas.", "Avisar o líder que ele está atrasado.", "Oferecer ajuda e combinar como dividir as tarefas.", "Esperar que ele peça ajuda."],
-    e: "O prazo é da equipe: oferecer ajuda e combinar a divisão evita que o atraso cresça." },
-  { c: "Resolução de problemas", q: "O sistema que você usa parou de funcionar no meio do expediente. Por onde começar?",
-    o: ["Reiniciar tudo sem investigar.", "Identificar a causa, testar uma solução e avisar a equipe.", "Esperar que alguém resolva.", "Descobrir quem mexeu por último."],
-    e: "Entender a causa antes de agir e manter a equipe informada resolve mais rápido e sem repetir o erro." },
-  { c: "Proatividade", q: "Você percebe que uma etapa do processo gera retrabalho para todos. O que faz?",
-    o: ["Sigo como está, ninguém pediu mudança.", "Reclamo com os colegas.", "Corrijo sozinho sem avisar ninguém.", "Proponho a melhoria ao líder, com uma sugestão concreta."],
-    e: "Agir antes de ser cobrado, com uma proposta pronta, é o que caracteriza a proatividade." },
-  { c: "Inteligência emocional", q: "Um cliente irritado levanta a voz com você no atendimento. Como reagir?",
-    o: ["Respondo no mesmo tom.", "Mantenho a calma, reconheço o problema e busco uma solução.", "Passo o cliente para outro colega sem explicar.", "Encerro o atendimento."],
-    e: "Controlar a própria reação e reconhecer o problema do outro reduz o conflito." },
-  { c: "Responsabilidade", q: "Você percebeu que não vai conseguir entregar sua tarefa no prazo. O que fazer?",
-    o: ["Entrego atrasado sem avisar.", "Espero o prazo vencer.", "Aviso o quanto antes, explico o motivo e proponho um novo prazo.", "Entrego pela metade e não comento."],
-    e: "Avisar cedo e propor uma solução permite que a equipe se reorganize." }
+  {
+    c: "Comunicação",
+    q: "Em uma reunião, um colega apresenta uma ideia da qual você discorda. O que você faz?",
+    o: [
+      "Apresento minha proposta antes de discutir os argumentos dele.",
+      "Ouço os argumentos e explico minha posição com exemplos.",
+      "Sugiro uma votação antes de aprofundar os pontos de dúvida.",
+      "Converso depois com ele e mantenho a decisão da reunião."
+    ],
+    e: "Ouvir e apresentar exemplos permite discutir as ideias com respeito e avaliar melhor a decisão."
+  },
+  {
+    c: "Trabalho em equipe",
+    q: "Um colega está sobrecarregado perto do prazo da equipe. Qual é a melhor atitude?",
+    o: [
+      "Adianto minhas próximas tarefas e aguardo que ele peça ajuda.",
+      "Assumo as tarefas dele e reorganizo minhas entregas depois.",
+      "Alinho as prioridades e combino uma divisão viável das tarefas.",
+      "Peço mais prazo ao líder antes de avaliar a divisão das tarefas."
+    ],
+    e: "Combinar prioridades e dividir as tarefas ajuda a equipe sem apenas transferir a sobrecarga."
+  },
+  {
+    c: "Resolução de problemas",
+    q: "O sistema apresenta uma falha desconhecida. Não há procedimento previsto. Por onde começar?",
+    o: [
+      "Reinicio o sistema e retomo as atividades se o erro desaparecer.",
+      "Registro a falha e verifico seu alcance para acionar o suporte.",
+      "Ajusto as configurações e observo se o erro volta a acontecer.",
+      "Solicito uma reinstalação para eliminar a provável causa do erro."
+    ],
+    e: "Registrar a falha e verificar seu alcance ajuda no diagnóstico sem alterar o sistema com base em suposições."
+  },
+  {
+    c: "Proatividade",
+    q: "Uma etapa gera retrabalho em vários setores. A mudança exige aprovação. O que você faz?",
+    o: [
+      "Peço a retirada da etapa com base nas reclamações da equipe.",
+      "Mudo a etapa no meu setor e apresento os resultados depois.",
+      "Registro os casos e aguardo a próxima revisão do processo.",
+      "Reúno exemplos e proponho um teste com os setores envolvidos."
+    ],
+    e: "Propor um teste com evidências demonstra iniciativa e respeita a aprovação necessária."
+  },
+  {
+    c: "Inteligência emocional",
+    q: "Um cliente reclama em voz alta de um atraso que você ainda precisa investigar. Como reagir?",
+    o: [
+      "Explico as regras internas antes de ouvir toda a reclamação.",
+      "Reconheço o transtorno e verifico os fatos antes de propor saídas.",
+      "Garanto uma solução rápida e depois verifico o que posso fazer.",
+      "Encaminho ao supervisor antes de entender os detalhes do caso."
+    ],
+    e: "Reconhecer o transtorno e verificar os fatos ajuda a reduzir a tensão sem fazer promessas incertas."
+  },
+  {
+    c: "Responsabilidade",
+    q: "Um imprevisto ameaça seu prazo e outra pessoa depende da entrega. O que fazer?",
+    o: [
+      "Tento recuperar o atraso e aviso quando tiver certeza do impacto.",
+      "Reduzo o escopo da entrega e explico os ajustes ao concluí-la.",
+      "Comunico o risco e alinho alternativas com todos os envolvidos.",
+      "Negocio mais tempo com o líder e aviso os demais ao finalizar."
+    ],
+    e: "Avisar sobre o risco com antecedência permite combinar alternativas e reorganizar as tarefas."
+  }
 ];
 
 const reduz = matchMedia("(prefers-reduced-motion: reduce)").matches;

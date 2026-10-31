@@ -100,71 +100,112 @@ const COARSE=matchMedia('(pointer:coarse)').matches;
 const IC={mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',doc:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',users:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.5 3-6 6-6s6 2.5 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4 2 4 5"/>',phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2z"/>',printer:'<path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/>',monitor:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>'};
 const ic=n=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
 
-// ---------- CONTEÚDO: cada opção = [texto, efeitos, feedback]; ordem fixa: melhor, razoável, pior ----------
+// ---------- CONTEÚDO: cada opção = [texto, efeitos, feedback]; ordem fixa: certa, meio-termo, errada ----------
+// (a ordem na TELA é sorteada pelo spawn(), então a certa não fica sempre no mesmo lugar)
 const Q={
 email:[
 {t:'Feedback duro no relatório',f:'Diretoria',b:'"Isso está muito abaixo do esperado. Refaça tudo." Sem mais explicações, e com sua chefe em cópia.',o:[
-['Respiro, releio com calma e respondo pedindo exemplos do que precisa melhorar.',{self:5,com:4,rep:4},'Você regulou a emoção antes de agir e pediu clareza. É autogestão e comunicação: transforma crítica em informação útil.'],
-['Refaço tudo em silêncio, sem perguntar nada.',{self:-1,prob:-2,energy:-10},'Sem entender o que faltou, o risco de refazer errado é alto. Perguntar poupa tempo e energia.'],
-['Respondo na hora: "Você nunca reconhece meu esforço."',{self:-4,com:-3,rep:-6},'Reagir no calor da raiva e generalizar ("nunca") transforma feedback em conflito. Uma pausa antes de enviar muda o resultado.']]},
+['Esperar a irritação passar e depois responder pedindo exemplos do que precisa melhorar.',{self:6,com:3,rep:4},'Você deixou a emoção baixar antes de agir e pediu informação concreta. Isso é autogestão: transforma uma crítica vaga em um plano.'],
+['Refazer o relatório inteiro do zero, sem perguntar à diretoria o que estava errado nele.',{self:-2,prob:-1,energy:-10},'Sem saber o que faltou, você pode gastar horas e errar de novo. Uma pergunta curta teria poupado tempo e energia.'],
+['Responder na hora, com a chefe em cópia, dizendo que o prazo curto atrapalhou o trabalho.',{self:-5,com:-2,rep:-6},'Responder no calor do momento e com a chefe em cópia soa como defesa e justificativa. Esperar um pouco muda o tom da conversa.']]},
 {t:'Entrega atrasada',f:'Cliente Alfa',b:'"Nosso pedido está 3 dias atrasado e a equipe está furiosa. Quero explicações."',o:[
-['Reconheço o transtorno, explico o que houve sem desculpas e informo um novo prazo firme.',{cust:8,com:4,emp:3},'Você validou a frustração, foi transparente e deu um próximo passo concreto. Isso reconstrói confiança.'],
-['Ofereço um desconto e não falo do atraso.',{cust:3,money:-80,com:-1},'O desconto alivia, mas ignorar o problema deixa o cliente sem resposta. Ele precisa se sentir ouvido primeiro.'],
-['Explico que o atraso foi culpa da transportadora.',{cust:-6,rep:-4,com:-3},'Jogar a culpa para fora soa como desculpa e não resolve nada. O cliente quer responsabilidade e solução.']]},
+['Reconhecer o transtorno, explicar o que houve sem rodeios e informar uma nova data firme.',{com:6,emp:3,cust:8},'Você validou a frustração, foi transparente e deu um próximo passo concreto. Isso reconstrói a confiança.'],
+['Pedir desculpas e garantir que não vai se repetir, sem informar uma nova data de entrega.',{com:-2,cust:2},'O pedido de desculpas ajuda, mas sem uma data o cliente continua sem saber quando recebe. A promessa vaga não resolve.'],
+['Explicar que o atraso foi culpa da transportadora e que a empresa não podia ter evitado.',{com:-4,cust:-6,rep:-4},'Jogar a culpa para fora soa como desculpa. O cliente quer responsabilidade e solução, não um culpado.']]},
 {t:'Pedido de ajuda',f:'Bruno, colega',b:'"Sei que sua semana está cheia, mas consegue revisar minha apresentação hoje? Estou travado."',o:[
-['Reviso por 15 minutos hoje e combino o restante para amanhã, explicando minha agenda.',{team:5,com:3,self:3},'Você ajudou sem se sobrecarregar e deixou claro o seu limite. Cooperar e proteger a própria energia caminham juntos.'],
-['Aceito tudo e fico até tarde para fazer.',{team:2,self:-4,energy:-12},'Ajudar é bom, mas dizer sim a tudo cobra um preço. Sem limites, o cansaço vira ressentimento.'],
-['Digo que não tenho tempo e encerro a conversa.',{team:-4,soc:-4},'Recusar é legítimo, mas sem acolher nem oferecer alternativa o colega se sente sozinho. Dá para dizer não com cuidado.']]},
+['Revisar por 15 minutos hoje e combinar o resto para amanhã, explicando a minha agenda.',{team:6,com:3,self:3},'Você ajudou sem se sobrecarregar e deixou seu limite claro. Cooperar e proteger a própria energia caminham juntos.'],
+['Aceitar o pedido e ficar até mais tarde para revisar a apresentação inteira ainda hoje.',{team:-3,self:-2,energy:-12},'Dizer sim a tudo cobra um preço: cansado, você entrega pior, e a ajuda sem limites vira ressentimento.'],
+['Responder que a minha semana está cheia e que ele precisará pedir ajuda a outra pessoa.',{team:-5,soc:-4},'Recusar é legítimo, mas sem acolher nem oferecer alternativa o colega se sente sozinho. Dá para dizer não com cuidado.']]},
 {t:'Três pedidos urgentes',f:'Financeiro, Diretoria e Comercial',b:'As três áreas pedem "para ontem": fechamento de caixa, uma proposta e dados para a reunião.',o:[
-['Listo prazo e impacto de cada um e alinho com os três o que sai primeiro.',{prob:5,com:4,rep:3},'Priorizar por impacto e combinar expectativas evita promessas que você não cumpre. É resolução de problemas com comunicação.'],
-['Faço na ordem em que chegaram.',{prob:-1,rep:-2},'A ordem de chegada nem sempre é a de importância. Sem avaliar impacto, o mais crítico pode atrasar.'],
-['Prometo os três para hoje.',{prob:-4,self:-3,rep:-5,energy:-10},'Prometer o impossível gera estresse e quebra de confiança. Dizer o que é viável é mais honesto.']]},
-{t:'Discussão por e-mail',f:'Carla e Diego, com você em cópia',b:'Os dois trocam acusações na thread: "Você nunca avisa nada" e "E você nunca lê o que eu mando".',o:[
-['Chamo os dois para uma conversa curta, foco no problema e não nas pessoas, e peço que cada um diga o que precisa.',{team:5,com:4,emp:2,soc:4},'Tirar o conflito do e-mail e focar em necessidades reduz a defensiva. Mediar é uma competência de equipe.'],
-['Ignoro, esperando que se resolvam.',{team:-2,soc:-3},'Conflitos sem mediação tendem a escalar e contaminar o clima.'],
-['Respondo à thread dando razão à Carla.',{team:-4,soc:-6,emp:-2},'Tomar partido publicamente reforça a briga. Os dois precisam se sentir ouvidos.']]},
+['Listar o prazo e o impacto de cada pedido e combinar com as áreas o que sai primeiro.',{prob:6,com:3,rep:3},'Priorizar por impacto e alinhar expectativas evita promessas que você não cumpre. É resolução de problemas com comunicação.'],
+['Fazer os pedidos na ordem em que chegaram, avisando cada área quando o seu ficar pronto.',{prob:-2,rep:-2,com:1},'A ordem de chegada nem sempre é a ordem de importância. Sem avaliar o impacto, o pedido mais crítico pode atrasar.'],
+['Prometer os três para hoje à tarde e trabalhar sem pausas até conseguir entregar tudo.',{prob:-5,self:-3,rep:-5,energy:-10},'Prometer o impossível gera estresse e quebra de confiança. É melhor dizer o que é viável.']]},
+{t:'Discussão por e-mail',f:'Carla e Diego, com você em cópia',b:'Os dois trocam acusações na conversa: "Você nunca avisa nada" e "E você nunca lê o que eu mando".',o:[
+['Chamar os dois para uma conversa rápida e pedir que cada um diga o que precisa do outro.',{team:6,com:3,soc:4},'Tirar o conflito do e-mail e focar em necessidades reduz a defensiva. Mediar é uma competência de equipe.'],
+['Escrever aos dois pedindo calma e que resolvam essa questão entre eles, fora do e-mail.',{team:-2,soc:1},'Pedir calma é bom, mas sem ajudar a mediar a briga costuma continuar em outro lugar.'],
+['Responder a todos dando razão à Carla, pois o Diego realmente costuma esquecer de avisar.',{team:-5,soc:-6,emp:-2},'Tomar partido publicamente reforça a briga. Os dois precisam se sentir ouvidos.']]},
 {t:'URGENTE: conta bloqueada',f:'banco-seguranca@avisos-online.net',b:'"Detectamos atividade suspeita. Clique agora para evitar o bloqueio."',o:[
-['Não clico, encaminho para a TI e aviso a equipe.',{prob:4,team:3,rep:4},'Urgência artificial é sinal clássico de golpe. Avisar a TI protege toda a equipe.'],
-['Ignoro sem avisar ninguém.',{prob:1},'Ignorar protege você, mas o time continua exposto. Compartilhar o alerta é cuidar do coletivo.'],
-['Clico no link para conferir.',{money:-200,rep:-8,self:-3},'Pressa é a arma do golpe. Respirar antes de agir é autogestão.']]}],
+['Não clicar no link, encaminhar a mensagem para a TI e avisar o resto da equipe.',{prob:6,team:3,rep:4},'Urgência artificial é sinal clássico de golpe. Avisar a TI protege toda a equipe.'],
+['Não clicar no link e apagar a mensagem, sem avisar a TI nem os outros colegas.',{prob:2,team:-1},'Você se protegeu, mas o time continua exposto. Compartilhar o alerta é cuidar do coletivo.'],
+['Clicar no link para conferir se a conta realmente tem alguma atividade suspeita.',{prob:-5,self:-3,rep:-8,money:-200},'Pressa é a arma do golpe. Respirar antes de agir é autogestão.']]},
+{t:'Erro na tabela de preços',f:'Thiago, colega',b:'Você notou que a tabela de preços enviada ao cliente tem um valor trocado. O Thiago ainda não percebeu.',o:[
+['Avisar o Thiago em particular, mostrar o valor certo e sugerir que ele corrija hoje.',{team:6,com:3,cust:4},'Você protegeu o cliente e o colega ao mesmo tempo: falou em particular e deu a ele a chance de corrigir.'],
+['Corrigir a tabela por conta própria e reenviar ao cliente, sem contar nada ao Thiago.',{team:-2,prob:1,cust:2},'O erro some, mas o Thiago não aprende e pode se sentir desautorizado quando descobrir.'],
+['Comentar no grupo da equipe que o Thiago errou na tabela de preços enviada ao cliente.',{team:-5,soc:-6,rep:-2},'Expor o erro de alguém em público gera constrangimento e desconfiança. Feedback pede privacidade.']]},
+{t:'Reunião sem pauta',f:'Renata, gerente',b:'"Reunião hoje às 15h, duas horas, presença de todos." O convite não traz pauta e você tem uma entrega às 16h.',o:[
+['Perguntar sobre a pauta, avisar da entrega das 16h e combinar como participar da reunião.',{com:6,prob:3,rep:3},'Você deu informação e abriu uma negociação. Comunicar o conflito cedo evita que alguém seja pego de surpresa.'],
+['Aceitar o convite e tentar adiantar a entrega das 16h enquanto a reunião estiver rolando.',{com:-2,prob:-1,rep:-2},'Fazer duas coisas ao mesmo tempo costuma piorar as duas, e ninguém sabe que você tem um prazo apertado.'],
+['Recusar o convite sem explicar nada e seguir trabalhando para terminar a entrega no prazo.',{com:-5,rep:-5,soc:-2},'Recusar sem explicação passa desinteresse e pode ser lido como falta de respeito com a gerente.']]},
+{t:'Elogio da diretoria',f:'Diretoria',b:'"Parabéns pelo projeto novo! Excelente trabalho." Mas duas colegas fizeram boa parte do que foi entregue.',o:[
+['Agradecer o elogio e citar as duas colegas pelo nome, dizendo o que cada uma entregou.',{team:6,com:3,soc:5},'Dar crédito de forma específica fortalece a confiança e mostra que você valoriza quem trabalha com você.'],
+['Agradecer o elogio e dizer que foi um trabalho de equipe, sem citar ninguém por nome.',{team:2,soc:1},'Dizer que foi da equipe é um bom começo, mas sem nomes as colegas continuam invisíveis para a diretoria.'],
+['Apenas agradecer e deixar o elogio como está, já que ninguém mais foi mencionado ali.',{team:-4,soc:-5,self:-2},'Aceitar um crédito que não é só seu gera ressentimento e mina a confiança da equipe.']]},
+{t:'Prazo impossível',f:'Henrique, cliente',b:'"Preciso da proposta completa até amanhã cedo." O prazo normal para esse tipo de proposta é de cinco dias.',o:[
+['Dizer o que dá para entregar até amanhã e propor a versão completa em uma data realista.',{prob:6,com:4,cust:5},'Você não disse só sim ou não: ofereceu uma entrega parcial e um prazo possível. Negociar mantém o cliente por perto.'],
+['Aceitar o prazo e trabalhar à noite para entregar tudo, mesmo que sem tempo de revisar.',{prob:-2,self:-1,energy:-12},'Dizer sim a tudo gera uma proposta cansada e cheia de risco de erro. O cliente também fica mal acostumado.'],
+['Dizer que o prazo é impossível e que ele deveria ter pedido a proposta com antecedência.',{prob:-4,com:-2,cust:-7,rep:-4},'Apontar o erro do cliente não resolve nada. Ele quer uma saída, não uma bronca.']]}],
 emp:[
 {t:'Conversa com Marina',f:'Equipe',b:'Marina está quieta há dias, evita o almoço e responde sem olhar para você: "Tá tudo bem, só estou cansada."',o:[
-['Digo que percebi que ela está diferente, pergunto se quer conversar e ofereço aliviar algo hoje.',{emp:6,team:3,soc:5},'Você notou o sinal por trás das palavras e abriu espaço sem pressionar. Empatia é perceber e oferecer apoio concreto.'],
-['Aceito a resposta e sigo o trabalho.',{emp:-1,soc:-2},'Respeitar é válido, mas o tom contradizia as palavras. Um convite simples para conversar teria ajudado.'],
-['Digo que todo mundo está cansado e que ela precisa se animar.',{emp:-5,soc:-6},'Minimizar o sentimento faz a pessoa se fechar. Comparar cansaços invalida o que ela sente.']]},
+['Dizer que a notei diferente e convidar para um café, sem pressionar para que ela fale.',{emp:6,soc:5,team:2},'Você percebeu o sinal por trás das palavras e abriu espaço sem pressionar. Empatia é notar e oferecer apoio.'],
+['Respeitar o que ela disse e deixar a porta aberta, sem voltar ao assunto por alguns dias.',{emp:-2,soc:-1},'Respeitar é válido, mas o tom dela contradizia as palavras. Um convite simples teria ajudado mais.'],
+['Contar à chefe que a Marina anda estranha, para que alguém converse com ela sobre isso.',{emp:-5,soc:-5,team:-3},'Falar pelas costas, mesmo com boa intenção, quebra a confiança. Primeiro procure a própria pessoa.']]},
 {t:'Conversa com Rafael',f:'Equipe',b:'Rafael, irritado: "O Bruno apresentou meu trabalho como se fosse dele. Estou farto."',o:[
-['Ouço sem interromper, reconheço a irritação e combino conversar com o Bruno para esclarecer os créditos.',{emp:5,com:3,team:4},'Escutar antes de agir e depois mediar mostra justiça. Ele precisa primeiro se sentir ouvido.'],
-['Peço que resolvam entre eles.',{emp:-1,team:-2},'Incentivar autonomia é bom, mas sem apoio um conflito de crédito costuma piorar.'],
-['Digo que isso é bobagem e que ele está exagerando.',{emp:-5,soc:-6,team:-3},'Descartar o incômodo mina a confiança em você como líder.']]},
+['Ouvir o Rafael com calma e depois ouvir a versão do Bruno antes de tirar conclusões.',{team:6,emp:3,com:3},'Ouvir os dois lados antes de agir é justiça. O Rafael se sente ouvido e o Bruno tem direito de explicar.'],
+['Pedir ao Bruno que corrija o crédito na próxima apresentação, pois o Rafael tem razão.',{team:-2,emp:1},'Você foi solidário, mas decidiu sem ouvir o Bruno. Pode ser injusto e ainda abrir outro conflito.'],
+['Dizer ao Rafael que isso é exagero e que o importante mesmo é o resultado da equipe.',{team:-5,emp:-3,soc:-5},'Descartar o incômodo mina a confiança em você. O resultado importa, mas o crédito também.']]},
 {t:'Conversa com Júlia',f:'Equipe',b:'Júlia enviou um relatório com números errados ao cliente e está aflita: "Desculpa, fiz tudo errado. Vou ser demitida?"',o:[
-['Acolho a preocupação, digo que erros acontecem e definimos juntos como corrigir e evitar de novo.',{emp:5,team:4,com:3,cust:3},'Você acolheu a emoção e levou a conversa para solução e aprendizado. É assim que se cria segurança para errar e melhorar.'],
-['Digo "acontece" e mando corrigir sozinha.',{emp:-1,prob:-1},'Aliviar é gentil, mas sem combinar correção e prevenção o erro pode se repetir.'],
-['Repreendo na frente de todos para servir de exemplo.',{emp:-6,soc:-8,team:-4},'Humilhação pública gera medo, não aprendizado. Feedback difícil pede privacidade.']]},
+['Acolher a aflição dela e combinar juntos como corrigir o relatório e evitar o erro depois.',{emp:6,prob:3,team:3,cust:3},'Você acolheu a emoção e levou a conversa para solução e aprendizado. Assim se cria segurança para errar e melhorar.'],
+['Dizer que acontece com todo mundo e pedir que ela corrija o relatório sozinha ainda hoje.',{emp:-2,prob:-1},'Aliviar é gentil, mas sem combinar a correção e a prevenção o erro pode se repetir.'],
+['Reunir a equipe e usar o relatório dela como exemplo do que não se deve fazer na empresa.',{emp:-6,soc:-8,team:-4},'Humilhação pública gera medo, não aprendizado. Feedback difícil pede privacidade.']]},
 {t:'Conversa com Pedro',f:'Equipe',b:'Pedro pede para sair às 16h: "Sei que o dia está corrido, mas tenho um assunto de família importante hoje."',o:[
-['Pergunto do que ele precisa, concordo e combinamos quem cobre o que ficar pendente.',{emp:4,team:4,com:3,soc:4},'Confiar e planejar a cobertura cuida da pessoa e da entrega. Flexibilidade com combinados claros funciona.'],
-['Libero sem combinar nada.',{emp:3,prob:-3,soc:-2},'A intenção é boa, mas sem combinar cobertura sobra trabalho para outra pessoa, que pode se ressentir.'],
-['Nego, porque o dia está corrido.',{emp:-4,soc:-6},'Negar sem ouvir o motivo passa a mensagem de que o trabalho vale mais que a pessoa. Dá para negociar antes de negar.']]},
+['Perguntar se ele precisa de algo, liberar a saída e combinar quem cobre as pendências.',{emp:5,team:3,soc:4},'Confiar e planejar a cobertura cuida da pessoa e da entrega. Flexibilidade com combinados claros funciona.'],
+['Liberar a saída na hora, sem perguntar nada, e deixar que ele cuide das pendências depois.',{emp:2,soc:-1,team:-1},'A intenção é boa, mas sem combinar a cobertura sobra trabalho para outra pessoa, que pode se ressentir.'],
+['Negar a saída, porque o dia está corrido e todos precisam cumprir o horário normal hoje.',{emp:-5,soc:-6},'Negar sem ouvir o motivo passa a mensagem de que o trabalho vale mais que a pessoa. Dá para negociar antes de negar.']]},
 {t:'Conversa com Carla',f:'Equipe',b:'Carla, com olheiras: "Estou sobrecarregada. Não sei nem por onde começar."',o:[
-['Peço para listarmos as tarefas juntos, priorizo e redistribuo o que for possível.',{emp:4,prob:4,team:4,soc:5},'Você ouviu e transformou o peso em um plano. Empatia com ação concreta alivia mais que palavras.'],
-['Digo para ela respirar fundo e se organizar.',{emp:-1,prob:-1},'O conselho é bem-intencionado, mas devolve o problema a quem já está no limite.'],
-['Digo que todos têm muito trabalho e que ela precisa dar conta.',{emp:-5,soc:-7},'Isso ignora o limite dela e pode levar ao esgotamento.']]}],
+['Listar as tarefas com ela, definir as prioridades e passar adiante o que for possível.',{emp:5,prob:4,team:3,soc:5},'Você ouviu e transformou o peso em um plano. Empatia com ação concreta alivia mais que palavras.'],
+['Sugerir que ela respire fundo e escolha uma tarefa por vez, pois o resto se ajeita logo.',{emp:-2,prob:-1},'O conselho é bem-intencionado, mas devolve o problema a quem já está no limite.'],
+['Lembrar que todos estão cheios de trabalho e que ela precisa dar conta dos prazos dela.',{emp:-5,soc:-7},'Isso ignora o limite dela e pode levar ao esgotamento.']]},
+{t:'Conversa com Beatriz',f:'Equipe',b:'Beatriz, nova na equipe, tem boas ideias, mas nunca fala nas reuniões. Depois ela as envia a você por mensagem.',o:[
+['Perguntar à Beatriz como prefere compartilhar as ideias: eu as levo ou ela as apresenta.',{emp:5,team:4,com:3,soc:4},'Você deu a ela o controle da decisão. Respeitar o ritmo de cada pessoa ajuda mais que forçar a exposição.'],
+['Pedir que ela fale na reunião de amanhã, pois só assim a timidez vai diminuir com o tempo.',{emp:-2,soc:-1},'Incentivar é bom, mas exigir a exposição sem preparo pode aumentar a insegurança dela.'],
+['Explicar que as ideias só contam se forem ditas em voz alta e que ela precisa se adaptar.',{emp:-5,team:-3,soc:-6},'Isso ignora o jeito dela de contribuir e a faz se sentir menos valorizada.']]},
+{t:'Conversa com Paulo',f:'Equipe',b:'Paulo voltou de uma licença e está perdido com as mudanças: "Parece que tudo mudou. Não sei nem por onde começar."',o:[
+['Reservar um tempo para atualizá-lo das mudanças e combinar um horário fixo para dúvidas.',{emp:5,team:4,soc:4},'Você ofereceu apoio concreto e um canal combinado. Isso reduz a ansiedade de quem volta.'],
+['Enviar por e-mail o material com as mudanças e dizer que estou à disposição para dúvidas.',{emp:2,team:-1},'O material ajuda, mas ele pode ter vergonha de perguntar. Um momento marcado teria feito mais diferença.'],
+['Esperar que ele peça ajuda, porque cada um deve se atualizar sozinho depois de uma licença.',{emp:-5,team:-3,soc:-5},'Deixar a pessoa sozinha com a dificuldade atrasa a volta dela e enfraquece a equipe.']]},
+{t:'Conversa com Fernanda',f:'Equipe',b:'Fernanda: "Você esqueceu de me passar o arquivo e eu entreguei errado ao cliente. A falha foi sua." É verdade.',o:[
+['Assumir que esqueci o arquivo, pedir desculpas e ajudar a corrigir a entrega ao cliente.',{self:6,team:3,com:3},'Assumir o erro sem desculpas e já ajudar na solução é responsabilidade. Isso fortalece a confiança.'],
+['Admitir o esquecimento, mas lembrar que ela também poderia ter cobrado o arquivo antes.',{self:-2,team:-1},'Dividir a culpa tira o foco da solução e soa como defesa. Primeiro assuma, depois converse sobre o processo.'],
+['Dizer que enviei o arquivo pelo chat e que ela deve ter deixado a mensagem passar batida.',{self:-6,team:-4,rep:-6},'Mentir para escapar da culpa destrói a confiança quando a verdade aparece.']]}],
 call:[
 {t:'Ligação: cliente irritado',f:'Cliente na linha',b:'"Estou há uma semana esperando! Isso é um absurdo, quero falar com alguém que resolva!"',o:[
-['"Entendo a sua frustração. Vou resolver agora; me passe o número do pedido."',{cust:10,emp:4,com:4},'Você validou a emoção e prometeu ação. Acolher antes de resolver baixa a tensão.'],
-['"Sinto muito, vou transferir para outro setor."',{cust:-1,com:-1},'Pedir desculpas é bom, mas transferir sem resolver faz o cliente repetir tudo e se irritar mais.'],
-['"Senhor, calma, não precisa gritar."',{cust:-8,emp:-3,self:-2,rep:-4},'Mandar a pessoa se acalmar costuma piorar. Manter a calma por dentro e acolher por fora é autogestão em ação.']]},
+['"Entendo a sua frustração. Vou cuidar disso agora; pode me passar o número do pedido?"',{com:6,emp:4,cust:10},'Você validou a emoção e prometeu ação. Acolher antes de resolver baixa a tensão.'],
+['"Peço desculpas pelo transtorno. Vou transferir a sua ligação para o setor responsável."',{com:-2,cust:-1},'Pedir desculpas é bom, mas transferir sem resolver faz o cliente repetir tudo e se irritar mais.'],
+['"Senhor, vamos manter a calma. Gritar não vai fazer o seu problema ser resolvido antes."',{com:-5,emp:-3,cust:-8,rep:-4},'Mandar a pessoa se acalmar costuma piorar. Manter a calma por dentro e acolher por fora é autogestão.']]},
 {t:'Ligação: cobrança duplicada',f:'Cliente na linha',b:'"Fui cobrado duas vezes este mês e ninguém me responde."',o:[
-['"Vou verificar agora. Se houve duplicidade, o estorno sai em até 3 dias úteis e eu retorno ainda hoje."',{cust:10,prob:4,com:3},'Você agiu e deu prazos claros. Previsibilidade reduz a ansiedade do cliente.'],
-['"Vou anotar e alguém retorna depois."',{cust:-1,com:-1},'Anotar é um começo, mas sem prazo o cliente continua sem resposta.'],
-['"Isso é impossível, não cobramos duas vezes."',{cust:-9,emp:-3,rep:-4},'Negar antes de verificar diz ao cliente que ele está mentindo. Primeiro confira, depois responda.']]},
+['"Vou verificar agora. Se houve duplicidade, o estorno sai em 3 dias úteis e retorno hoje."',{prob:6,com:3,cust:10},'Você agiu e deu prazos claros. Previsibilidade reduz a ansiedade do cliente.'],
+['"Vou registrar o seu caso e a equipe do financeiro entrará em contato assim que puder."',{prob:-2,com:-1,cust:-1},'Registrar é um começo, mas sem prazo nem verificação o cliente continua sem resposta.'],
+['"O nosso sistema não cobra duas vezes, o senhor deve ter confundido com outro pagamento."',{prob:-5,emp:-3,cust:-9,rep:-4},'Negar antes de verificar diz ao cliente que ele está errado. Primeiro confira, depois responda.']]},
 {t:'Ligação: pedido de cancelamento',f:'Cliente na linha',b:'"Quero cancelar meu contrato. Cansei."',o:[
-['"Posso saber o que aconteceu? Gostaria de entender e ver se consigo ajudar."',{cust:8,emp:4,com:4},'Curiosidade genuína, sem pressão, revela o problema real e respeita a decisão dele.'],
-['"Tudo bem, cancelo agora."',{emp:-1,com:-1},'Respeitar a decisão é válido, mas você perdeu a chance de entender e aprender.'],
-['"Você não pode cancelar agora, tem multa."',{cust:-8,rep:-4,emp:-3},'Pressão e ameaça afastam e prejudicam a imagem. Informar regras é diferente de intimidar.']]},
+['"Posso saber o que aconteceu? Quero entender o motivo e ver se consigo ajudar de alguma forma."',{com:6,emp:4,cust:8},'Curiosidade genuína, sem pressão, revela o problema real e respeita a decisão dele.'],
+['"Antes de cancelar, posso oferecer um desconto para o senhor continuar com a gente este mês."',{com:-2,cust:-1},'Oferecer vantagem antes de ouvir o motivo passa a ideia de que tudo se resolve com preço. Pergunte primeiro.'],
+['"Se cancelar agora o senhor perde todos os benefícios e ainda precisará pagar uma multa alta."',{com:-4,emp:-3,cust:-8,rep:-4},'Pressão e ameaça afastam o cliente e prejudicam a imagem. Informar regras é diferente de intimidar.']]},
 {t:'Ligação: cliente confuso',f:'Cliente na linha',b:'Um cliente mais velho, inseguro: "Não entendo esse sistema novo. Acho que estou fazendo tudo errado."',o:[
-['Falo devagar, explico passo a passo e peço que ele repita o que entendeu.',{cust:9,emp:5,com:4},'Paciência e confirmação de entendimento fazem o cliente se sentir capaz.'],
-['Envio um manual por e-mail e encerro.',{cust:-1,prob:1},'O manual ajuda, mas ele pediu ajuda agora. Acolher primeiro faz diferença.'],
-['"É simples, qualquer pessoa consegue."',{cust:-7,emp:-4,rep:-3},'Dizer que "é simples" faz a pessoa se sentir incapaz. Reconheça a dificuldade.']]}]};
+['Falar devagar, explicar cada passo e pedir que ele repita o que entendeu para confirmar.',{com:6,emp:5,cust:9},'Paciência e confirmação de entendimento fazem o cliente se sentir capaz.'],
+['Enviar o manual por e-mail e dizer que lá estão todos os passos de que ele vai precisar.',{com:-2,prob:1,cust:-1},'O manual ajuda, mas ele pediu ajuda agora. Acolher primeiro faz diferença.'],
+['Dizer que o sistema é simples e que, com um pouco de prática, qualquer pessoa aprende.',{com:-5,emp:-3,cust:-7,rep:-3},'Dizer que "é simples" faz a pessoa se sentir incapaz. Reconheça a dificuldade.']]},
+{t:'Ligação: pedido de dados',f:'Cliente na linha',b:'"Sou esposa do Sr. Almeida, cliente de vocês. Preciso do endereço e do telefone dele, é urgente."',o:[
+['"Não posso passar dados sem autorização dele, mas posso anotar um recado e pedir que ligue."',{self:6,com:3,rep:4},'Proteger os dados do cliente é uma responsabilidade sua. Oferecer um recado resolve sem expor ninguém.'],
+['"Vou passar só o telefone, porque o endereço é mais sigiloso. Pode anotar o número agora."',{self:-2,rep:-2},'Telefone também é dado pessoal. Você não tem como confirmar quem está ligando.'],
+['"Claro, vou passar o endereço e o telefone, já que a senhora parece conhecer bem o cliente."',{self:-6,rep:-8,prob:-2},'Passar dados pessoais por confiança é um risco sério. Pode expor o cliente e a empresa.']]},
+{t:'Ligação: pedido de senha',f:'Quem diz ser da TI',b:'"Aqui é do suporte de TI. O sistema está com falha e preciso da sua senha agora para corrigir."',o:[
+['"Não passo senha por telefone. Vou ligar no ramal oficial da TI para confirmar o pedido."',{prob:6,self:3,rep:4},'A TI de verdade nunca pede senha. Conferir por um canal oficial é a atitude certa.'],
+['"Passo a senha se o senhor confirmar o meu nome de usuário e o setor onde eu trabalho."',{prob:-3,self:-2},'Nome de usuário e setor são fáceis de descobrir. Esse tipo de pergunta não prova que a pessoa é quem diz ser.'],
+['"Claro, vou passar a senha agora. Se veio do suporte, não posso atrasar a solução do erro."',{prob:-6,self:-4,rep:-8,money:-200},'Urgência é a isca clássica de golpe. Nunca se passa senha por telefone.']]},
+{t:'Ligação: pedido de desconto',f:'Cliente na linha',b:'"Sou cliente há 8 anos. Quero 30% de desconto, senão mudo de empresa hoje mesmo."',o:[
+['"Agradeço a fidelidade. Vou explicar o que a política de descontos permite e oferecer essa opção."',{com:6,emp:3,cust:7},'Você valorizou o cliente e foi claro sobre o que é possível. Transparência evita falsas promessas.'],
+['"Vou consultar o meu gerente sobre os 30% e retorno depois, mas ainda não sei o que é possível."',{com:-2,cust:-1},'Consultar o gerente é válido, mas sem explicar a política e sem prazo o cliente fica sem resposta.'],
+['"Combinado, o senhor terá os 30% agora. Não posso perder um cliente tão antigo para a concorrência."',{com:-4,rep:-5,money:-100},'Prometer algo fora da sua alçada gera prejuízo e cria um precedente difícil de desfazer.']]}]};
 const DOCS=[['Contrato de Funcionário','RH'],['Nota Fiscal','Financeiro'],['Processo Judicial','Jurídico'],['Holerite','RH'],['Boleto de Fornecedor','Financeiro'],['Notificação Extrajudicial','Jurídico']];
 const EV=[
 ['Bônus da diretoria pelo bom trimestre.',{money:200,self:2}],
@@ -381,6 +422,26 @@ addEventListener('keydown',e=>{
   if(k==='e')act(ST[st].a);
   if(k==='tab'){e.preventDefault();if(S.tasks.length){tabI=(tabI+1)%S.tasks.length;goTask(S.tasks[tabI].id)}}
 });
+
+
+// ---------- TINTA DA IMPRESSORA ----------
+document.head.insertAdjacentHTML('beforeend','<style>.ink{display:flex;gap:4px;margin:8px 0}.ink i{flex:1;height:16px;border-radius:3px;background:#1a2f45}.ink i.on{background:#f5c518}.row button:disabled{opacity:.4;cursor:not-allowed;border-color:var(--line)}</style>');
+const inkNow=()=>{if(typeof S.ink!=='number')S.ink=100;return S.ink};
+function refill(){if(inkNow()>=20){toast('A tinta só pode ser recarregada abaixo de 20%.');return}S.ink=100;toast('Tinta recarregada.');renderPanel()}
+const _renderPanel=renderPanel;
+renderPanel=function(){
+  _renderPanel();
+  if(view!=='printer')return;
+  const v=inkNow(),bars=Math.ceil(v/10);
+  $('pbody').insertAdjacentHTML('afterbegin',`<div class="doc"><h3>Tinta da impressora · ${Math.round(v)}%</h3><div class="ink">${Array.from({length:10},(_,i)=>`<i class="${i<bars?'on':''}"></i>`).join('')}</div><div class="row"><button onclick="refill()" ${v<20?'':'disabled'}>Recarregar tinta</button></div><p class="mut" style="margin:6px 0 0">Cada impressão gasta 1 barra. A recarga só libera abaixo de 20%.</p></div>`);
+};
+const _printJob=printJob;
+printJob=function(id){
+  if(!S.tasks.find(x=>x.id===id))return;
+  if(inkNow()<10){toast('Sem tinta! Recarregue a impressora.');return}
+  S.ink=inkNow()-10;
+  _printJob(id);
+};
 
 // ---------- INÍCIO ----------
 try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.skills)S=Object.assign(fresh(),d)}catch(e){}

@@ -868,8 +868,7 @@
 
     /* =========================================================
        AVISO DE AUTENTICAÇÃO
-       Recebe os erros vindos do back-end (?erro=...) e o
-       recado da recuperação de senha.
+       Recebe os erros vindos do back-end (?erro=...).
     ========================================================= */
 
     .auth-aviso {
@@ -991,33 +990,6 @@
     .password-toggle:active {
       scale: .92;
       transition-duration: .18s;
-    }
-
-    .forgot {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: -10px;
-      margin-bottom: 34px;
-    }
-
-    /* O sublinhado já existe, transparente: no hover ele aparece
-       e desliza para perto do texto, em vez de surgir seco. */
-    .forgot a {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--blue);
-      text-decoration: underline;
-      text-decoration-color: transparent;
-      text-underline-offset: 7px;
-      transition:
-        text-decoration-color .75s var(--ease),
-        text-underline-offset .75s var(--ease);
-    }
-
-    .forgot a:hover {
-      text-decoration-color: currentColor;
-      text-underline-offset: 3px;
-      transition-duration: .45s;
     }
 
     /* =========================================================
@@ -1187,7 +1159,6 @@
       font-size: 16px;
     }
 
-    /* Mesmo sublinhado que desliza do "Esqueceu sua senha?". */
     .register a {
       color: var(--blue);
       font-weight: 600;
@@ -2538,16 +2509,6 @@
             </div>
 
 
-            <!-- ESQUECEU -->
-            <div class="forgot">
-
-              <a href="#" id="forgotPassword">
-                Esqueceu sua senha?
-              </a>
-
-            </div>
-
-
             <!-- ENTRAR -->
             <button
               type="submit"
@@ -2855,39 +2816,6 @@
         ligarProvedor("linkedinButton", "/auth/linkedin");
 
     })();
-
-
-    /*
-     * ===========================================================
-     * ESQUECI MINHA SENHA
-     *
-     * A rota de recuperação ainda não existe no Flask:
-     * o recado reaproveita o mesmo elemento dos avisos.
-     * ===========================================================
-     */
-
-    const authAviso =
-      document.getElementById("authAviso");
-
-    const forgotPassword =
-      document.getElementById("forgotPassword");
-
-
-    forgotPassword.addEventListener("click", function (event) {
-
-      event.preventDefault();
-
-      if (!authAviso) {
-        return;
-      }
-
-      authAviso.textContent =
-        "A recuperação de senha ainda será disponibilizada. " +
-        "Por enquanto, entre com seu e-mail e sua senha.";
-
-      authAviso.classList.add("show");
-
-    });
 
 
     /* =========================================================

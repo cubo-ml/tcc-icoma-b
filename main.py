@@ -2,8 +2,7 @@ import os
 import re
 import secrets
 
-from flask import Flask, redirect, render_template, session, request, jsonify
-from jinja2 import TemplateNotFound
+from flask import Flask, redirect, render_template, session, request, jsonify, url_for
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 import firebase_admin
@@ -197,7 +196,7 @@ def index():
     nome = "icoma.com.br"
 
     return render_template(
-        "index.html",
+        "pages/landpage.html",
         site=nome
     )
 
@@ -516,6 +515,11 @@ def teste():
 
 @app.route("/dash")
 def dash():
+    return redirect(url_for("dashboard"))
+
+
+@app.route("/dashboard")
+def dashboard():
 
     # Se nao estiver logado, volta para o login.
     if not sessao_iniciada():
@@ -531,14 +535,7 @@ def dash():
         print("[desempenho] AVISO:", erro.__class__.__name__)
         dados = None
 
-    # O painel novo é pages/dash.html; se o seu ainda tiver o nome antigo, cai no landpage.html
-    for pagina in ("pages/dash.html", "pages/landpage.html"):
-        try:
-            return render_template(pagina, dados=dados)
-        except TemplateNotFound:
-            continue
-
-    return "Página do painel não encontrada.", 500
+    return render_template("dashboards/dashboard.html", dados=dados)
 
 
 # =========================================================

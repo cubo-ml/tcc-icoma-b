@@ -1,531 +1,3577 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
+
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#06182f">
-<script>
-(function(){try{if(localStorage.getItem("skillbloom-tema")==="light"){
-document.documentElement.setAttribute("data-theme","light");
-var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#eef6ff");}}catch(e){}})();
-</script>
-<title>SkillBloom — Dashboard</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color" content="#061a36">
+
+<meta name="description" content="Skill Bloom - Desenvolva suas competências socioemocionais através de simulações de ambiente de trabalho.">
+
+<title>Skill Bloom — Prepare-se hoje, destaque-se amanhã.</title>
+
 <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='logo.jpg') }}">
 <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.jpg') }}">
+
+<script>
+    /* O SkillBloom abre no escuro. Só o claro precisa ser
+       restaurado antes da primeira pintura. */
+    (function () {
+        try {
+            if (localStorage.getItem("skillbloom-tema") === "light") {
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+        } catch (e) {}
+    })();
+</script>
+
 <style>
-:root{color-scheme:dark;
---bg:#06182f;--g1:#061a36;--g2:#08284f;--glow-a:rgba(56,189,248,.16);--glow-b:rgba(37,99,235,.2);
---card:rgba(8,38,76,.72);--line:rgba(120,190,255,.2);--pop:#0a2447;--chip:rgba(255,255,255,.06);
---text:#fff;--muted:rgba(255,255,255,.74);--soft:rgba(255,255,255,.62);
---blue:#3d9bff;--on-blue:#04142b;--sky:#4fc3ff;--ok:#39ef79;--pink:#ff8ca3;
---track:rgba(255,255,255,.1);--hole:#082a54;--sombra:0 16px 40px rgba(0,0,0,.3);--focus:0 0 0 4px rgba(79,195,255,.3);
---ease:cubic-bezier(.16,1,.3,1);--ease-soft:cubic-bezier(.65,0,.35,1);--spring:cubic-bezier(.34,1.36,.64,1)}
-:root[data-theme="light"]{color-scheme:light;
---bg:#eef6ff;--g1:#f6faff;--g2:#e2f0ff;--glow-a:rgba(56,189,248,.2);--glow-b:rgba(37,99,235,.1);
---card:rgba(255,255,255,.92);--line:rgba(30,90,170,.15);--pop:#fff;--chip:rgba(16,50,100,.05);
---text:#0f2440;--muted:rgba(15,36,64,.76);--soft:rgba(15,36,64,.66);
---blue:#0b66d6;--on-blue:#fff;--sky:#0a78c2;--ok:#0c8143;--pink:#c93a60;
---track:rgba(15,36,64,.1);--hole:#fff;--sombra:0 14px 34px rgba(20,70,140,.12);--focus:0 0 0 4px rgba(10,120,194,.22)}
 
-*{margin:0;padding:0;box-sizing:border-box}
-html{background:var(--bg)}
-body{min-height:100vh;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--text);overflow-x:hidden;
-background:radial-gradient(circle at 85% 8%,var(--glow-a),transparent 34%),radial-gradient(circle at 5% 90%,var(--glow-b),transparent 40%),linear-gradient(160deg,var(--g1),var(--g2))}
-button,a{font-family:inherit}button{border:0;cursor:pointer}a{color:inherit;text-decoration:none}
-:focus-visible{outline:2px solid var(--sky);outline-offset:3px}
-[hidden]{display:none!important}
-.theme-switching,.theme-switching *{transition:background-color .5s var(--ease-soft),border-color .5s var(--ease-soft),color .5s var(--ease-soft)!important}
-.theme-switching .theme-icon{transition:opacity .5s var(--ease),transform .9s var(--spring)!important}
+    /* =========================================================
+       TOKENS DE TEMA
+       Escuro é o padrão do SkillBloom.
+       O claro entra apenas quando a pessoa escolhe no botão,
+       via data-theme="light" no <html>.
+    ========================================================= */
 
-/* TOPO */
-.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;padding:12px clamp(16px,3vw,32px);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.logo{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:800;letter-spacing:-.5px}
-.logo span{color:var(--sky)}
-.logo-icon{width:38px;height:38px;border-radius:10px;overflow:hidden;background:#fff;border:1px solid var(--line)}
-.logo-icon img{width:100%;height:100%;display:block;object-fit:cover;scale:1.4}
-.tab{margin-left:14px;padding:9px 18px;border-radius:10px;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(90deg,#0a58d6,#1d8fe8)}
-.tab.sec{margin-left:0;background:var(--chip);color:var(--muted);border:1px solid var(--line)}
-.tab.sec:hover{color:var(--sky);border-color:var(--sky)}
-.actions{margin-left:auto;display:flex;align-items:center;gap:10px}
-.ico-btn{position:relative;width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--chip);color:var(--muted);display:grid;place-items:center;overflow:hidden;transition:color .3s,translate .5s var(--spring)}
-.ico-btn:hover{color:var(--sky);translate:0 -2px}
-.theme-icon{position:absolute;width:19px;height:19px;transition:opacity .5s var(--ease),transform .9s var(--spring)}
-.theme-icon.moon{opacity:1;transform:none}.theme-icon.sun{opacity:0;transform:rotate(70deg) scale(.4)}
-:root[data-theme="light"] .theme-icon.moon{opacity:0;transform:rotate(-70deg) scale(.4)}
-:root[data-theme="light"] .theme-icon.sun{opacity:1;transform:none}
+    /* Tema claro — escolha explícita da pessoa */
+    :root[data-theme="light"] {
+        color-scheme: light;
 
-/* CONTA */
-.conta{position:relative}
-.conta-botao{position:relative;width:42px;height:42px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--chip);overflow:hidden;display:grid;place-items:center;transition:border-color .3s,translate .5s var(--spring)}
-.conta-botao:hover{border-color:var(--sky);translate:0 -2px}
-.conta-botao[aria-expanded="true"]{border-color:var(--sky);box-shadow:var(--focus)}
-.conta-foto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.conta-iniciais{font-size:15px;font-weight:700;color:var(--sky);user-select:none}
-.conta-painel{position:absolute;top:calc(100% + 12px);right:0;z-index:50;width:270px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--pop);box-shadow:var(--sombra);transform-origin:top right}
-.conta-painel.abrindo{animation:pop .5s var(--spring)}
-.conta-cab{display:flex;align-items:center;gap:13px;padding-bottom:15px;border-bottom:1px solid var(--line)}
-.conta-avatar{position:relative;width:48px;height:48px;flex-shrink:0;border-radius:50%;background:var(--chip);overflow:hidden;display:grid;place-items:center}
-.conta-dados{min-width:0}
-.conta-nome,.conta-email{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.conta-nome{font-size:14px}.conta-email{margin-top:3px;font-size:12px;color:var(--muted)}
-.conta-prov{display:inline-block;margin-top:7px;padding:3px 8px;border-radius:20px;background:color-mix(in srgb,var(--sky) 15%,transparent);color:var(--sky);font-size:10px;font-weight:600}
-.conta-acoes{display:flex;justify-content:space-between;gap:10px;padding-top:13px}
-.conta-acao{padding:8px 12px;border-radius:9px;font-size:13px;font-weight:600;color:var(--sky);transition:background .3s}
-.conta-acao:hover{background:color-mix(in srgb,var(--sky) 12%,transparent)}
-.conta-sair{color:var(--muted)}.conta-sair:hover{color:var(--pink)}
+        /* superfícies */
+        --bg:              #ffffff;
+        --bg-soft:         #f8fbff;
+        --surface:         #ffffff;
+        --surface-2:       #f3f6fb;
+        --surface-3:       #eaf1fa;
 
-/* PÁGINA */
-.wrap{width:min(1140px,calc(100% - 32px));margin:0 auto;padding:30px 0 56px}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--sombra);backdrop-filter:blur(6px)}
-.card h3{font-size:15px;font-weight:700;letter-spacing:-.2px}
-.card .sub{margin-top:4px;font-size:12px;color:var(--soft)}
+        /* texto */
+        --text:            #102033;
+        --text-muted:      #526175;
+        --text-soft:       #69778b;
 
-.hero{grid-column:span 12;position:relative;overflow:hidden;color:#fff;border-radius:28px;padding:clamp(24px,4vw,46px);display:grid;grid-template-columns:1.3fr 1fr;gap:30px;align-items:center;
-background:radial-gradient(circle at 90% 8%,rgba(255,255,255,.24),transparent 38%),radial-gradient(circle at 8% 115%,rgba(125,211,252,.4),transparent 46%),linear-gradient(120deg,#0a3fae,#1276db 58%,#2b9be8);box-shadow:0 24px 60px rgba(10,70,184,.32)}
-.hero::after{content:"";position:absolute;right:-110px;top:-110px;width:320px;height:320px;border-radius:50%;border:1px solid rgba(255,255,255,.22);box-shadow:0 0 0 46px rgba(255,255,255,.05),0 0 0 92px rgba(255,255,255,.035);pointer-events:none}
-.hero>*{position:relative;z-index:1}
-.hero h1{font-size:clamp(30px,4.6vw,48px);line-height:1.04;letter-spacing:-1.6px}
-.hero p{margin:12px 0 0;max-width:46ch;font-size:15px;line-height:1.6;color:rgba(255,255,255,.88)}
-.hero-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:0 22px;border-radius:12px;font-size:14px;font-weight:700;background:var(--blue);color:var(--on-blue);transition:translate .5s var(--spring),scale .3s}
-.btn:hover{translate:0 -3px}.btn:active{scale:.97}
-.btn.branco{background:#fff;color:#0a3fae;box-shadow:0 10px 24px rgba(3,30,90,.28)}
-.btn.linha{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.5)}
-.btn.ghost{background:var(--chip);color:var(--text);border:1px solid var(--line)}
-.acessos{display:inline-block;margin-top:18px;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.16);font-size:12px;font-weight:600}
-.glass{display:flex;align-items:center;gap:22px;padding:24px;border-radius:22px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(10px)}
-.glass h3{font-size:15px;color:#fff}.glass p{margin:6px 0 0;font-size:12px;line-height:1.55;color:rgba(255,255,255,.85)}
+        /* traços */
+        --border:          #e7edf5;
+        --border-strong:   #d4e0ee;
 
-@property --grau{syntax:"<angle>";inherits:false;initial-value:0deg}
-@keyframes anel{from{--grau:0deg}to{--grau:var(--alvo)}}
-.ring{--alvo:0deg;--grau:var(--alvo);--cor:var(--ok);position:relative;flex-shrink:0;width:136px;height:136px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--cor) 0 var(--grau),var(--track) var(--grau) 360deg)}
-.ring.anim{animation:anel 1.6s var(--ease) .3s both}
-.ring::before{content:"";position:absolute;inset:12px;border-radius:50%;background:var(--hole)}
-.ring div{position:relative;text-align:center}
-.ring strong{display:block;font-size:31px;line-height:1;letter-spacing:-1px}
-.ring span{display:block;margin-top:4px;font-size:11px;font-weight:700;color:var(--cor)}
-.glass .ring{width:122px;height:122px;--cor:#fff;--track:rgba(255,255,255,.25);--hole:#1566cf}
-.glass .ring span{color:#fff}
+        /* marca */
+        --blue:            #0878f9;
+        --blue-dark:       #075fc5;
+        --blue-light:      #eaf4ff;
+        --on-blue:         #ffffff;
 
-.suc{grid-column:span 3;display:flex;flex-direction:column;align-items:center;text-align:center}
-.suc>div:first-child{align-self:flex-start;text-align:left}
-.suc .ring{margin:22px 0 16px}
-.suc p{font-size:12px;line-height:1.55;color:var(--soft)}
-.rad{grid-column:span 5}
-.radar{display:block;width:100%;height:auto;margin-top:6px}
-.g{fill:none;stroke:var(--line)}
-.area{fill:color-mix(in srgb,var(--sky) 26%,transparent);stroke:var(--sky);stroke-width:2;transform-box:view-box;transform-origin:50% 50%;animation:areaIn 1.2s var(--ease) .3s both}
-.dot{fill:var(--sky)}
-.rl{font-size:12px;font-weight:600;fill:var(--muted)}.rv{font-size:12px;font-weight:800;fill:var(--text)}
-.qz{grid-column:span 4;display:flex;flex-direction:column;gap:12px}
-.qz-ico{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--sky) 16%,transparent);color:var(--sky)}
-.qz h3{font-size:20px;letter-spacing:-.4px;margin-top:4px}
-.qz p{font-size:13px;line-height:1.6;color:var(--muted)}
-.qz .btn{margin-top:auto}
-.last{font-size:12px;color:var(--soft)}
-.vazio{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--chip);font-size:12px;line-height:1.55;color:var(--muted)}
+        /* apoio */
+        --green:           #19b897;
+        --purple:          #7458f5;
+        --orange:          #f5a623;
+        --pink:            #ed6d88;
 
-/* QUESTIONÁRIO */
-dialog{border:1px solid var(--line);border-radius:22px;background:var(--pop);color:var(--text);width:min(640px,calc(100% - 24px));max-height:92vh;padding:0;box-shadow:0 30px 80px rgba(0,0,0,.5)}
-dialog::backdrop{background:rgba(2,12,30,.66);backdrop-filter:blur(4px)}
-dialog[open]{animation:pop .5s var(--spring)}
-.dlg{padding:24px clamp(18px,4vw,32px) 28px}
-.dlg-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.step{font-size:13px;font-weight:600;color:var(--soft)}
-.x{width:34px;height:34px;border-radius:50%;background:var(--chip);color:var(--muted)}
-.prog{height:6px;margin:12px 0 22px;border-radius:99px;background:var(--track);overflow:hidden}
-.prog i{display:block;height:100%;width:var(--p);background:var(--sky);border-radius:inherit;transition:width .6s var(--ease)}
-.qc{font-size:13px;font-weight:700;color:var(--sky)}
-.qt{margin:6px 0 18px;font-size:19px;line-height:1.4;font-weight:700;letter-spacing:-.3px}
-.ops{display:grid;gap:10px}
-.op{text-align:left;padding:14px 16px;border-radius:13px;border:1px solid var(--line);background:var(--chip);color:var(--text);font-size:14px;line-height:1.45;transition:border-color .3s,background .3s}
-.op:hover:not(:disabled){border-color:var(--sky)}.op:disabled{cursor:default}
-.op.certa{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
-.op.errada{border-color:var(--pink);background:color-mix(in srgb,var(--pink) 12%,transparent)}
-.fb{margin-top:14px;padding:13px 15px;border-radius:12px;background:var(--chip);font-size:13px;line-height:1.55;color:var(--muted)}
-.row{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:20px}
-.res{text-align:center;padding:10px 0}
-.res .big{font-size:62px;font-weight:800;letter-spacing:-2px;line-height:1;color:var(--ok)}
-.res h2{margin:10px 0 8px;font-size:22px;letter-spacing:-.4px}
-.res p{max-width:46ch;margin:0 auto 8px;font-size:14px;line-height:1.6;color:var(--muted)}
+        /* sombra (componentes em rgb(var(--shadow) / alfa)) */
+        --shadow:          31 56 87;
+        --shadow-weak:     0 6px 18px rgb(var(--shadow) / .07);
+        --shadow-soft:     0 14px 34px rgb(var(--shadow) / .10);
+        --shadow-strong:   0 22px 55px rgb(var(--shadow) / .14);
+        --ring:            0 0 0 4px rgb(8 120 249 / .14);
 
-@keyframes sobe{from{opacity:0;transform:translateY(22px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
-@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
-@keyframes areaIn{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
-.enter{opacity:0;animation:sobe .9s var(--ease) forwards;animation-delay:var(--d,0ms)}
+        /* movimento */
+        --ease:            cubic-bezier(.16, 1, .3, 1);      /* saída longa e macia */
+        --ease-soft:       cubic-bezier(.65, 0, .35, 1);     /* entra e sai macio (trocas de tema, loops) */
+        --ease-spring:     cubic-bezier(.34, 1.36, .64, 1);  /* mola suave, pouco exagero */
+        --dur-fast:        .3s;
+        --dur:             .5s;
+        --dur-slow:        .9s;
 
-/* NAVEGAÇÃO MOBILE, TRANSIÇÃO PARA O SIMULADOR */
-button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-body:has(dialog[open]){overflow:hidden}
-.bnav{display:none}
-.indo-ov{position:fixed;inset:0;z-index:100;display:none;place-items:center;text-align:center;font-weight:600;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px)}
-body.indo .indo-ov{display:grid}
-.sp{width:34px;height:34px;margin:0 auto 14px;border-radius:50%;border:3px solid var(--track);border-top-color:var(--sky);animation:gira .8s linear infinite}
-@keyframes gira{to{transform:rotate(360deg)}}
+        /* arte decorativa (hero, notebook, ilustração, CTA) */
+        --art-hero-glow-a:   rgb(105 169 255 / .17);
+        --art-hero-glow-b:   rgb(115 90 255 / .09);
+        --art-hero-ring:     rgb(8 120 249 / .09);
+        --art-glow:          rgb(8 120 249 / .18);
+        --art-avatar-a:      #d9eaff;
+        --art-avatar-b:      #6eaaf1;
+        --art-screen-frame:  #111111;
+        --art-screen-bg:     #f9fbff;
+        --art-base-a:        #d8dde2;
+        --art-base-b:        #9fa8b0;
+        --art-base-notch:    #89929a;
+        --art-tint-green:    #e0f7f1;
+        --art-tint-orange:   #fff2d9;
+        --art-tint-purple:   #eeeaff;
+        --art-tint-pink:     #ffe8ed;
+        --art-growth-a:      #dfeeff;
+        --art-growth-b:      #f7f9fb;
+        --art-hair:          #392d29;
+        --art-body-a:        #26394c;
+        --art-body-b:        #496278;
+        --art-note-a:        #cbd2d9;
+        --art-note-b:        #f1f3f5;
+        --art-note-screen-a: #30465a;
+        --art-note-screen-b: #7892a9;
+        --art-cta-a:         #e9f4ff;
+        --art-cta-b:         #f1f6ff;
+    }
 
-@media(max-width:940px){.hero{grid-template-columns:1fr}.suc,.qz{grid-column:span 6}.rad{grid-column:span 12;order:3}}
-@media(max-width:700px){
-  .tab{display:none}
-  .topbar{padding-top:calc(10px + env(safe-area-inset-top))}
-  .wrap{padding:18px 0 calc(100px + env(safe-area-inset-bottom))}
-  .bnav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:40;display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:6px;padding:7px;border:1px solid var(--line);border-radius:22px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(16px);box-shadow:var(--sombra)}
-  .bnav a,.bnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:52px;border-radius:16px;background:none;color:var(--muted);font-size:11px;font-weight:700}
-  .bnav svg{width:22px;height:22px}
-  .bnav [aria-current]{color:var(--sky);background:var(--chip)}
-  .bnav .play{background:linear-gradient(90deg,#0a58d6,#1d8fe8);color:#fff;box-shadow:0 8px 20px rgba(10,88,214,.4)}
-}
-@media(max-width:560px){
-  .suc,.qz,.rad{grid-column:span 12;order:0}
-  .grid{gap:12px}
-  .card{padding:18px;border-radius:20px}
-  .hero{border-radius:24px;padding:24px 20px;gap:20px}
-  .hero h1{letter-spacing:-1px}.hero p{font-size:14px}
-  .hero-btns{margin-top:20px}.hero-btns .btn{flex:1 1 100%;min-height:52px}
-  .glass{flex-direction:row;padding:16px;gap:16px;text-align:left}
-  .glass .ring{width:92px;height:92px}.glass .ring::before{inset:10px}.glass .ring strong{font-size:22px}
-  .suc{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;align-items:center;text-align:left}
-  .suc .ring{grid-column:1;grid-row:1/3;width:104px;height:104px;margin:0}
-  .suc>div:first-child{grid-column:2;grid-row:1;align-self:end}
-  .suc p{grid-column:2;grid-row:2;align-self:start}
-  .rl,.rv{font-size:13px}
-  .qz h3{font-size:18px}
-  .conta-painel{width:min(270px,calc(100vw - 32px))}
-  .op{min-height:52px;font-size:15px}.qt{font-size:18px}
-  dialog{width:100%;max-width:none;margin:auto 0 0;border-radius:24px 24px 0 0;max-height:92vh}
-  .dlg{padding:20px 18px calc(24px + env(safe-area-inset-bottom))}
-  .row .btn{flex:1 1 100%;min-height:50px}
-}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-.enter{opacity:1!important;animation:none!important}.ring.anim,.area{animation:none!important}}
+    /* Tema escuro — a base do SkillBloom */
+    :root {
+        color-scheme: dark;
+
+        --bg:              #061a36;
+        --bg-soft:         #04142b;
+        --surface:         #0a2447;
+        --surface-2:       #0d2b53;
+        --surface-3:       #123163;
+
+        --text:            #eaf2ff;
+        --text-muted:      #a3b8d8;
+        --text-soft:       #8ca3c5;
+
+        --border:          rgb(126 171 255 / .15);
+        --border-strong:   rgb(126 171 255 / .28);
+
+        --blue:            #3d9bff;
+        --blue-dark:       #1f86f5;
+        --blue-light:      rgb(61 155 255 / .14);
+        --on-blue:         #04142b;
+
+        --green:           #2fd6ae;
+        --purple:          #9d8bff;
+        --orange:          #ffbc4d;
+        --pink:            #ff8ca3;
+
+        --shadow:          0 6 18;
+        --shadow-weak:     0 6px 18px rgb(var(--shadow) / .34);
+        --shadow-soft:     0 14px 34px rgb(var(--shadow) / .44);
+        --shadow-strong:   0 22px 55px rgb(var(--shadow) / .56);
+        --ring:            0 0 0 4px rgb(61 155 255 / .26);
+
+        /* movimento — igual nos dois temas */
+        --ease:            cubic-bezier(.16, 1, .3, 1);      /* saída longa e macia */
+        --ease-soft:       cubic-bezier(.65, 0, .35, 1);     /* entra e sai macio (trocas de tema, loops) */
+        --ease-spring:     cubic-bezier(.34, 1.36, .64, 1);  /* mola suave, pouco exagero */
+        --dur-fast:        .3s;
+        --dur:             .5s;
+        --dur-slow:        .9s;
+
+        /* arte decorativa (hero, notebook, ilustração, CTA) */
+        --art-hero-glow-a:   rgb(61 155 255 / .16);
+        --art-hero-glow-b:   rgb(157 139 255 / .12);
+        --art-hero-ring:     rgb(126 171 255 / .14);
+        --art-glow:          rgb(61 155 255 / .2);
+        --art-avatar-a:      #123163;
+        --art-avatar-b:      #1f86f5;
+        --art-screen-frame:  #020b19;
+        --art-screen-bg:     #061a36;
+        --art-base-a:        #123163;
+        --art-base-b:        #0a2447;
+        --art-base-notch:    rgb(126 171 255 / .3);
+        --art-tint-green:    rgb(47 214 174 / .16);
+        --art-tint-orange:   rgb(255 188 77 / .16);
+        --art-tint-purple:   rgb(157 139 255 / .18);
+        --art-tint-pink:     rgb(255 140 163 / .16);
+        --art-growth-a:      #0d2b53;
+        --art-growth-b:      #061a36;
+        --art-hair:          #1b1512;
+        --art-body-a:        #0d2b53;
+        --art-body-b:        #1a3f75;
+        --art-note-a:        #123163;
+        --art-note-b:        #24548f;
+        --art-note-screen-a: #04142b;
+        --art-note-screen-b: #1a3f75;
+        --art-cta-a:         #0d2b53;
+        --art-cta-b:         #0a2447;
+    }
+
+    /* Suaviza a troca de tema sem animar durante o carregamento */
+    .theme-switching,
+    .theme-switching *,
+    .theme-switching *::before,
+    .theme-switching *::after {
+        transition:
+            background-color var(--dur) var(--ease-soft),
+            border-color var(--dur) var(--ease-soft),
+            color var(--dur) var(--ease-soft),
+            fill var(--dur) var(--ease-soft),
+            stroke var(--dur) var(--ease-soft) !important;
+    }
+
+    /* A regra acima tira o movimento de tudo durante a troca.
+       O botão de tema e o sol/lua continuam se mexendo, senão o
+       ícone troca seco e o botão "pula" ao soltar o clique. */
+    @media (prefers-reduced-motion: no-preference) {
+        .theme-switching .theme-toggle {
+            transition:
+                background-color var(--dur) var(--ease-soft),
+                border-color var(--dur) var(--ease-soft),
+                color var(--dur) var(--ease-soft),
+                transform .5s var(--ease-spring) !important;
+        }
+
+        .theme-switching .theme-icon {
+            transition:
+                opacity var(--dur) var(--ease),
+                transform var(--dur-slow) var(--ease-spring) !important;
+        }
+    }
+
+    /* =========================================================
+       TRANSIÇÃO ENTRE PÁGINAS
+       A página atual some de leve e a próxima sobe no lugar,
+       em vez do corte seco (mesmo efeito em todo o site).
+    ========================================================= */
+    @media (prefers-reduced-motion: no-preference) {
+        @view-transition { navigation: auto; }
+    }
+
+    ::view-transition-old(root) { animation: paginaSai .4s var(--ease-soft) both; }
+    ::view-transition-new(root) { animation: paginaEntra .7s var(--ease) both; }
+
+    @keyframes paginaSai   { to   { opacity: 0; transform: translateY(-8px) scale(.99); filter: blur(4px); } }
+    @keyframes paginaEntra { from { opacity: 0; transform: translateY(14px) scale(.99); filter: blur(6px); } }
+
+    /* =========================================================
+       RESET
+    ========================================================= */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family:
+            Inter,
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            Helvetica,
+            Arial,
+            sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        overflow-x: hidden;
+    }
+
+    button,
+    a {
+        font-family: inherit;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    /* =========================================================
+       VARIÁVEIS DE LAYOUT
+       As cores agora vivem no bloco de tokens de tema.
+    ========================================================= */
+    :root {
+        --container: 1180px;
+        --radius: 20px;
+    }
+
+    /* =========================================================
+       UTILITÁRIOS
+    ========================================================= */
+    .container {
+        width: min(var(--container), calc(100% - 48px));
+        margin: 0 auto;
+    }
+
+    .gradient-text {
+        background: linear-gradient(
+            90deg,
+            var(--blue),
+            var(--blue-dark)
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .section {
+        padding: 90px 0;
+    }
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+    header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 100;
+    }
+
+    .navbar {
+        height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .logo-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        /* Mesmo branco do fundo da logo.jpg */
+        background: #ffffff;
+        box-shadow: var(--shadow-weak);
+    }
+
+    /* Logo original (static/logo.jpg).
+       O arquivo tem bastante respiro branco em volta da maleta,
+       então ela é ampliada para preencher o ícone. */
+    .brand-mark {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        scale: 1.4;
+        /* volta devagar */
+        transition: transform .8s var(--ease);
+    }
+
+    /* entra com mola */
+    a:hover > .brand-mark,
+    .logo:hover .brand-mark,
+    .brand:hover .brand-mark {
+        transform: scale(1.07) rotate(-3deg);
+        transition: transform .55s var(--ease-spring);
+    }
+
+    .logo span {
+        color: var(--blue);
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 42px;
+        margin-left: auto;
+    }
+
+    .nav-links a {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text);
+        position: relative;
+        padding: 10px 0;
+        transition: color var(--dur) var(--ease);
+    }
+
+    .nav-links a:hover {
+        color: var(--blue);
+    }
+
+    .nav-links a.active {
+        color: var(--blue);
+    }
+
+    .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 31px;
+        height: 2px;
+        background: var(--blue);
+        border-radius: 10px;
+        /* o traço se desenha da esquerda ao trocar de seção */
+        transform-origin: left center;
+        animation: tracoDesenha var(--dur) var(--ease) both;
+    }
+
+    @keyframes tracoDesenha {
+        from { opacity: 0; transform: scaleX(0); }
+        to   { opacity: 1; transform: none; }
+    }
+
+    .nav-buttons {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .btn {
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 44px;
+        padding: 0 20px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        /* volta devagar */
+        transition:
+            transform .8s var(--ease),
+            box-shadow .8s var(--ease),
+            border-color .8s var(--ease),
+            color var(--dur) var(--ease),
+            background-color var(--dur) var(--ease);
+    }
+
+    /* sobe com mola */
+    .btn:hover {
+        transform: translateY(-3px);
+        transition:
+            transform .5s var(--ease-spring),
+            box-shadow .5s var(--ease),
+            border-color .5s var(--ease),
+            color var(--dur) var(--ease),
+            background-color var(--dur) var(--ease);
+    }
+
+    /* clique: resposta rápida */
+    .btn:active {
+        transform: translateY(0) scale(.97);
+        transition-duration: .15s;
+    }
+
+    .btn-primary {
+        color: var(--on-blue);
+        background: var(--blue);
+        box-shadow: var(--shadow-weak);
+    }
+
+    .btn-primary:hover {
+        background: var(--blue-dark);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .btn-outline {
+        color: var(--text);
+        background: var(--surface);
+        border: 1px solid var(--border-strong);
+    }
+
+    .btn-outline:hover {
+        border-color: var(--blue);
+        color: var(--blue);
+    }
+
+    .menu-button {
+        display: none;
+        border: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 27px;
+        cursor: pointer;
+    }
+
+    /* =========================================================
+       BOTÃO DE TEMA
+    ========================================================= */
+    .theme-toggle {
+        position: relative;
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: var(--surface);
+        color: var(--text-muted);
+        cursor: pointer;
+        overflow: hidden;
+        transition:
+            background var(--dur) var(--ease),
+            border-color .8s var(--ease),
+            color var(--dur) var(--ease),
+            transform .8s var(--ease);
+    }
+
+    .theme-toggle:hover {
+        color: var(--blue);
+        border-color: var(--border-strong);
+        transform: translateY(-3px);
+        transition:
+            background var(--dur) var(--ease),
+            border-color .5s var(--ease),
+            color var(--dur) var(--ease),
+            transform .5s var(--ease-spring);
+    }
+
+    .theme-toggle:active { transform: translateY(0) scale(.94); transition-duration: .15s; }
+
+    .theme-icon {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        transition:
+            opacity var(--dur) var(--ease),
+            transform var(--dur-slow) var(--ease-spring);
+    }
+
+    .theme-icon.moon { opacity: 1; transform: rotate(0) scale(1); }
+    .theme-icon.sun  { opacity: 0; transform: rotate(70deg) scale(.4); }
+
+    :root[data-theme="light"] .theme-icon.moon { opacity: 0; transform: rotate(-70deg) scale(.4); }
+    :root[data-theme="light"] .theme-icon.sun  { opacity: 1; transform: rotate(0) scale(1); }
+
+    /* =========================================================
+       CONTA — ícone e painel
+    ========================================================= */
+
+    .conta {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .conta-botao {
+        position: relative;
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        background: var(--surface-2);
+        cursor: pointer;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+            border-color .8s var(--ease),
+            transform .8s var(--ease),
+            box-shadow .8s var(--ease);
+    }
+
+    .conta-botao:hover {
+        border-color: var(--blue);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-weak);
+        transition:
+            border-color .5s var(--ease),
+            transform .5s var(--ease-spring),
+            box-shadow .5s var(--ease);
+    }
+
+    .conta-botao:active { transform: translateY(0) scale(.95); transition-duration: .15s; }
+
+    .conta-botao[aria-expanded="true"] {
+        border-color: var(--blue);
+        box-shadow: var(--ring);
+    }
+
+    /* Foto por cima, iniciais por baixo. Some a foto, aparecem as iniciais. */
+    .conta-foto {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .conta-iniciais {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: .3px;
+        color: var(--blue);
+        user-select: none;
+    }
+
+    /* ---------- painel ---------- */
+
+    .conta-painel {
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        z-index: 200;
+        width: 270px;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        box-shadow: var(--shadow-strong);
+        transform-origin: top right;
+    }
+
+    .conta-painel[hidden] { display: none; }
+
+    /* abre com mola e desfoque saindo; fecha macio
+       (o JS espera o --dur-fast antes de esconder) */
+    .conta-painel.is-abrindo {
+        animation: contaEntra .55s var(--ease-spring);
+    }
+
+    .conta-painel.is-fechando {
+        animation: contaSai var(--dur-fast) var(--ease-soft) forwards;
+    }
+
+    @keyframes contaEntra {
+        from { opacity: 0; transform: translateY(-10px) scale(.94); filter: blur(6px); }
+        to   { opacity: 1; transform: none; filter: none; }
+    }
+
+    @keyframes contaSai {
+        from { opacity: 1; transform: none; filter: none; }
+        to   { opacity: 0; transform: translateY(-6px) scale(.96); filter: blur(4px); }
+    }
+
+    .conta-cabecalho {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .conta-avatar {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: var(--surface-2);
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .conta-avatar .conta-iniciais { font-size: 17px; }
+
+    .conta-dados {
+        min-width: 0;
+    }
+
+    .conta-nome {
+        display: block;
+        font-size: 14px;
+        line-height: 1.25;
+        color: var(--text);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .conta-email {
+        display: block;
+        margin-top: 3px;
+        font-size: 12px;
+        color: var(--text-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .conta-provedor {
+        display: inline-block;
+        margin-top: 7px;
+        padding: 3px 8px;
+        border-radius: 20px;
+        background: var(--blue-light);
+        color: var(--blue);
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .conta-acoes {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-top: 13px;
+    }
+
+    .conta-acao {
+        padding: 8px 12px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--blue);
+        transition:
+            background var(--dur) var(--ease),
+            color var(--dur) var(--ease),
+            translate .7s var(--ease);
+    }
+
+    .conta-acao:hover {
+        background: var(--blue-light);
+        translate: 0 -2px;
+        transition:
+            background var(--dur) var(--ease),
+            color var(--dur) var(--ease),
+            translate .45s var(--ease-spring);
+    }
+
+    .conta-sair { color: var(--text-muted); }
+
+    .conta-sair:hover {
+        background: rgb(226 75 94 / .10);
+        color: var(--pink);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .conta-painel.is-abrindo,
+        .conta-painel.is-fechando { animation: none !important; }
+
+        /* sem animação, some na hora (não espera o JS esconder) */
+        .conta-painel.is-fechando { opacity: 0; }
+    }
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+    .hero {
+        min-height: 650px;
+        padding-top: 90px;
+        position: relative;
+        overflow: hidden;
+        background:
+            radial-gradient(
+                circle at 80% 45%,
+                var(--art-hero-glow-a),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 90% 70%,
+                var(--art-hero-glow-b),
+                transparent 30%
+            ),
+            linear-gradient(
+                180deg,
+                var(--bg) 0%,
+                var(--bg-soft) 100%
+            );
+    }
+
+    .hero::before {
+        content: "";
+        position: absolute;
+        width: 480px;
+        height: 480px;
+        right: -220px;
+        top: 100px;
+        border-radius: 50%;
+        border: 1px solid var(--art-hero-ring);
+    }
+
+    .hero-content {
+        min-height: 560px;
+        display: grid;
+        grid-template-columns: 46% 54%;
+        align-items: center;
+    }
+
+    .hero-text {
+        position: relative;
+        z-index: 2;
+        padding-bottom: 20px;
+    }
+
+    .hero-text h1 {
+        max-width: 590px;
+        font-size: clamp(
+            42px,
+            5vw,
+            62px
+        );
+        line-height: 1.05;
+        letter-spacing: -2.5px;
+        margin-bottom: 25px;
+    }
+
+    .hero-text p {
+        max-width: 520px;
+        color: var(--text-muted);
+        font-size: 17px;
+        line-height: 1.7;
+        margin-bottom: 30px;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .hero-actions .btn {
+        min-height: 46px;
+        padding: 0 22px;
+    }
+
+    .play-icon {
+        width: 0;
+        height: 0;
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        border-left: 10px solid var(--blue);
+    }
+
+    .hero-users {
+        margin-top: 42px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .avatars {
+        display: flex;
+    }
+
+    .avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 2px solid var(--surface);
+        margin-left: -8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+            linear-gradient(
+                135deg,
+                var(--art-avatar-a),
+                var(--art-avatar-b)
+            );
+        font-size: 18px;
+    }
+
+    .avatar:first-child {
+        margin-left: 0;
+    }
+
+    .hero-users span {
+        max-width: 190px;
+        color: var(--text-muted);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    /* =========================================================
+       NOTEBOOK MOCKUP
+    ========================================================= */
+    .hero-visual {
+        position: relative;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .glow {
+        position: absolute;
+        width: 430px;
+        height: 300px;
+        background:
+            radial-gradient(
+                ellipse,
+                var(--art-glow),
+                transparent 68%
+            );
+        filter: blur(15px);
+    }
+
+    .laptop {
+        width: min(650px, 100%);
+        position: relative;
+        transform:
+            perspective(1000px)
+            rotateY(-5deg)
+            rotateX(2deg)
+            rotateZ(-2deg);
+        filter:
+            drop-shadow(
+                0 25px 30px rgb(var(--shadow) / .18)
+            );
+        z-index: 2;
+    }
+
+    .laptop-screen {
+        background: var(--art-screen-frame);
+        border-radius: 12px 12px 5px 5px;
+        padding: 9px;
+        aspect-ratio: 16 / 10;
+    }
+
+    .screen-inner {
+        height: 100%;
+        border-radius: 5px;
+        background: var(--art-screen-bg);
+        overflow: hidden;
+        padding: 30px 28px;
+    }
+
+    .screen-title {
+        text-align: center;
+        font-weight: 700;
+        font-size: 17px;
+        margin-bottom: 5px;
+    }
+
+    .screen-subtitle {
+        text-align: center;
+        color: var(--text-soft);
+        font-size: 9px;
+        margin-bottom: 20px;
+    }
+
+    .simulation-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 9px;
+    }
+
+    .simulation-card {
+        min-height: 115px;
+        background: var(--surface);
+        border-radius: 9px;
+        padding: 13px 8px;
+        text-align: center;
+        box-shadow: var(--shadow-weak);
+    }
+
+    .sim-icon {
+        width: 35px;
+        height: 35px;
+        margin: 0 auto 9px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .sim-orange {
+        background: var(--art-tint-orange);
+    }
+
+    .sim-green {
+        background: var(--art-tint-green);
+    }
+
+    .sim-purple {
+        background: var(--art-tint-purple);
+    }
+
+    .simulation-card strong {
+        display: block;
+        font-size: 9px;
+        margin-bottom: 6px;
+    }
+
+    .simulation-card small {
+        display: block;
+        color: var(--text-soft);
+        font-size: 7px;
+        line-height: 1.4;
+    }
+
+    .laptop-base {
+        position: relative;
+        width: 112%;
+        margin-left: -6%;
+        height: 25px;
+        background:
+            linear-gradient(
+                180deg,
+                var(--art-base-a),
+                var(--art-base-b)
+            );
+        border-radius:
+            3px 3px 25px 25px;
+        transform:
+            perspective(300px)
+            rotateX(15deg);
+        box-shadow:
+            0 7px 15px rgb(var(--shadow) / .16);
+    }
+
+    .laptop-base::after {
+        content: "";
+        position: absolute;
+        width: 23%;
+        height: 5px;
+        left: 38.5%;
+        top: 7px;
+        background: var(--art-base-notch);
+        border-radius: 20px;
+    }
+
+    /* =========================================================
+       COMPETÊNCIAS
+    ========================================================= */
+    .skills-section {
+        background: var(--bg);
+        padding: 75px 0 90px;
+    }
+
+    .section-heading {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .eyebrow {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .eyebrow-icon {
+        color: var(--blue);
+    }
+
+    .section-heading h2 {
+        font-size: clamp(28px, 4vw, 37px);
+        letter-spacing: -1.2px;
+    }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns:
+            repeat(6, 1fr);
+        gap: 14px;
+    }
+
+    .skill-card {
+        min-height: 215px;
+        padding: 24px 16px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        text-align: center;
+        background: var(--surface);
+        /* levanta pelo `translate`, que não briga com a entrada */
+        transition:
+            translate .8s var(--ease),
+            box-shadow .8s var(--ease),
+            border-color .8s var(--ease);
+    }
+
+    .skill-card:hover {
+        border-color: var(--border-strong);
+        box-shadow: var(--shadow-soft);
+        transition:
+            translate .5s var(--ease-spring),
+            box-shadow .5s var(--ease),
+            border-color .5s var(--ease);
+    }
+
+    /* Só com mouse: no toque o cartão não fica "preso" no alto. */
+    @media (hover: hover) {
+        .skill-card:hover { translate: 0 -6px; }
+    }
+
+    .skill-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 13px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .skill-card h3 {
+        font-size: 14px;
+        line-height: 1.3;
+        margin-bottom: 11px;
+    }
+
+    .skill-card p {
+        color: var(--text-muted);
+        font-size: 12px;
+        line-height: 1.55;
+    }
+
+    .icon-blue {
+        color: var(--blue);
+        background: var(--blue-light);
+    }
+
+    .icon-green {
+        color: var(--green);
+        background: var(--art-tint-green);
+    }
+
+    .icon-orange {
+        color: var(--orange);
+        background: var(--art-tint-orange);
+    }
+
+    .icon-purple {
+        color: var(--purple);
+        background: var(--art-tint-purple);
+    }
+
+    .icon-pink {
+        color: var(--pink);
+        background: var(--art-tint-pink);
+    }
+
+    /* =========================================================
+       SOBRE NÓS
+       Os cartões do time reaproveitam o .skill-card (e os
+       hovers dele); aqui só entra o que é do time.
+    ========================================================= */
+    .sobre-section {
+        padding: 75px 0 90px;
+        background:
+            linear-gradient(
+                180deg,
+                var(--bg-soft),
+                var(--bg)
+            );
+    }
+
+    .sobre-texto {
+        max-width: 620px;
+        margin: 14px auto 0;
+        color: var(--text-muted);
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    /* Flex em vez de grid: a última linha fica centralizada
+       quando os 5 cartões quebram em telas menores. */
+    .time-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+    }
+
+    /* Sem crescer: o cartão que sobra sozinho numa linha fica
+       do mesmo tamanho dos outros. */
+    .skill-card.time-card {
+        flex: 0 1 180px;
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .time-svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .time-card h3 {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+
+    /* Aparece quando a pessoa clica em "Sobre nós". */
+    @keyframes sobreAbre {
+        from { opacity: 0; transform: translateY(32px) scale(.98); filter: blur(8px); }
+        to   { opacity: 1; transform: none; filter: none; }
+    }
+
+    .sobre-section.abrindo {
+        animation: sobreAbre var(--dur-slow) var(--ease) both;
+    }
+
+    /* =========================================================
+       EVOLUÇÃO
+    ========================================================= */
+    .growth-section {
+        padding: 70px 0 90px;
+        background:
+            linear-gradient(
+                180deg,
+                var(--bg),
+                var(--bg-soft)
+            );
+    }
+
+    .growth-content {
+        display: grid;
+        grid-template-columns: 42% 1fr;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .growth-text h2 {
+        font-size: clamp(34px, 4vw, 46px);
+        line-height: 1.08;
+        letter-spacing: -1.7px;
+        margin-bottom: 20px;
+    }
+
+    .growth-text p {
+        color: var(--text-muted);
+        font-size: 15px;
+        line-height: 1.75;
+        max-width: 440px;
+        margin-bottom: 25px;
+    }
+
+    .growth-image {
+        position: relative;
+        min-height: 370px;
+        border-radius: 20px;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                135deg,
+                var(--art-growth-a),
+                var(--art-growth-b)
+            );
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    /*
+       Pessoa estilizada para não depender de uma biblioteca.
+    */
+    .person {
+        width: 310px;
+        height: 340px;
+        position: relative;
+        margin-bottom: -45px;
+    }
+
+    /*
+       O tom de pele é o mesmo nos dois temas — de propósito.
+    */
+    .person-head {
+        position: absolute;
+        width: 100px;
+        height: 115px;
+        border-radius: 48%;
+        background:
+            linear-gradient(
+                135deg,
+                #d89469,
+                #f2bd91
+            );
+        left: 103px;
+        top: 20px;
+        z-index: 3;
+    }
+
+    .person-hair {
+        position: absolute;
+        width: 110px;
+        height: 75px;
+        left: 98px;
+        top: 10px;
+        background: var(--art-hair);
+        border-radius:
+            55% 55% 25% 25%;
+        z-index: 4;
+    }
+
+    .person-body {
+        position: absolute;
+        width: 230px;
+        height: 240px;
+        left: 40px;
+        top: 125px;
+        border-radius:
+            45px 45px 0 0;
+        background:
+            linear-gradient(
+                135deg,
+                var(--art-body-a),
+                var(--art-body-b)
+            );
+    }
+
+    .laptop-small {
+        position: absolute;
+        z-index: 6;
+        width: 250px;
+        height: 145px;
+        left: 30px;
+        bottom: 45px;
+        background:
+            linear-gradient(
+                135deg,
+                var(--art-note-a),
+                var(--art-note-b)
+            );
+        border-radius: 7px;
+        transform:
+            perspective(600px)
+            rotateX(2deg);
+        box-shadow:
+            0 10px 20px rgb(var(--shadow) / .15);
+    }
+
+    .laptop-small::before {
+        content: "";
+        position: absolute;
+        inset: 7px;
+        background:
+            linear-gradient(
+                135deg,
+                var(--art-note-screen-a),
+                var(--art-note-screen-b)
+            );
+        border-radius: 3px;
+    }
+
+    .floating-stat {
+        position: absolute;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px 20px;
+        background: var(--surface);
+        border-radius: 14px;
+        box-shadow: var(--shadow-soft);
+        font-size: 12px;
+    }
+
+    .floating-stat strong {
+        display: block;
+        font-size: 17px;
+        margin-top: 3px;
+    }
+
+    .stat-one {
+        top: 60px;
+        left: 20px;
+    }
+
+    .stat-two {
+        right: 20px;
+        bottom: 55px;
+    }
+
+    .stat-three {
+        top: 60px;
+        right: 20px;
+    }
+
+    .stat-four {
+        left: 20px;
+        bottom: 55px;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: var(--blue-light);
+        color: var(--blue);
+    }
+
+    /* Ícones de traço, no mesmo estilo do sol e da lua do tema. */
+    .stat-svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .stat-icon-laranja {
+        background: var(--art-tint-orange);
+        color: var(--orange);
+    }
+
+    .stat-icon-verde {
+        background: var(--art-tint-green);
+        color: var(--green);
+    }
+
+    .stat-icon-roxo {
+        background: var(--art-tint-purple);
+        color: var(--purple);
+    }
+
+    /* =========================================================
+       CTA
+    ========================================================= */
+    .cta {
+        padding: 0 0 50px;
+    }
+
+    .cta-box {
+        min-height: 125px;
+        border-radius: 20px;
+        padding: 25px 60px;
+        display: grid;
+        grid-template-columns: 1fr 1.2fr auto;
+        align-items: center;
+        gap: 35px;
+        background:
+            linear-gradient(
+                100deg,
+                var(--art-cta-a),
+                var(--art-cta-b)
+            );
+
+        /* Sombra leve em repouso; cresce quando o cursor passa. */
+        box-shadow: var(--shadow-weak);
+    }
+
+    .cta-brand {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .cta-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 14px;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .cta-brand h2 {
+        font-size: 23px;
+        line-height: 1.2;
+        letter-spacing: -.7px;
+    }
+
+    .cta-text {
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--text-muted);
+    }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    footer {
+        border-top: 1px solid var(--border);
+        padding: 25px 0;
+        background: var(--bg);
+    }
+
+    .footer-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 25px;
+    }
+
+    .footer-logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .footer-logo-icon {
+        width: 29px;
+        height: 29px;
+        border-radius: 7px;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .footer-links {
+        display: flex;
+        gap: 35px;
+        color: var(--text-muted);
+        font-size: 11px;
+    }
+
+    .footer-links a {
+        transition: color var(--dur) var(--ease);
+    }
+
+    .footer-links a:hover {
+        color: var(--blue);
+    }
+
+
+
+
+    /* =========================================================
+       ANIMAÇÕES
+    ========================================================= */
+    /* Flutuar lento e curto, como se boiasse. */
+    @keyframes float {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-8px);
+        }
+    }
+
+    .floating-stat {
+        animation: float 6.5s var(--ease-soft) infinite;
+    }
+
+    /* Atrasos negativos: cada balão já começa num ponto
+       diferente da onda, sem ficar parado no início. */
+    .stat-two {
+        animation-delay: -2.4s;
+    }
+
+    .stat-three {
+        animation-delay: -1.2s;
+    }
+
+    .stat-four {
+        animation-delay: -3.6s;
+    }
+
+    /*
+       O balão de chamada levanta quando o cursor passa por ele,
+       como os cartões de competências. A entrada ao rolar
+       (.reveal) manda no `transform`; o levantar usa o
+       `translate`, então um não anula o outro.
+    */
+    .cta-box.reveal {
+        transition:
+            opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            filter    var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            translate .8s var(--ease),
+            box-shadow .8s var(--ease);
+    }
+
+    .cta-box.is-visible:hover {
+        translate: 0 -6px;
+        box-shadow: var(--shadow-strong);
+        transition:
+            opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            filter    var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            translate .5s var(--ease-spring),
+            box-shadow .5s var(--ease);
+    }
+
+    /* ---------- avatares do hero ----------
+       Em repouso as carinhas ficam sobrepostas. Com o cursor na
+       fileira, elas deslizam e se abrem lado a lado, uma puxando
+       a outra (cada uma com um atrasinho).
+
+       A carinha sob o cursor sobe com mola e desce DEVAGAR: assim,
+       ao passar de uma para a outra, a anterior ainda está
+       descendo enquanto a próxima sobe — um fade, não um salto.
+       As vizinhas sobem um pouco junto, como uma onda. */
+    .avatar {
+        position: relative;
+        cursor: default;
+        transition:
+            transform .85s var(--ease),
+            box-shadow .85s var(--ease),
+            margin-left var(--dur-slow) var(--ease-spring) var(--avatar-atraso, 0ms);
+    }
+
+    .avatar:nth-child(2) { --avatar-atraso: 0ms; }
+    .avatar:nth-child(3) { --avatar-atraso: 60ms; }
+    .avatar:nth-child(4) { --avatar-atraso: 120ms; }
+
+    @media (hover: hover) {
+
+        .hero-users:hover .avatar {
+            margin-left: 6px;
+        }
+
+        .hero-users:hover .avatar:first-child {
+            margin-left: 0;
+        }
+
+        /* vizinhas da carinha sob o cursor: meio caminho */
+        .avatar:hover + .avatar,
+        .avatar:has(+ .avatar:hover) {
+            transform: translateY(-2px) scale(1.08);
+            transition:
+                transform .55s var(--ease-spring),
+                box-shadow .55s var(--ease),
+                margin-left var(--dur-slow) var(--ease-spring) var(--avatar-atraso, 0ms);
+        }
+
+        /* a carinha sob o cursor: sobe com mola */
+        .avatar:hover {
+            transform: translateY(-5px) scale(1.18);
+            box-shadow: var(--shadow-soft);
+            z-index: 2;
+            transition:
+                transform .45s var(--ease-spring),
+                box-shadow .45s var(--ease),
+                margin-left var(--dur-slow) var(--ease-spring) var(--avatar-atraso, 0ms);
+        }
+
+    }
+
+    /* ---------- cartões de competências ----------
+       A revelação ao rolar (.reveal) manda no `transform`, o que
+       anulava o levantar do hover. Por isso o hover usa a
+       propriedade `translate`, que é separada e não briga com a
+       entrada. Sobe com mola, desce devagar; o ícone dá um pulinho;
+       os vizinhos sobem um pouco junto; a borda acende na cor do
+       ícone. */
+    .skill-card.reveal {
+        transition:
+            opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            filter    var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+            translate .8s var(--ease),
+            box-shadow .8s var(--ease),
+            border-color .8s var(--ease);
+    }
+
+    .skill-icon {
+        transition: transform .8s var(--ease);
+    }
+
+    @media (hover: hover) {
+
+        .skill-card.reveal:hover {
+            translate: 0 -8px;
+            box-shadow: var(--shadow-strong);
+            border-color: var(--blue);
+            transition:
+                opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                filter    var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                translate .5s var(--ease-spring),
+                box-shadow .5s var(--ease),
+                border-color .5s var(--ease);
+        }
+
+        .skill-card.reveal:hover + .skill-card,
+        .skill-card.reveal:has(+ .skill-card:hover) {
+            translate: 0 -3px;
+            transition:
+                opacity   var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                filter    var(--dur-slow) var(--ease) var(--reveal-delay, 0ms),
+                translate .6s var(--ease-spring),
+                box-shadow .6s var(--ease),
+                border-color .6s var(--ease);
+        }
+
+        .skill-card:hover .skill-icon {
+            transform: scale(1.15) rotate(-6deg);
+            transition: transform .5s var(--ease-spring);
+        }
+
+        /* a borda acende na cor do ícone do cartão */
+        .skill-card.reveal:has(.icon-green):hover  { border-color: var(--green); }
+        .skill-card.reveal:has(.icon-orange):hover { border-color: var(--orange); }
+        .skill-card.reveal:has(.icon-purple):hover { border-color: var(--purple); }
+        .skill-card.reveal:has(.icon-pink):hover   { border-color: var(--pink); }
+
+    }
+
+    /* ---------- notebook do hero ----------
+       Flutua o tempo todo (pela propriedade `translate`, que não
+       briga com a inclinação 3D que já está no `transform`). */
+    @keyframes notebookFlutua {
+        0%, 100% { translate: 0 0; }
+        50%      { translate: 0 -8px; }
+    }
+
+    @keyframes brilhoPulsa {
+        0%, 100% { opacity: .75; transform: scale(1); }
+        50%      { opacity: 1;   transform: scale(1.06); }
+    }
+
+    /* Mesmo ritmo nos dois: o brilho respira junto com o notebook. */
+    .laptop {
+        animation: notebookFlutua 7s var(--ease-soft) infinite;
+        /* volta devagar */
+        transition:
+            transform .8s var(--ease),
+            filter .8s var(--ease);
+    }
+
+    .glow {
+        animation: brilhoPulsa 7s var(--ease-soft) infinite;
+    }
+
+    /* O notebook chega junto com o texto do hero. */
+    .hero-visual {
+        animation: sobe var(--dur-slow) var(--ease) 200ms both;
+    }
+
+    /* Ao passar o mouse, o notebook vira um pouco de frente. */
+    @media (hover: hover) {
+        .hero-visual:hover .laptop {
+            transition:
+                transform .55s var(--ease),
+                filter .55s var(--ease);
+            transform:
+                perspective(1000px)
+                rotateY(-2deg)
+                rotateX(1deg)
+                rotateZ(-1deg)
+                scale(1.02);
+            filter:
+                drop-shadow(
+                    0 35px 40px rgb(var(--shadow) / .26)
+                );
+        }
+    }
+
+    /* Os cartões da tela levantam, e o ícone dá um pulinho. */
+    .simulation-card {
+        transition:
+            translate .8s var(--ease),
+            box-shadow .8s var(--ease);
+    }
+
+    .simulation-card:hover {
+        translate: 0 -5px;
+        box-shadow: var(--shadow-soft);
+        transition:
+            translate .5s var(--ease-spring),
+            box-shadow .5s var(--ease);
+    }
+
+    .sim-icon {
+        transition: transform .8s var(--ease);
+    }
+
+    .simulation-card:hover .sim-icon {
+        transform: scale(1.15) rotate(-5deg);
+        transition: transform .5s var(--ease-spring);
+    }
+
+    /* =========================================================
+       REVELAÇÃO AO ROLAR
+    ========================================================= */
+
+    /* Sobe, cresce um tiquinho e sai do desfoque ao mesmo tempo. */
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px) scale(.98);
+        filter: blur(8px);
+        transition:
+            opacity var(--dur-slow) var(--ease),
+            transform var(--dur-slow) var(--ease),
+            filter var(--dur-slow) var(--ease);
+        transition-delay: var(--reveal-delay, 0ms);
+        will-change: transform, opacity;
+    }
+
+    .reveal.is-visible {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        will-change: auto;
+    }
+
+    /* Entrada da dobra inicial, sem esperar o scroll */
+    @keyframes sobe {
+        from { opacity: 0; transform: translateY(30px) scale(.98); filter: blur(8px); }
+        to   { opacity: 1; transform: none; filter: none; }
+    }
+
+    .enter {
+        opacity: 0;
+        animation: sobe var(--dur-slow) var(--ease) forwards;
+        animation-delay: var(--enter-delay, 0ms);
+    }
+
+    /* =========================================================
+       TABLET
+    ========================================================= */
+    @media (max-width: 1050px) {
+
+        .nav-links {
+            gap: 22px;
+        }
+
+        .skills-grid {
+            grid-template-columns:
+                repeat(3, 1fr);
+        }
+
+        .hero-content {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .hero-text h1 {
+            font-size: 47px;
+        }
+
+        .cta-box {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .cta-box .btn {
+            justify-self: end;
+        }
+    }
+
+    /* =========================================================
+       MOBILE MENU
+    ========================================================= */
+    @media (max-width: 780px) {
+
+        .container {
+            width: min(
+                var(--container),
+                calc(100% - 32px)
+            );
+        }
+
+        .navbar {
+            height: 75px;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        /*
+           MENU DAS 3 BARRAS ABERTO
+           O JS só liga/desliga esta classe — nada de
+           estilo inline, para o painel seguir o tema.
+        */
+        .nav-links.mobile-open {
+            display: flex;
+            position: absolute;
+            top: 75px;
+            left: 16px;
+            right: 16px;
+            padding: 20px;
+            flex-direction: column;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            /* abre deslizando, igual ao painel da conta */
+            transform-origin: top center;
+            animation: menuAbre .55s var(--ease-spring);
+        }
+
+        @keyframes menuAbre {
+            from { opacity: 0; transform: translateY(-10px) scale(.97); filter: blur(6px); }
+            to   { opacity: 1; transform: none; filter: none; }
+        }
+
+        /*
+           NO MOBILE: Entrar e Começar agora ficam
+           sempre visíveis ao lado da logo.
+           Eles NÃO fazem parte do menu das 3 barras.
+        */
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .nav-buttons .btn {
+            min-height: 38px;
+            padding: 0 10px;
+            border-radius: 9px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .theme-toggle {
+            width: 34px;
+            height: 38px;
+            border-radius: 9px;
+        }
+
+        .theme-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .menu-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 38px;
+            padding: 0;
+            margin-left: 2px;
+            font-size: 25px;
+            flex-shrink: 0;
+        }
+
+        .hero {
+            padding-top: 75px;
+        }
+
+        .hero-content {
+            grid-template-columns: 1fr;
+            text-align: center;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .hero-text h1 {
+            font-size: clamp(
+                38px,
+                10vw,
+                50px
+            );
+            letter-spacing: -1.8px;
+        }
+
+        .hero-text p {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-actions {
+            justify-content: center;
+        }
+
+        .hero-users {
+            justify-content: center;
+        }
+
+        .hero-visual {
+            min-height: 360px;
+        }
+
+        .laptop {
+            width: 95%;
+        }
+
+        .growth-content {
+            grid-template-columns: 1fr;
+        }
+
+        .growth-text {
+            text-align: center;
+        }
+
+        .growth-text p {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .growth-text .btn {
+            margin: auto;
+        }
+
+        .cta-box {
+            grid-template-columns: 1fr;
+            text-align: center;
+            padding: 35px 25px;
+        }
+
+        .cta-brand {
+            justify-content: center;
+        }
+
+        .cta-box .btn {
+            justify-self: center;
+        }
+
+        .footer-content {
+            flex-direction: column;
+        }
+
+        .footer-links {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
+
+    /* =========================================================
+       CELULARES
+    ========================================================= */
+    @media (max-width: 550px) {
+
+        .section {
+            padding: 65px 0;
+        }
+
+        /* Dois cartões do time por linha; o último fica no meio. */
+        .skill-card.time-card {
+            flex-basis: calc(50% - 7px);
+        }
+
+        .hero-text h1 {
+            font-size: 37px;
+        }
+
+        .navbar {
+            gap: 5px;
+        }
+
+        .logo {
+            gap: 6px;
+            font-size: 18px;
+            letter-spacing: -.8px;
+            flex-shrink: 1;
+            min-width: 0;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            flex-shrink: 0;
+        }
+
+        .nav-buttons {
+            gap: 4px;
+        }
+
+        .nav-buttons .btn {
+            min-height: 35px;
+            padding: 0 8px;
+            font-size: 10px;
+        }
+
+        .theme-toggle {
+            width: 32px;
+            height: 35px;
+            border-radius: 8px;
+        }
+
+        .theme-icon {
+            width: 17px;
+            height: 17px;
+        }
+
+        .menu-button {
+            width: 28px;
+            height: 35px;
+            font-size: 23px;
+        }
+
+        .hero-text p {
+            font-size: 15px;
+        }
+
+        .hero-actions {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .hero-actions .btn {
+            width: 100%;
+        }
+
+        .hero-users {
+            margin-top: 30px;
+        }
+
+        .hero-visual {
+            min-height: 275px;
+        }
+
+        .laptop {
+            transform:
+                perspective(800px)
+                rotateY(-3deg)
+                rotateZ(-1deg);
+        }
+
+        .screen-inner {
+            padding: 14px;
+        }
+
+        .screen-title {
+            font-size: 11px;
+        }
+
+        .screen-subtitle {
+            font-size: 6px;
+            margin-bottom: 10px;
+        }
+
+        .simulation-cards {
+            gap: 4px;
+        }
+
+        .simulation-card {
+            min-height: 75px;
+            padding: 7px 3px;
+        }
+
+        .sim-icon {
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .simulation-card strong {
+            font-size: 6px;
+        }
+
+        .simulation-card small {
+            font-size: 5px;
+        }
+
+        .skills-grid {
+            grid-template-columns:
+                repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .skill-card {
+            min-height: 200px;
+            padding: 20px 12px;
+        }
+
+        .skill-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 21px;
+        }
+
+        .growth-image {
+            min-height: 300px;
+        }
+
+        .person {
+            transform: scale(.8);
+        }
+
+        .floating-stat {
+            padding: 10px 12px;
+            font-size: 9px;
+        }
+
+        .floating-stat strong {
+            font-size: 14px;
+        }
+
+        .stat-one {
+            left: 5px;
+            top: 35px;
+        }
+
+        .stat-two {
+            right: 5px;
+            bottom: 35px;
+        }
+
+        /* Em tela pequena não cabem quatro; ficam só os dois originais. */
+        .stat-three,
+        .stat-four {
+            display: none;
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .stat-svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .footer-links {
+            gap: 18px;
+        }
+    }
+
+    /* =========================================================
+       TELAS MUITO PEQUENAS
+    ========================================================= */
+    @media (max-width: 370px) {
+
+        /*
+           Com o botão de tema no meio, cada pixel do
+           cabeçalho conta: tudo encolhe junto para a
+           linha não quebrar nem cobrir a logo.
+        */
+        .navbar {
+            gap: 2px;
+        }
+
+        .logo {
+            font-size: 16px;
+            gap: 5px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-buttons {
+            gap: 2px;
+        }
+
+        .nav-buttons .btn {
+            min-height: 33px;
+            padding: 0 5px;
+            font-size: 9px;
+        }
+
+        .theme-toggle {
+            width: 24px;
+            height: 33px;
+            border-radius: 7px;
+        }
+
+        .theme-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .menu-button {
+            width: 26px;
+            height: 33px;
+            font-size: 21px;
+        }
+
+        .skills-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .skill-card {
+            min-height: auto;
+        }
+
+        .hero-text h1 {
+            font-size: 33px;
+        }
+    }
+
+    /* =========================================================
+       ACESSIBILIDADE
+    ========================================================= */
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+            scroll-behavior: auto !important;
+            animation-duration: .01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: .01ms !important;
+        }
+
+        .reveal {
+            opacity: 1 !important;
+            transform: none !important;
+            filter: none !important;
+        }
+
+        .enter {
+            opacity: 1 !important;
+            animation: none !important;
+        }
+
+        /* loops e entradas com atraso: parados de vez */
+        .hero-visual,
+        .sobre-section.abrindo,
+        .laptop,
+        .glow,
+        .floating-stat,
+        .nav-links a.active::after,
+        .nav-links.mobile-open {
+            animation: none !important;
+        }
+
+        ::view-transition-group(*),
+        ::view-transition-old(*),
+        ::view-transition-new(*) {
+            animation: none !important;
+        }
+    }
+
 </style>
+
+
 </head>
+
 <body>
 
-<header class="topbar">
-  <a href="/" class="logo" aria-label="SkillBloom - início">
-    <span class="logo-icon"><img src="{{ url_for('static', filename='logo.jpg') }}" alt="" width="38" height="38"></span>
-    <b>Skill<span>Bloom</span></b>
-  </a>
-  <a href="/dash" class="tab" aria-current="page">Painel</a>
-  <a href="/simulador" class="tab sec">Iniciar</a>
-  <div class="actions">
-    <button class="ico-btn" id="themeToggle" type="button" aria-label="Alternar tema claro e escuro" title="Alternar tema">
-      <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.9"/><path d="M12 2.6V5M12 19V21.4M21.4 12H19M5 12H2.6M18.6 5.4L17 7M7 17L5.4 18.6M18.6 18.6L17 17M7 7L5.4 5.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
-      <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a6.8 6.8 0 0 0 10.8 10.8Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>
-    </button>
-    {% if usuario %}
-    <div class="conta" id="conta">
-      <button class="conta-botao" id="contaBotao" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="contaPainel" aria-label="Sua conta" data-nome="{{ usuario.nome }}">
-        <span class="conta-iniciais" aria-hidden="true"></span>
-        {% if usuario.foto %}<img class="conta-foto" src="{{ usuario.foto }}" alt="" referrerpolicy="no-referrer">{% endif %}
-      </button>
-      <div class="conta-painel" id="contaPainel" role="dialog" aria-label="Sua conta" hidden>
-        <div class="conta-cab">
-          <span class="conta-avatar" aria-hidden="true"><span class="conta-iniciais"></span>
-            {% if usuario.foto %}<img class="conta-foto" src="{{ usuario.foto }}" alt="" referrerpolicy="no-referrer">{% endif %}</span>
-          <div class="conta-dados">
-            <strong class="conta-nome">{{ usuario.nome }}</strong>
-            <span class="conta-email">{{ usuario.email }}</span>
-            {% if usuario.provedor %}<span class="conta-prov">via {{ usuario.provedor|capitalize }}</span>{% endif %}
-          </div>
+
+<!-- =========================================================
+     HEADER
+========================================================== -->
+
+<header>
+
+    <div class="container navbar">
+
+        <a href="/#inicio" class="logo" aria-label="Skill Bloom - início">
+
+            <div class="logo-icon">
+
+                <img class="brand-mark" src="{{ url_for('static', filename='logo.jpg') }}" alt="" width="42" height="42">
+
+            </div>
+
+            Skill <span>Bloom</span>
+
+        </a>
+
+        <nav class="nav-links">
+
+            <a href="#inicio" class="active">
+                Início
+            </a>
+
+            <a href="#como-funciona">
+                Como funciona
+            </a>
+
+            <a href="/empresas">
+                Para empresas
+            </a>
+
+            <a href="#sobre">
+                Sobre nós
+            </a>
+
+        </nav>
+
+        <div class="nav-buttons">
+
+            <button
+                class="theme-toggle"
+                id="themeToggle"
+                type="button"
+                aria-label="Alternar tema claro e escuro"
+                title="Alternar tema"
+            >
+                <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.9"/>
+                    <path d="M12 2.6V5M12 19V21.4M21.4 12H19M5 12H2.6M18.6 5.4L17 7M7 17L5.4 18.6M18.6 18.6L17 17M7 7L5.4 5.4"
+                          stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                </svg>
+
+                <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a6.8 6.8 0 0 0 10.8 10.8Z"
+                          stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            {% if usuario %}
+
+            <div class="conta" id="conta">
+
+                <button
+                    class="conta-botao"
+                    id="contaBotao"
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    aria-controls="contaPainel"
+                    aria-label="Sua conta"
+                    data-nome="{{ usuario.nome }}"
+                >
+                    <span class="conta-iniciais" aria-hidden="true"></span>
+
+                    {% if usuario.foto %}
+                    <img
+                        class="conta-foto"
+                        src="{{ usuario.foto }}"
+                        alt=""
+                        referrerpolicy="no-referrer"
+                        loading="lazy"
+                    >
+                    {% endif %}
+                </button>
+
+                <div class="conta-painel" id="contaPainel" role="dialog" aria-label="Sua conta" hidden>
+
+                    <div class="conta-cabecalho">
+
+                        <span class="conta-avatar" aria-hidden="true">
+                            <span class="conta-iniciais"></span>
+
+                            {% if usuario.foto %}
+                            <img
+                                class="conta-foto"
+                                src="{{ usuario.foto }}"
+                                alt=""
+                                referrerpolicy="no-referrer"
+                            >
+                            {% endif %}
+                        </span>
+
+                        <div class="conta-dados">
+                            <strong class="conta-nome">{{ usuario.nome }}</strong>
+                            <span class="conta-email">{{ usuario.email }}</span>
+
+                            {% if usuario.provedor %}
+                            <span class="conta-provedor">via {{ usuario.provedor|capitalize }}</span>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <div class="conta-acoes">
+                        <a href="{{ url_for('dashboard') }}" class="conta-acao">Meu painel</a>
+                        <a href="/auth/sair" class="conta-acao conta-sair">Sair</a>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% else %}
+
+            <a href="/login" class="btn btn-outline">
+                Entrar
+            </a>
+
+            <a href="/cadastro" class="btn btn-primary">
+                Começar agora
+            </a>
+
+            {% endif %}
+
         </div>
-        <div class="conta-acoes"><a href="/" class="conta-acao">Página inicial</a><a href="/auth/sair" class="conta-acao conta-sair">Sair</a></div>
-      </div>
+
+        <button
+            class="menu-button"
+            aria-label="Abrir menu"
+            onclick="toggleMenu()"
+        >
+            ☰
+        </button>
+
     </div>
-    {% endif %}
-  </div>
+
 </header>
 
-<main class="wrap">
-  {% set primeiro = (usuario.nome|default('', true)).split(' ')[0] if usuario else '' %}
-  <div class="grid">
-    <section class="hero enter">
-      <div>
-        <h1>Olá{% if primeiro %}, {{ primeiro }}{% endif %}!</h1>
-        <p id="heroTexto">Pronto para evoluir suas habilidades?</p>
-        <div class="hero-btns">
-          <a href="/simulador" class="btn branco"><span aria-hidden="true">▶</span>Iniciar</a>
-          <button class="btn linha" id="abrirQuiz" type="button">Questionário de teste</button>
+
+
+<!-- =========================================================
+     HERO
+========================================================== -->
+
+<main>
+
+    <section
+        class="hero"
+        id="inicio"
+    >
+
+        <div class="container hero-content">
+
+            <div class="hero-text">
+
+                <h1 class="enter">
+
+                    Prepare-se hoje,
+
+                    <br>
+
+                    <span class="gradient-text">
+                        destaque-se
+                    </span>
+
+                    amanhã.
+
+                </h1>
+
+                <p
+                    class="enter"
+                    style="--enter-delay:80ms"
+                >
+
+                    Skill Bloom é um simulador de ambiente de trabalho
+                    que desenvolve suas competências socioemocionais
+                    na prática, para você conquistar as melhores
+                    oportunidades.
+
+                </p>
+
+                <div
+                    class="hero-actions enter"
+                    style="--enter-delay:160ms"
+                >
+
+                    <a
+                        href="{{ url_for('dashboard') }}"
+                        class="btn btn-primary"
+                    >
+
+                        Começar agora
+
+                        <span>→</span>
+
+                    </a>
+
+                    <a
+                        href="#como-funciona"
+                        class="btn btn-outline"
+                    >
+
+                        <span class="play-icon"></span>
+
+                        Ver como funciona
+
+                    </a>
+
+                </div>
+
+                <div
+                    class="hero-users enter"
+                    style="--enter-delay:240ms"
+                >
+
+                    <div class="avatars">
+
+                        <div class="avatar">👨🏻</div>
+                        <div class="avatar">👩🏻</div>
+                        <div class="avatar">👨🏽</div>
+                        <div class="avatar">👩🏼</div>
+
+                    </div>
+
+                    <span>
+
+                        Junte-se a milhares de jovens
+                        e evolua suas habilidades.
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- NOTEBOOK -->
+
+            <div class="hero-visual">
+
+                <div class="glow"></div>
+
+                <div class="laptop">
+
+                    <div class="laptop-screen">
+
+                        <div class="screen-inner">
+
+                            <div class="screen-title">
+                                Boa sorte na sua simulação!
+                            </div>
+
+                            <div class="screen-subtitle">
+                                Escolha um cenário para começar
+                            </div>
+
+                            <div class="simulation-cards">
+
+                                <div class="simulation-card">
+
+                                    <div class="sim-icon sim-orange">
+                                        👤
+                                    </div>
+
+                                    <strong>
+                                        Atendimento
+                                    </strong>
+
+                                    <small>
+                                        Lide com diferentes
+                                        perfis de clientes.
+                                    </small>
+
+                                </div>
+
+                                <div class="simulation-card">
+
+                                    <div class="sim-icon sim-green">
+                                        👥
+                                    </div>
+
+                                    <strong>
+                                        Trabalho em equipe
+                                    </strong>
+
+                                    <small>
+                                        Colabore e tome decisões
+                                        em conjunto.
+                                    </small>
+
+                                </div>
+
+                                <div class="simulation-card">
+
+                                    <div class="sim-icon sim-purple">
+                                        💡
+                                    </div>
+
+                                    <strong>
+                                        Resolução de problemas
+                                    </strong>
+
+                                    <small>
+                                        Encontre soluções
+                                        criativas e eficazes.
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="laptop-base"></div>
+
+                </div>
+
+            </div>
+
         </div>
-        <span class="acessos" id="acessos" hidden></span>
-      </div>
-      <div class="glass">
-        <div class="ring" id="ringComp"><div><strong>0%</strong><span>geral</span></div></div>
-        <div><h3>Competência socioemocional</h3><p>Média das seis competências, calculada com o seu desempenho salvo.</p></div>
-      </div>
+
     </section>
 
-    <article class="card suc enter" style="--d:120ms">
-      <div><h3>Taxa de sucesso</h3><div class="sub">Missões concluídas</div></div>
-      <div class="ring" id="ringSucesso"><div><strong>0%</strong><span>de acertos</span></div></div>
-      <p>Porcentagem de missões concluídas com sucesso.</p>
-    </article>
 
-    <article class="card rad enter" style="--d:200ms">
-      <h3>Desempenho por competência</h3>
-      <div class="sub">Quanto mais aberta a área, melhor o resultado</div>
-      <svg class="radar" id="radar" viewBox="0 0 420 310" role="img" aria-label="Gráfico de radar das seis competências"></svg>
-      <div class="vazio" id="vazio" hidden>Você ainda não tem desempenho salvo. Inicie uma missão ou responda o questionário de teste para começar.</div>
-    </article>
 
-    <article class="card qz enter" style="--d:280ms">
-      <div class="qz-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.2.9-1.2 1.7M12 16.6v.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></div>
-      <h3>Questionário de teste</h3>
-      <p>Seis perguntas sobre situações reais de trabalho, uma para cada competência. Cada resposta atualiza o seu desempenho.</p>
-      <div class="last" id="ultima">Você ainda não fez este questionário.</div>
-      <button class="btn" id="abrirQuiz2" type="button">Começar questionário</button>
-    </article>
-  </div>
+    <!-- =====================================================
+         COMPETÊNCIAS
+    ====================================================== -->
+
+    <section
+        class="skills-section"
+        id="como-funciona"
+    >
+
+        <div class="container">
+
+            <div class="section-heading">
+
+                <div class="eyebrow">
+
+                    <span class="eyebrow-icon">♧</span>
+
+                    Competências que você desenvolve
+
+                </div>
+
+                <h2>
+
+                    Habilidades para
+
+                    <span style="color:var(--green)">
+                        a vida
+                    </span>
+
+                    e para
+
+                    <span style="color:var(--purple)">
+                        o trabalho.
+                    </span>
+
+                </h2>
+
+            </div>
+
+
+
+            <div class="skills-grid">
+
+                <article
+                    class="skill-card reveal"
+                >
+
+                    <div class="skill-icon icon-blue">
+                        ♙
+                    </div>
+
+                    <h3>
+                        Comunicação
+                    </h3>
+
+                    <p>
+                        Expresse suas ideias com clareza
+                        e escute com empatia.
+                    </p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card reveal"
+                    style="--reveal-delay:80ms"
+                >
+
+                    <div class="skill-icon icon-green">
+                        ♧
+                    </div>
+
+                    <h3>
+                        Trabalho em equipe
+                    </h3>
+
+                    <p>
+                        Colabore, respeite diferenças
+                        e alcance objetivos juntos.
+                    </p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card reveal"
+                    style="--reveal-delay:160ms"
+                >
+
+                    <div class="skill-icon icon-orange">
+                        💡
+                    </div>
+
+                    <h3>
+                        Resolução de problemas
+                    </h3>
+
+                    <p>
+                        Analise situações e encontre
+                        soluções criativas.
+                    </p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card reveal"
+                    style="--reveal-delay:240ms"
+                >
+
+                    <div class="skill-icon icon-purple">
+                        🎯
+                    </div>
+
+                    <h3>
+                        Proatividade
+                    </h3>
+
+                    <p>
+                        Antecipe desafios e faça a
+                        diferença onde estiver.
+                    </p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card reveal"
+                    style="--reveal-delay:320ms"
+                >
+
+                    <div class="skill-icon icon-pink">
+                        ♡
+                    </div>
+
+                    <h3>
+                        Inteligência emocional
+                    </h3>
+
+                    <p>
+                        Gerencie emoções e construa
+                        relações saudáveis.
+                    </p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card reveal"
+                    style="--reveal-delay:400ms"
+                >
+
+                    <div class="skill-icon icon-blue">
+                        ↗
+                    </div>
+
+                    <h3>
+                        Responsabilidade
+                    </h3>
+
+                    <p>
+                        Assuma compromissos e entregue
+                        resultados com consistência.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         EVOLUÇÃO
+    ====================================================== -->
+
+    <section
+        class="growth-section"
+        id="evolucao"
+    >
+
+        <div class="container growth-content">
+
+            <div class="growth-text reveal">
+
+                <h2>
+
+                    Aprenda fazendo.
+
+                    <br>
+
+                    <span class="gradient-text">
+                        Evolua
+                    </span>
+
+                    sempre.
+
+                </h2>
+
+                <p>
+
+                    Simulações realistas, feedbacks inteligentes
+                    e acompanhamento do seu progresso para você
+                    crescer a cada desafio.
+
+                </p>
+
+                <a
+                    href="#"
+                    class="btn btn-primary"
+                >
+
+                    Começar agora
+
+                    <span>→</span>
+
+                </a>
+
+            </div>
+
+
+
+            <div
+                class="growth-image reveal"
+                style="--reveal-delay:120ms"
+            >
+
+                <div class="floating-stat stat-one">
+
+                    <div class="stat-icon">
+                        <svg class="stat-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 17.5l5.5-5.5 4 4 8.5-8.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 7.5H21V13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <div>
+
+                        Seu progresso
+
+                        <strong>75%</strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="person">
+
+                    <div class="person-hair"></div>
+                    <div class="person-head"></div>
+                    <div class="person-body"></div>
+                    <div class="laptop-small"></div>
+
+                </div>
+
+
+
+                <div class="floating-stat stat-two">
+
+                    <div class="stat-icon stat-icon-laranja">
+                        <svg class="stat-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.5 4h9v5.5a4.5 4.5 0 0 1-9 0V4Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 6H5a2.5 2.5 0 0 0 2.5 2.5M16.5 6H19a2.5 2.5 0 0 1-2.5 2.5M12 14v3M9 20h6M9.5 17h5v3h-5z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <div>
+
+                        Desafios concluídos
+
+                        <strong>12</strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="floating-stat stat-three">
+
+                    <div class="stat-icon stat-icon-verde">
+                        <svg class="stat-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5c.6 2.6 3.3 4 4.4 6.6a5.3 5.3 0 1 1-9.6 3.1c0-1.9.8-3.1 1.8-4.2.2 1.2.8 2 1.8 2.5C10.2 9 10.6 6 12 3.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <div>
+
+                        Dias seguidos
+
+                        <strong>7</strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="floating-stat stat-four">
+
+                    <div class="stat-icon stat-icon-roxo">
+                        <svg class="stat-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8L12 3.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <div>
+
+                        Competências dominadas
+
+                        <strong>4 de 6</strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SOBRE NÓS
+    ====================================================== -->
+
+    <!-- Escondida até a pessoa clicar em "Sobre nós". -->
+    <section
+        class="sobre-section"
+        id="sobre"
+        hidden
+    >
+
+        <div class="container">
+
+            <div class="section-heading reveal">
+
+                <div class="eyebrow">
+
+                    <span class="eyebrow-icon">♡</span>
+
+                    Sobre nós
+
+                </div>
+
+                <h2>
+
+                    Um TCC feito por estudantes da
+
+                    <span class="gradient-text">
+                        Etec de Matão.
+                    </span>
+
+                </h2>
+
+                <p class="sobre-texto">
+
+                    O Skill Bloom nasceu como nosso Trabalho de Conclusão de Curso,
+                    com uma ideia simples: ajudar jovens a desenvolver, na prática,
+                    as competências socioemocionais que o mercado de trabalho procura.
+
+                </p>
+
+            </div>
+
+
+
+            <div class="time-grid">
+
+                <article class="skill-card time-card reveal">
+
+                    <div class="skill-icon icon-blue">
+                        <svg class="time-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <h3>Miguel</h3>
+
+                    <p>Desenvolvimento (dev) e planejamento</p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card time-card reveal"
+                    style="--reveal-delay:80ms"
+                >
+
+                    <div class="skill-icon icon-green">
+                        <svg class="time-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" stroke="currentColor" stroke-width="1.9"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <h3>Lucas</h3>
+
+                    <p>Ciência de dados e banco de dados</p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card time-card reveal"
+                    style="--reveal-delay:160ms"
+                >
+
+                    <div class="skill-icon icon-purple">
+                        <svg class="time-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="m3 13 9 5 9-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <h3>Rafael Sgorlon</h3>
+
+                    <p>Arquitetura do sistema</p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card time-card reveal"
+                    style="--reveal-delay:240ms"
+                >
+
+                    <div class="skill-icon icon-pink">
+                        <svg class="time-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 3.5 19 10l-6.2 1.8L10 18 5 3.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="m13 12 5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+                    </div>
+
+                    <h3>Ruan</h3>
+
+                    <p>Experiência do usuário (UX)</p>
+
+                </article>
+
+
+
+                <article
+                    class="skill-card time-card reveal"
+                    style="--reveal-delay:320ms"
+                >
+
+                    <div class="skill-icon icon-orange">
+                        <svg class="time-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3h7l5 5v13H7V3Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M14 3v5h5M10 13h6M10 17h6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <h3>Rafael Souza</h3>
+
+                    <p>Documentação</p>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CTA
+    ====================================================== -->
+
+    <section class="cta">
+
+        <div class="container">
+
+            <div class="cta-box reveal">
+
+                <div class="cta-brand">
+
+                    <div class="cta-icon">
+
+                        <img class="brand-mark" src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo Skill Bloom" width="60" height="60" loading="lazy">
+
+                    </div>
+
+                    <h2>
+
+                        Seu futuro começa
+
+                        <br>
+
+                        com uma
+
+                        <span class="gradient-text">
+                            escolha.
+                        </span>
+
+                    </h2>
+
+                </div>
+
+                <p class="cta-text">
+
+                    Dê o primeiro passo para se tornar
+                    o profissional que o mercado procura.
+
+                </p>
+
+                <a
+                    href="#"
+                    class="btn btn-primary"
+                >
+
+                    Começar agora
+
+                    <span>→</span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
 </main>
 
-<nav class="bnav" aria-label="Navegação principal">
-  <a href="/dash" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-3"/></svg>Painel</a>
-  <a href="/simulador" class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Jogar</a>
-  <button type="button" id="abrirQuiz3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.2.9-1.2 1.7M12 16.6v.1"/></svg>Questionário</button>
-</nav>
-<div class="indo-ov" aria-live="polite"><div><div class="sp"></div>Entrando no escritório…</div></div>
 
-<dialog id="quiz" aria-label="Questionário de teste"><div class="dlg" id="quizCorpo"></div></dialog>
 
-<!-- Vem do banco: a rota /dash passa `dados`. Sem dados salvos ainda, vira null e a página mostra o estado vazio. -->
-<script type="application/json" id="dados-json">{{ dados|tojson if dados else 'null' }}</script>
+<!-- =========================================================
+     FOOTER
+========================================================== -->
+
+<footer>
+
+    <div class="container footer-content">
+
+        <div class="footer-logo">
+
+            <div class="footer-logo-icon">
+
+                <img class="brand-mark" src="{{ url_for('static', filename='logo.jpg') }}" alt="" width="29" height="29" loading="lazy">
+
+            </div>
+
+            Skill Bloom
+
+        </div>
+
+
+
+        <div class="footer-links">
+
+            <a href="#sobre">
+                Sobre nós
+            </a>
+
+            <a href="/empresas">
+                Para empresas
+            </a>
+
+            <a href="#">
+                Contato
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
+
 <script>
-const dados = JSON.parse(document.getElementById("dados-json").textContent);
 
-const COMPS = [
-  { n: "Comunicação", s: "Comunicação" }, { n: "Trabalho em equipe", s: "Equipe" },
-  { n: "Resolução de problemas", s: "Problemas" }, { n: "Proatividade", s: "Proatividade" },
-  { n: "Inteligência emocional", s: "Emocional" }, { n: "Responsabilidade", s: "Responsabilidade" }
-];
+    function toggleMenu() {
 
-const QUIZ = [
-  {
-    c: "Comunicação",
-    q: "Em uma reunião, um colega apresenta uma ideia da qual você discorda. O que você faz?",
-    o: [
-      "Apresento minha proposta antes de discutir os argumentos dele.",
-      "Ouço os argumentos e explico minha posição com exemplos.",
-      "Sugiro uma votação antes de aprofundar os pontos de dúvida.",
-      "Converso depois com ele e mantenho a decisão da reunião."
-    ],
-    e: "Ouvir e apresentar exemplos permite discutir as ideias com respeito e avaliar melhor a decisão."
-  },
-  {
-    c: "Trabalho em equipe",
-    q: "Um colega está sobrecarregado perto do prazo da equipe. Qual é a melhor atitude?",
-    o: [
-      "Adianto minhas próximas tarefas e aguardo que ele peça ajuda.",
-      "Assumo as tarefas dele e reorganizo minhas entregas depois.",
-      "Alinho as prioridades e combino uma divisão viável das tarefas.",
-      "Peço mais prazo ao líder antes de avaliar a divisão das tarefas."
-    ],
-    e: "Combinar prioridades e dividir as tarefas ajuda a equipe sem apenas transferir a sobrecarga."
-  },
-  {
-    c: "Resolução de problemas",
-    q: "O sistema apresenta uma falha desconhecida. Não há procedimento previsto. Por onde começar?",
-    o: [
-      "Reinicio o sistema e retomo as atividades se o erro desaparecer.",
-      "Registro a falha e verifico seu alcance para acionar o suporte.",
-      "Ajusto as configurações e observo se o erro volta a acontecer.",
-      "Solicito uma reinstalação para eliminar a provável causa do erro."
-    ],
-    e: "Registrar a falha e verificar seu alcance ajuda no diagnóstico sem alterar o sistema com base em suposições."
-  },
-  {
-    c: "Proatividade",
-    q: "Uma etapa gera retrabalho em vários setores. A mudança exige aprovação. O que você faz?",
-    o: [
-      "Peço a retirada da etapa com base nas reclamações da equipe.",
-      "Mudo a etapa no meu setor e apresento os resultados depois.",
-      "Registro os casos e aguardo a próxima revisão do processo.",
-      "Reúno exemplos e proponho um teste com os setores envolvidos."
-    ],
-    e: "Propor um teste com evidências demonstra iniciativa e respeita a aprovação necessária."
-  },
-  {
-    c: "Inteligência emocional",
-    q: "Um cliente reclama em voz alta de um atraso que você ainda precisa investigar. Como reagir?",
-    o: [
-      "Explico as regras internas antes de ouvir toda a reclamação.",
-      "Reconheço o transtorno e verifico os fatos antes de propor saídas.",
-      "Garanto uma solução rápida e depois verifico o que posso fazer.",
-      "Encaminho ao supervisor antes de entender os detalhes do caso."
-    ],
-    e: "Reconhecer o transtorno e verificar os fatos ajuda a reduzir a tensão sem fazer promessas incertas."
-  },
-  {
-    c: "Responsabilidade",
-    q: "Um imprevisto ameaça seu prazo e outra pessoa depende da entrega. O que fazer?",
-    o: [
-      "Tento recuperar o atraso e aviso quando tiver certeza do impacto.",
-      "Reduzo o escopo da entrega e explico os ajustes ao concluí-la.",
-      "Comunico o risco e alinho alternativas com todos os envolvidos.",
-      "Negocio mais tempo com o líder e aviso os demais ao finalizar."
-    ],
-    e: "Avisar sobre o risco com antecedência permite combinar alternativas e reorganizar as tarefas."
-  }
-];
+        const nav = document.querySelector(".nav-links");
+        const menuButton = document.querySelector(".menu-button");
 
-const reduz = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const isOpen =
+            nav.classList.contains("mobile-open");
 
-function contar(el, valor) {
-  if (reduz) { el.textContent = valor + "%"; return; }
-  const t0 = performance.now();
-  (function passo(agora) {
-    const a = Math.min(Math.max((agora - t0 - 300) / 1600, 0), 1);
-    el.textContent = Math.round(valor * (a === 1 ? 1 : 1 - Math.pow(2, -10 * a))) + "%";
-    if (a < 1) requestAnimationFrame(passo);
-  })(t0);
-}
-function anel(id, valor) {
-  const r = document.getElementById(id);
-  r.style.setProperty("--alvo", (valor * 3.6).toFixed(1) + "deg");
-  r.classList.remove("anim"); void r.offsetWidth;
-  if (!reduz) r.classList.add("anim");
-  contar(r.querySelector("strong"), valor);
-}
+        if (isOpen) {
+            nav.classList.remove("mobile-open");
+            menuButton.setAttribute("aria-label", "Abrir menu");
+            return;
+        }
 
-function radar(vals) {
-  const cx = 210, cy = 155, R = 92;
-  const pt = (i, f) => { const a = (-90 + i * 60) * Math.PI / 180; return [cx + Math.cos(a) * R * f, cy + Math.sin(a) * R * f]; };
-  const f1 = n => n.toFixed(1);
-  const poly = f => COMPS.map((_, i) => pt(i, f).map(f1).join(",")).join(" ");
-  let s = [.25, .5, .75, 1].map(f => `<polygon class="g" points="${poly(f)}"/>`).join("");
-  s += COMPS.map((_, i) => { const [x, y] = pt(i, 1); return `<line class="g" x1="${cx}" y1="${cy}" x2="${f1(x)}" y2="${f1(y)}"/>`; }).join("");
-  s += `<polygon class="area" points="${vals.map((v, i) => pt(i, (v || 0) / 100).map(f1).join(",")).join(" ")}"/>`;
-  s += vals.map((v, i) => { const [x, y] = pt(i, (v || 0) / 100); return `<circle class="dot" cx="${f1(x)}" cy="${f1(y)}" r="4"/>`; }).join("");
-  s += COMPS.map((c, i) => {
-    const [x, y] = pt(i, 1.3), a = x < cx - 5 ? "end" : x > cx + 5 ? "start" : "middle";
-    return `<text class="rl" x="${f1(x)}" y="${f1(y)}" text-anchor="${a}">${c.s}</text><text class="rv" x="${f1(x)}" y="${f1(y + 15)}" text-anchor="${a}">${vals[i] == null ? "—" : vals[i] + "%"}</text>`;
-  }).join("");
-  document.getElementById("radar").innerHTML = s;
-}
+        /*
+           Só a classe: a aparência do painel mora no CSS,
+           então ele segue o tema claro/escuro.
+        */
+        nav.classList.add("mobile-open");
 
-/* Desenha a página inteira a partir dos dados do banco. */
-function desenhar(d) {
-  const lista = (d && d.competencias) || [];
-  const vals = COMPS.map(c => { const x = lista.find(i => i.n === c.n); return x ? x.v : null; });
-  const salvos = vals.filter(v => v != null);
-  const media = salvos.length ? Math.round(salvos.reduce((a, b) => a + b, 0) / salvos.length) : 0;
-  const sucesso = d && d.sucesso != null ? d.sucesso : 0;
-
-  anel("ringComp", media);
-  anel("ringSucesso", sucesso);
-  radar(vals);
-
-  const vazio = !salvos.length && !(d && d.sucesso != null);
-  document.getElementById("vazio").hidden = !vazio;
-  document.getElementById("heroTexto").textContent = vazio
-    ? "Jogue uma missão ou faça o questionário para começar a medir seu desempenho."
-    : "Seu desempenho é atualizado a cada missão e a cada questionário.";
-
-  const ac = document.getElementById("acessos");
-  if (d && d.acessos) { ac.textContent = d.acessos + (d.acessos === 1 ? " acesso" : " acessos") + " neste mês"; ac.hidden = false; }
-  if (d && d.ultimo) document.getElementById("ultima").textContent = "Último resultado: " + d.ultimo.p + "% em " + d.ultimo.d;
-}
-desenhar(dados);
-
-/* ---------- Questionário de teste ---------- */
-(function () {
-  const dlg = document.getElementById("quiz");
-  const corpo = document.getElementById("quizCorpo");
-  let i, escolhas;
-
-  const topo = () => `<div class="dlg-top"><span class="step">Questionário de teste</span><button class="x" type="button" data-fechar aria-label="Fechar">✕</button></div>`;
-
-  function pergunta() {
-    const q = QUIZ[i];
-    corpo.innerHTML = topo() + `<div class="prog"><i style="--p:${i / QUIZ.length * 100}%"></i></div>
-      <div class="qc">${q.c} · pergunta ${i + 1} de ${QUIZ.length}</div><div class="qt">${q.q}</div>
-      <div class="ops">${q.o.map((t, k) => `<button class="op" type="button" data-k="${k}">${t}</button>`).join("")}</div><div id="fb"></div>`;
-  }
-
-  function responder(k) {
-    const q = QUIZ[i];
-    escolhas.push(k);
-    corpo.querySelectorAll(".op").forEach((b, n) => {
-      b.disabled = true;
-      if (n === GABARITO[i]) b.classList.add("certa"); else if (n === k) b.classList.add("errada");
-    });
-    const ok = k === GABARITO[i], ultima = i === QUIZ.length - 1;
-    document.getElementById("fb").innerHTML = `<div class="fb"><strong>${ok ? "Correto." : "Não foi desta vez."}</strong> ${q.e}</div>
-      <div class="row"><button class="btn" id="prox" type="button">${ultima ? "Ver resultado" : "Próxima pergunta"}</button></div>`;
-    document.getElementById("prox").focus();
-    document.getElementById("prox").addEventListener("click", () => { if (ultima) fim(); else { i++; pergunta(); } });
-  }
-
-  async function fim() {
-    const acertos = escolhas.filter((k, n) => k === GABARITO[n]).length;
-    const pct = Math.round(acertos / QUIZ.length * 100);
-    corpo.innerHTML = topo() + `<div class="res"><div class="big">${pct}%</div>
-      <h2>${acertos} de ${QUIZ.length} respostas certas</h2>
-      <p>${pct >= 80 ? "Excelente! Você tem uma boa leitura de situações de trabalho." : pct >= 60 ? "Bom resultado. Revise as perguntas que errou e jogue novas missões." : "Ainda há espaço para evoluir. Jogue as missões e tente o questionário de novo."}</p>
-      <p id="salvo">Salvando seu desempenho…</p>
-      <div class="row" style="justify-content:center"><button class="btn ghost" type="button" id="refazer">Refazer</button><button class="btn" type="button" data-fechar>Concluir</button></div></div>`;
-    try {
-      const r = await fetch("/api/questionario", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ escolhas }) });
-      if (!r.ok) throw new Error();
-      desenhar((await r.json()).dados);
-      document.getElementById("salvo").textContent = "Desempenho salvo. Seu painel foi atualizado.";
-    } catch (e) {
-      document.getElementById("salvo").textContent = "Não foi possível salvar agora. Confira se você está logado e tente de novo.";
+        /*
+           IMPORTANTE:
+           .nav-buttons NÃO é alterado aqui.
+           Entrar e Começar agora permanecem
+           ao lado da logo, fora do menu.
+        */
+        menuButton.setAttribute("aria-label", "Fechar menu");
     }
-  }
 
-  /* A resposta certa fica no servidor; esta cópia só colore a correção. Mantenha igual ao GABARITO do back-end. */
-  const GABARITO = [1, 2, 1, 3, 1, 2];
 
-  function abrir() { i = 0; escolhas = []; pergunta(); dlg.showModal(); }
-  document.getElementById("abrirQuiz").addEventListener("click", abrir);
-  document.getElementById("abrirQuiz2").addEventListener("click", abrir);
-  document.getElementById("abrirQuiz3").addEventListener("click", abrir);
-  corpo.addEventListener("click", e => {
-    const op = e.target.closest(".op"); if (op) responder(+op.dataset.k);
-    if (e.target.closest("[data-fechar]")) dlg.close();
-    if (e.target.id === "refazer") abrir();
-  });
-  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
-})();
 
-/* ---------- Ir para o simulador: feedback enquanto a página 3D carrega ---------- */
-document.querySelectorAll('a[href="/simulador"]').forEach(a => a.addEventListener("click", () => document.body.classList.add("indo")));
-addEventListener("pageshow", e => { if (e.persisted) document.body.classList.remove("indo"); });
+    /*
+     * Pequeno efeito para indicar a seção atual
+     * enquanto o usuário navega.
+     */
 
-/* ---------- Tema ---------- */
-(function () {
-  const raiz = document.documentElement;
-  document.getElementById("themeToggle").addEventListener("click", () => {
-    const claro = raiz.getAttribute("data-theme") !== "light";
-    raiz.classList.add("theme-switching");
-    if (claro) raiz.setAttribute("data-theme", "light"); else raiz.removeAttribute("data-theme");
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", claro ? "#eef6ff" : "#06182f");
-    try { localStorage.setItem("skillbloom-tema", claro ? "light" : "dark"); } catch (e) {}
-    setTimeout(() => raiz.classList.remove("theme-switching"), 560);
-  });
-})();
+    const sections = document.querySelectorAll("section");
+    const links = document.querySelectorAll(".nav-links a");
 
-/* ---------- Conta ---------- */
-(function () {
-  const c = document.getElementById("conta");
-  if (!c) return;
-  const b = document.getElementById("contaBotao"), p = document.getElementById("contaPainel");
-  const partes = (b.dataset.nome || "").trim().split(/\s+/).filter(Boolean);
-  const ini = partes.length > 1 ? partes[0][0] + partes[partes.length - 1][0] : (partes[0] || "?").slice(0, 2);
-  c.querySelectorAll(".conta-iniciais").forEach(a => a.textContent = ini.toUpperCase());
-  c.querySelectorAll(".conta-foto").forEach(f => f.addEventListener("error", () => f.remove()));
-  const aberto = () => b.getAttribute("aria-expanded") === "true";
-  function definir(v) {
-    b.setAttribute("aria-expanded", v); p.hidden = !v; p.classList.remove("abrindo");
-    if (v) { void p.offsetWidth; p.classList.add("abrindo"); }
-  }
-  b.addEventListener("click", e => { e.stopPropagation(); definir(!aberto()); });
-  p.addEventListener("click", e => e.stopPropagation());
-  document.addEventListener("click", () => { if (aberto()) definir(false); });
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && aberto()) { definir(false); b.focus(); } });
-})();
+    links.forEach(link => {
+        link.addEventListener("click", () => {
+            const nav = document.querySelector(".nav-links");
+            const menuButton = document.querySelector(".menu-button");
+
+            if (window.innerWidth <= 780) {
+                nav.classList.remove("mobile-open");
+                menuButton.setAttribute("aria-label", "Abrir menu");
+            }
+        });
+    });
+
+    window.addEventListener("scroll", () => {
+
+        let current = "";
+
+        sections.forEach(section => {
+
+            /* Seção escondida (o "Sobre nós" fechado) não conta. */
+            if (section.hidden) return;
+
+            const top =
+                section.offsetTop - 180;
+
+            if (
+                window.scrollY >= top
+            ) {
+
+                current =
+                    section.getAttribute("id");
+
+            }
+
+        });
+
+        links.forEach(link => {
+
+            link.classList.remove("active");
+
+            if (
+                link.getAttribute("href") ===
+                "#" + current
+            ) {
+
+                link.classList.add("active");
+
+            }
+
+        });
+
+    });
+
+
+
+    /* =========================================================
+       SOBRE NÓS
+       A seção fica escondida e só aparece quando a pessoa
+       clica em "Sobre nós" (ou chega pelo link /#sobre).
+    ========================================================= */
+
+    (function () {
+
+        var sobre = document.getElementById("sobre");
+        if (!sobre) return;
+
+        function mostrarSobre(rolar) {
+
+            if (sobre.hidden) {
+                sobre.hidden = false;
+                sobre.classList.add("abrindo");
+            }
+
+            if (rolar) {
+                /* Espera a seção existir no layout antes de rolar. */
+                window.requestAnimationFrame(function () {
+                    sobre.scrollIntoView({ behavior: "smooth", block: "start" });
+                });
+            }
+        }
+
+        document.querySelectorAll('a[href="#sobre"]').forEach(function (link) {
+            link.addEventListener("click", function (evento) {
+                evento.preventDefault();
+                mostrarSobre(true);
+
+                if (window.location.hash !== "#sobre") {
+                    history.pushState(null, "", "#sobre");
+                }
+            });
+        });
+
+        window.addEventListener("hashchange", function () {
+            if (window.location.hash === "#sobre") mostrarSobre(true);
+        });
+
+        if (window.location.hash === "#sobre") {
+            mostrarSobre(true);
+        }
+
+    })();
+
+
+
+    /* =========================================================
+       REVELAÇÃO AO ROLAR
+    ========================================================= */
+
+    (function () {
+
+        var alvos = document.querySelectorAll(".reveal");
+        if (!alvos.length) return;
+
+        var prefereMenosMovimento =
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        if (prefereMenosMovimento || !("IntersectionObserver" in window)) {
+            alvos.forEach(function (alvo) {
+                alvo.classList.add("is-visible");
+            });
+            return;
+        }
+
+        var observador = new IntersectionObserver(function (entradas) {
+            entradas.forEach(function (entrada) {
+                if (entrada.isIntersecting) {
+                    entrada.target.classList.add("is-visible");
+                    observador.unobserve(entrada.target);
+                }
+            });
+        }, {
+            rootMargin: "0px 0px -12% 0px",
+            threshold: 0.12
+        });
+
+        alvos.forEach(function (alvo) {
+            observador.observe(alvo);
+        });
+
+    })();
+
+
+
+    /* =========================================================
+       TEMA
+       O SkillBloom é escuro por padrão. O botão leva ao claro
+       e a escolha fica salva no navegador.
+    ========================================================= */
+
+    (function () {
+
+        var raiz = document.documentElement;
+        var botao = document.getElementById("themeToggle");
+        if (!botao) return;
+
+        function temaAtual() {
+            return raiz.getAttribute("data-theme") === "light"
+                ? "light"
+                : "dark";
+        }
+
+        function pintarBarra(tema) {
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) {
+                meta.setAttribute(
+                    "content",
+                    tema === "light" ? "#ffffff" : "#061a36"
+                );
+            }
+        }
+
+        botao.addEventListener("click", function () {
+
+            var proximo = temaAtual() === "light" ? "dark" : "light";
+
+            /* Suaviza a troca sem animar durante o carregamento. */
+            raiz.classList.add("theme-switching");
+
+            if (proximo === "light") {
+                raiz.setAttribute("data-theme", "light");
+            } else {
+                raiz.removeAttribute("data-theme");
+            }
+
+            pintarBarra(proximo);
+
+            try {
+                localStorage.setItem("skillbloom-tema", proximo);
+            } catch (e) {}
+
+            /* Um pouco mais que o --dur (.5s) da troca de cores. */
+            window.setTimeout(function () {
+                raiz.classList.remove("theme-switching");
+            }, 560);
+        });
+
+    })();
+
+
+
+    /* =========================================================
+       CONTA
+       Iniciais como reserva, e o painel abre no clique.
+    ========================================================= */
+
+    (function () {
+
+        var caixa = document.getElementById("conta");
+        if (!caixa) return;
+
+        var botao = document.getElementById("contaBotao");
+        var painel = document.getElementById("contaPainel");
+        if (!botao || !painel) return;
+
+
+        /* ----- iniciais a partir do nome ----- */
+
+        var nome = (botao.getAttribute("data-nome") || "").trim();
+
+        var partes = nome.split(/\s+/).filter(Boolean);
+
+        var iniciais = partes.length > 1
+            ? partes[0][0] + partes[partes.length - 1][0]
+            : (partes[0] ? partes[0].slice(0, 2) : "?");
+
+        iniciais = iniciais.toUpperCase();
+
+        caixa.querySelectorAll(".conta-iniciais").forEach(function (alvo) {
+            alvo.textContent = iniciais;
+        });
+
+
+        /* ----- foto do provedor pode falhar; some e deixa as iniciais ----- */
+
+        caixa.querySelectorAll(".conta-foto").forEach(function (foto) {
+            foto.addEventListener("error", function () {
+                foto.remove();
+            });
+        });
+
+
+        /* ----- abrir e fechar ----- */
+
+        function aberto() {
+            return botao.getAttribute("aria-expanded") === "true";
+        }
+
+        var timerFechar = null;
+
+        function abrir() {
+            /* Reabriu no meio do fechamento: cancela o esconder. */
+            window.clearTimeout(timerFechar);
+            painel.hidden = false;
+            painel.classList.remove("is-fechando");
+            painel.classList.add("is-abrindo");
+            botao.setAttribute("aria-expanded", "true");
+        }
+
+        function fechar() {
+            if (!aberto()) return;
+
+            botao.setAttribute("aria-expanded", "false");
+            painel.classList.remove("is-abrindo");
+            painel.classList.add("is-fechando");
+
+            /* Espera o contaSai (--dur-fast, .3s) terminar, com uma
+               folga de 60 ms. Se a pessoa reabriu nesse meio-tempo,
+               não esconde. */
+            window.clearTimeout(timerFechar);
+            timerFechar = window.setTimeout(function () {
+                if (aberto()) return;
+                painel.classList.remove("is-fechando");
+                painel.hidden = true;
+            }, 360);
+        }
+
+        botao.addEventListener("click", function (evento) {
+            evento.stopPropagation();
+            if (aberto()) {
+                fechar();
+            } else {
+                abrir();
+            }
+        });
+
+        /* Clique fora fecha, mas clique dentro do painel não. */
+        painel.addEventListener("click", function (evento) {
+            evento.stopPropagation();
+        });
+
+        document.addEventListener("click", fechar);
+
+        document.addEventListener("keydown", function (evento) {
+            if (evento.key === "Escape" && aberto()) {
+                fechar();
+                botao.focus();
+            }
+        });
+
+    })();
+
 </script>
+
 </body>
+
 </html>

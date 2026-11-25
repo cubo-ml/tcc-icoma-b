@@ -75,7 +75,7 @@ header{height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-
 <header>
   <div class="brand">Skill<b>Bloom</b></div>
   <div class="hc"><span id="clock">08:00</span><span id="dayInfo"></span></div>
-  <div class="hr"><span id="status"></span><button onclick="location.href='/dash'"><span class="dl">Meu desempenho</span><span class="ds">Desempenho</span></button><button class="hm" onclick="save();toast('Progresso salvo.')">Salvar</button><button class="hm" onclick="help()">Controles</button></div>
+  <div class="hr"><span id="status"></span><button onclick="location.href='{{ url_for('dashboard') }}'"><span class="dl">Meu desempenho</span><span class="ds">Desempenho</span></button><button class="hm" onclick="save();toast('Progresso salvo.')">Salvar</button><button class="hm" onclick="help()">Controles</button></div>
 </header>
 
 <aside id="tasksP"><div class="pt">Tarefas</div><div id="tasks"></div></aside>

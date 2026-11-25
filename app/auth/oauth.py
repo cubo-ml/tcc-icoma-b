@@ -71,7 +71,7 @@ ERRO_NEGADO = "oauth_negado"
 ERRO_ESTADO = "oauth_estado"
 ERRO_FALHOU = "oauth_falhou"
 
-DESTINO_PADRAO = "/dash"
+DESTINO_PADRAO = "/dashboard"
 PAGINA_PADRAO = "/login"
 
 DESCOBERTA_GOOGLE = "https://accounts.google.com/.well-known/openid-configuration"
@@ -184,7 +184,7 @@ def _cliente(provedor):
 def caminho_seguro(valor):
     """
     Aceita somente caminho relativo da propria aplicacao.
-    Qualquer coisa com esquema, host ou barra dupla vira /dash,
+    Qualquer coisa com esquema, host ou barra dupla vai para /dashboard,
     para o parametro next nao virar um open redirect.
     """
     if not valor or not isinstance(valor, str):

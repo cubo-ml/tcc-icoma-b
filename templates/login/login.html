@@ -2029,7 +2029,7 @@
         </div>
 
         <div class="conta-acoes">
-            <a href="/dash" class="conta-acao">Meu painel</a>
+            <a href="{{ url_for('dashboard') }}" class="conta-acao">Meu painel</a>
             <a href="/auth/sair" class="conta-acao conta-sair">Sair</a>
         </div>
 
@@ -3167,7 +3167,7 @@ if (
     );
 }
 
-window.location.href = "/dash";
+window.location.href = {{ url_for('dashboard') | tojson }};
 
           } catch (erro) {
 

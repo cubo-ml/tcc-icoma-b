@@ -992,6 +992,31 @@
       transition-duration: .18s;
     }
 
+    .password-recovery {
+      margin: -10px 0 24px;
+      text-align: right;
+    }
+
+    .password-recovery button {
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font: inherit;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .password-recovery button:disabled {
+      cursor: wait;
+    }
+
+    .password-recovery p {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
     /* =========================================================
        PRIMARY BUTTON
     ========================================================= */
@@ -2509,6 +2534,11 @@
             </div>
 
 
+            <div class="password-recovery">
+              <button type="button" id="forgotPassword" disabled>Esqueceu sua senha?</button>
+              <p id="passwordRecoveryStatus" role="status"></p>
+            </div>
+
             <!-- ENTRAR -->
             <button
               type="submit"
@@ -3010,7 +3040,8 @@
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
       import {
           getAuth,
-          signInWithEmailAndPassword
+          signInWithEmailAndPassword,
+          sendPasswordResetEmail
       } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -3027,6 +3058,38 @@
       const auth = getAuth(app);
       const loginForm =
       document.getElementById("loginForm");
+      const recoveryButton = document.getElementById("forgotPassword");
+      const recoveryStatus = document.getElementById("passwordRecoveryStatus");
+      const recoveryEmail = document.getElementById("email");
+
+      auth.languageCode = "pt-BR";
+
+      recoveryButton.addEventListener("click", async () => {
+          recoveryStatus.textContent = "";
+          if (!recoveryEmail.reportValidity()) {
+              return;
+          }
+
+          const confirmation = "Se houver uma conta com este e-mail, você receberá um link para redefinir a senha. Confira também a pasta de spam.";
+          recoveryButton.disabled = true;
+          recoveryStatus.textContent = "Solicitando o link de recuperação…";
+
+          try {
+              await sendPasswordResetEmail(auth, recoveryEmail.value.trim());
+              recoveryStatus.textContent = confirmation;
+          } catch (error) {
+              if (error.code === "auth/user-not-found") {
+                  recoveryStatus.textContent = confirmation;
+              } else if (error.code === "auth/too-many-requests") {
+                  recoveryStatus.textContent = "Muitas tentativas. Aguarde um pouco e tente novamente.";
+              } else {
+                  recoveryStatus.textContent = "Não foi possível solicitar o link agora. Tente novamente.";
+              }
+          } finally {
+              recoveryButton.disabled = false;
+          }
+      });
+      recoveryButton.disabled = false;
 
   loginForm.addEventListener(
       "submit",

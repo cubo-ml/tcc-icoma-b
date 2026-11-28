@@ -9,7 +9,7 @@
 
   <meta
     name="description"
-    content="SkillBloom - Desenvolva hoje as competências de amanhã."
+    content="Skill Bloom - Desenvolva hoje as competências de amanhã."
   />
 
   <title>Skill Bloom - Login</title>
@@ -20,7 +20,7 @@
   <meta name="theme-color" content="#061a36">
 
   <script>
-      /* O SkillBloom abre no escuro. Só o claro precisa ser
+      /* O Skill Bloom abre no escuro. Só o claro precisa ser
          restaurado antes da primeira pintura. */
       (function () {
           try {
@@ -34,7 +34,7 @@
   <style>
     /* =========================================================
        TOKENS DE TEMA
-       Escuro é o padrão do SkillBloom.
+       Escuro é o padrão do Skill Bloom.
        O claro entra apenas quando a pessoa escolhe no botão,
        via data-theme="light" no <html>.
     ========================================================= */
@@ -79,7 +79,7 @@
         --ring:            0 0 0 4px rgb(8 120 249 / .14);
     }
 
-    /* Base do SkillBloom — azul profundo */
+    /* Base do Skill Bloom — azul profundo */
     :root {
         color-scheme: dark;
 
@@ -2051,7 +2051,7 @@
           <a
             href="/#inicio"
             class="brand enter"
-            aria-label="SkillBloom - início"
+            aria-label="Skill Bloom - início"
           >
 
             <span class="brand-icon">
@@ -2673,7 +2673,7 @@
       <a
         href="#"
         class="footer-brand"
-        aria-label="SkillBloom"
+        aria-label="Skill Bloom"
       >
 
         <span class="brand-mini">
@@ -2687,7 +2687,7 @@
           />
         </span>
 
-        Skill<span>Bloom</span>
+        Skill <span>Bloom</span>
 
       </a>
 
@@ -2698,7 +2698,7 @@
           Sobre nós
         </a>
 
-        <a href="#">
+        <a href="{{ url_for('empresas', _anchor='contato') }}">
           Contato
         </a>
 
@@ -2876,7 +2876,7 @@
 
     /* =========================================================
        TEMA
-       O SkillBloom é escuro por padrão. O botão leva ao claro
+       O Skill Bloom é escuro por padrão. O botão leva ao claro
        e a escolha fica salva no navegador.
     ========================================================= */
 
@@ -3070,7 +3070,7 @@
               return;
           }
 
-          const confirmation = "Se houver uma conta com este e-mail, você receberá um link para redefinir a senha. Confira também a pasta de spam.";
+          const confirmation = "Se houver uma conta com este e-mail, você receberá um link para redefinir sua senha no Skill Bloom. Confira também a pasta de spam.";
           recoveryButton.disabled = true;
           recoveryStatus.textContent = "Solicitando o link de recuperação…";
 

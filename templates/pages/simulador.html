@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SkillBloom — Office Simulator</title>
+<title>Skill Bloom — Office Simulator</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 {% raw %}
 <style>
@@ -73,7 +73,7 @@ header{height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-
 <div id="scene"></div>
 
 <header>
-  <div class="brand">Skill<b>Bloom</b></div>
+  <div class="brand">Skill <b>Bloom</b></div>
   <div class="hc"><span id="clock">08:00</span><span id="dayInfo"></span></div>
   <div class="hr"><span id="status"></span><button onclick="location.href='{{ url_for('dashboard') }}'"><span class="dl">Meu desempenho</span><span class="ds">Desempenho</span></button><button class="hm" onclick="save();toast('Progresso salvo.')">Salvar</button><button class="hm" onclick="help()">Controles</button></div>
 </header>
@@ -334,7 +334,7 @@ const INT=[];const glowL=new THREE.PointLight(0x4caeff,.6,3.2);glowL.position.se
 // mesa principal + divisórias de baia
 const D=new THREE.Group();B(D,3,.06,1.3,desk,0,.75,-2.5);[[-1.4,-2.05],[1.4,-2.05],[-1.4,-2.95],[1.4,-2.95]].forEach(p=>B(D,.05,.72,.05,metal,p[0],.36,p[1]));B(D,.7,.55,.9,M(0xcfd6dc,.5),1.05,.45,-2.6);scene.add(D);
 B(scene,.05,1.3,1.3,part,-1.65,.65,-2.5);B(scene,.05,1.3,1.3,part,1.65,.65,-2.5);
-const scrM=CV(640,360,(x,w,h)=>{x.fillStyle='#08121f';x.fillRect(0,0,w,h);x.fillStyle='#1f6fd1';x.fillRect(0,0,w,40);x.fillStyle='#fff';x.font='600 20px Arial';x.fillText('SkillBloom',14,27);x.textAlign='right';x.fillText(fmt(S.time),w-14,27);x.textAlign='left';x.fillStyle='#e4eef8';x.font='700 40px Arial';x.fillText(S.tasks.length+' tarefas',30,112);x.font='22px Arial';x.fillStyle='#8da3b8';S.tasks.slice(0,4).forEach((t,i)=>x.fillText(t.title,30,164+i*34))});
+const scrM=CV(640,360,(x,w,h)=>{x.fillStyle='#08121f';x.fillRect(0,0,w,h);x.fillStyle='#1f6fd1';x.fillRect(0,0,w,40);x.fillStyle='#fff';x.font='600 20px Arial';x.fillText('Skill Bloom',14,27);x.textAlign='right';x.fillText(fmt(S.time),w-14,27);x.textAlign='left';x.fillStyle='#e4eef8';x.font='700 40px Arial';x.fillText(S.tasks.length+' tarefas',30,112);x.font='22px Arial';x.fillStyle='#8da3b8';S.tasks.slice(0,4).forEach((t,i)=>x.fillText(t.title,30,164+i*34))});
 const MG=new THREE.Group();B(MG,1.1,.66,.05,dark,0,1.2,-2.75);PL(MG,1,.56,scrM.tex,0,1.2,-2.72);B(MG,.08,.3,.05,dark,0,.93,-2.78);B(MG,.4,.02,.25,dark,0,.79,-2.75);
 B(MG,.6,.4,.04,dark,-.95,1.15,-2.72);B(MG,.54,.34,.01,M(0x2a4f7a,.3),-.95,1.15,-2.695);MG.userData.act='pc';scene.add(MG);INT.push(MG);
 B(scene,.55,.02,.18,M(0x20262b),0,.79,-2.25);B(scene,.07,.03,.11,M(0x20262b),.5,.79,-2.25);B(scene,.4,.05,.3,paper,-.9,.8,-2.2);

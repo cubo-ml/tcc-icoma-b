@@ -1,4 +1,4 @@
-# Sistema de média do SkillBloom. Fica na MESMA pasta do main.py (arquivo próprio, não cole dentro do main.py).
+# Sistema de média do Skill Bloom. Fica na MESMA pasta do main.py (arquivo próprio, não cole dentro do main.py).
 from datetime import datetime, timedelta, timezone
 
 from flask import Blueprint, request, jsonify, session

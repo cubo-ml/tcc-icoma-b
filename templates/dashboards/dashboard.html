@@ -9,7 +9,7 @@
 document.documentElement.setAttribute("data-theme","light");
 var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#eef6ff");}}catch(e){}})();
 </script>
-<title>SkillBloom — Dashboard</title>
+<title>Skill Bloom — Dashboard</title>
 <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='logo.jpg') }}">
 <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.jpg') }}">
 <style>
@@ -203,9 +203,9 @@ body.indo .indo-ov{display:grid}
 <body>
 
 <header class="topbar">
-  <a href="{{ url_for('index') }}" class="logo" aria-label="SkillBloom - início">
+  <a href="{{ url_for('index') }}" class="logo" aria-label="Skill Bloom - início">
     <span class="logo-icon"><img src="{{ url_for('static', filename='logo.jpg') }}" alt="" width="38" height="38"></span>
-    <b>Skill<span>Bloom</span></b>
+    <b>Skill <span>Bloom</span></b>
   </a>
   <a href="{{ url_for('dashboard') }}" class="tab" aria-current="page">Painel</a>
   <a href="/simulador" class="tab sec">Iniciar</a>

@@ -1,6 +1,6 @@
-# SkillBloom - Website para aprendizado de competências socioemocionais
+# Skill Bloom - Website para aprendizado de competências socioemocionais
 
-Bem-vindo ao repositório do projeto **SkillBloom**, uma aplicação web educacional desenvolvida para praticarmos e consolidarmos conhecimentos de **HTML**, **CSS**, **JavaScript**, além de técnicas modernas de **deploy com Firebase Hosting**, **autenticação com Firebase Authentication** e **banco de dados com Firestore**.
+Bem-vindo ao repositório do projeto **Skill Bloom**, uma aplicação web educacional desenvolvida para praticarmos e consolidarmos conhecimentos de **HTML**, **CSS**, **JavaScript**, além de técnicas modernas de **deploy com Firebase Hosting**, **autenticação com Firebase Authentication** e **banco de dados com Firestore**.
 
 ---
 
@@ -103,15 +103,15 @@ Criar um jogo interativo que:
 
 ---
 
-Esta aplicação está sendo desenvolvida pela **SkillBloom** para desenvolvimento de competências socioemocionais, utilizando o **GitHub Projects** como plataforma de gestão de trabalho
+Esta aplicação está sendo desenvolvida pela **Skill Bloom** para desenvolvimento de competências socioemocionais, utilizando o **GitHub Projects** como plataforma de gestão de trabalho
 
 ---
 
-# 👥 Personas de Usuário — SkillBloom
+# 👥 Personas de Usuário — Skill Bloom
 
 As personas representam os principais usuários da plataforma.
 
-O foco do SkillBloom é ajudar jovens de 16 a 24 anos a desenvolver competências socioemocionais como:
+O foco do Skill Bloom é ajudar jovens de 16 a 24 anos a desenvolver competências socioemocionais como:
 
 - 🗣 Comunicação
 - 💡 Inteligência emocional
@@ -167,9 +167,9 @@ Ele gosta de tecnologia e prefere experiências práticas e interativas.
 
 ---
 
-## ⭐ Como o SkillBloom ajuda?
+## ⭐ Como o Skill Bloom ajuda?
 
-O SkillBloom oferece:
+O Skill Bloom oferece:
 
 - desafios interativos;
 - simulações;
